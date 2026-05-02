@@ -53,6 +53,9 @@ export default function AccountLayout({loaderData}: Route.ComponentProps) {
   const location = useLocation();
 
   if (!isLoggedIn) {
+    if (location.pathname === '/account/login' || location.pathname === '/account/logout') {
+      return <Outlet />;
+    }
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 lg:py-20 text-center">
         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">

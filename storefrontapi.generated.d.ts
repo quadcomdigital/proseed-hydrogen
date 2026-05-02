@@ -352,6 +352,109 @@ export type HomePageQuery = {
   };
 };
 
+export type CustomerAccessTokenCreateMutationVariables = StorefrontAPI.Exact<{
+  input: StorefrontAPI.CustomerAccessTokenCreateInput;
+}>;
+
+export type CustomerAccessTokenCreateMutation = {
+  customerAccessTokenCreate?: StorefrontAPI.Maybe<{
+    customerAccessToken?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.CustomerAccessToken, 'accessToken' | 'expiresAt'>
+    >;
+    customerUserErrors: Array<
+      Pick<StorefrontAPI.CustomerUserError, 'code' | 'field' | 'message'>
+    >;
+  }>;
+};
+
+export type CustomerCreateMutationVariables = StorefrontAPI.Exact<{
+  input: StorefrontAPI.CustomerCreateInput;
+}>;
+
+export type CustomerCreateMutation = {
+  customerCreate?: StorefrontAPI.Maybe<{
+    customer?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.Customer, 'id' | 'firstName' | 'lastName' | 'email'>
+    >;
+    customerUserErrors: Array<
+      Pick<StorefrontAPI.CustomerUserError, 'code' | 'field' | 'message'>
+    >;
+  }>;
+};
+
+export type CustomerOrdersDetailQueryVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type CustomerOrdersDetailQuery = {
+  customer?: StorefrontAPI.Maybe<{
+    orders: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Order,
+          'id' | 'name' | 'processedAt' | 'fulfillmentStatus'
+        > & {
+          totalPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          lineItems: {
+            nodes: Array<
+              Pick<StorefrontAPI.OrderLineItem, 'title' | 'quantity'> & {
+                originalTotalPrice: Pick<
+                  StorefrontAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+                variant?: StorefrontAPI.Maybe<{
+                  image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+                }>;
+              }
+            >;
+          };
+        }
+      >;
+    };
+  }>;
+};
+
+export type CustomerOrdersQueryVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type CustomerOrdersQuery = {
+  customer?: StorefrontAPI.Maybe<{
+    orders: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Order,
+          'id' | 'name' | 'processedAt' | 'fulfillmentStatus'
+        > & {totalPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>}
+      >;
+    };
+  }>;
+};
+
+export type CustomerQueryVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type CustomerQuery = {
+  customer?: StorefrontAPI.Maybe<
+    Pick<
+      StorefrontAPI.Customer,
+      'id' | 'firstName' | 'lastName' | 'email' | 'displayName'
+    > & {
+      orders: {
+        nodes: Array<
+          Pick<
+            StorefrontAPI.Order,
+            'id' | 'name' | 'processedAt' | 'fulfillmentStatus'
+          > & {
+            totalPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          }
+        >;
+      };
+    }
+  >;
+};
+
 export type BlogDetailQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -671,6 +774,18 @@ interface GeneratedQueryTypes {
     return: HomePageQuery;
     variables: HomePageQueryVariables;
   };
+  '#graphql\n  query CustomerOrdersDetail($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      orders(first: 50) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n          lineItems(first: 20) {\n            nodes {\n              title\n              quantity\n              originalTotalPrice { amount currencyCode }\n              variant { image { url } }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: CustomerOrdersDetailQuery;
+    variables: CustomerOrdersDetailQueryVariables;
+  };
+  '#graphql\n  query CustomerOrders($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      orders(first: 50) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n        }\n      }\n    }\n  }\n': {
+    return: CustomerOrdersQuery;
+    variables: CustomerOrdersQueryVariables;
+  };
+  '#graphql\n  query Customer($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      id\n      firstName\n      lastName\n      email\n      displayName\n      orders(first: 5) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n        }\n      }\n    }\n  }\n': {
+    return: CustomerQuery;
+    variables: CustomerQueryVariables;
+  };
   '#graphql\n  query BlogDetail(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      articleByHandle(handle: $handle) {\n        id\n        title\n        handle\n        excerpt\n        contentHtml\n        publishedAt\n        image { url altText }\n        tags\n      }\n    }\n  }\n': {
     return: BlogDetailQuery;
     variables: BlogDetailQueryVariables;
@@ -717,7 +832,16 @@ interface GeneratedQueryTypes {
   };
 }
 
-interface GeneratedMutationTypes {}
+interface GeneratedMutationTypes {
+  '#graphql\n  mutation CustomerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {\n    customerAccessTokenCreate(input: $input) {\n      customerAccessToken { accessToken expiresAt }\n      customerUserErrors { code field message }\n    }\n  }\n': {
+    return: CustomerAccessTokenCreateMutation;
+    variables: CustomerAccessTokenCreateMutationVariables;
+  };
+  '#graphql\n  mutation CustomerCreate($input: CustomerCreateInput!) {\n    customerCreate(input: $input) {\n      customer { id firstName lastName email }\n      customerUserErrors { code field message }\n    }\n  }\n': {
+    return: CustomerCreateMutation;
+    variables: CustomerCreateMutationVariables;
+  };
+}
 
 declare module '@shopify/hydrogen' {
   interface StorefrontQueries extends GeneratedQueryTypes {}

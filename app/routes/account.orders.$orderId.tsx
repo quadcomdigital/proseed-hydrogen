@@ -32,7 +32,7 @@ export async function loader({context, params}: Route.LoaderArgs) {
   const customerAccessToken = session.get('customerAccessToken');
   if (!customerAccessToken) throw new Response('Not found', {status: 404});
 
-  const data: any = await context.storefront.query(CUSTOMER_ORDERS_QUERY, {
+  const data: any = await context.storefront.query(CUSTOMER_ORDERS_ID_QUERY, {
     variables: {customerAccessToken},
   });
 

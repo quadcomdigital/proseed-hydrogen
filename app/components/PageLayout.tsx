@@ -1,6 +1,7 @@
 import {Await, Link} from 'react-router';
 import {Suspense, useId, lazy} from 'react';
 const AIAssistant = lazy(() => import('~/components/AIAssistant'));
+const QuickViewModal = lazy(() => import('~/components/QuickViewModal'));
 import type {
   CartApiQueryFragment,
   FooterQuery,
@@ -56,6 +57,9 @@ export function PageLayout({
       <BottomNav cart={cart} />
       <Suspense fallback={null}>
         <AIAssistant />
+      </Suspense>
+      <Suspense fallback={null}>
+        <QuickViewModal />
       </Suspense>
     </Aside.Provider>
   );

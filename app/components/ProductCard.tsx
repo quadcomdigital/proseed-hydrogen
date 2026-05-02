@@ -71,12 +71,14 @@ export default function ProductCard({product}: {product: ProductCardData}) {
               </button>
             )}
 
-            <Link
-              to={`/products/${product.handle}`}
+            <button
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('open-quickview', {detail: product}));
+              }}
               className="w-12 h-12 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-[#78c13b] hover:text-white transition-all scale-90 group-hover:scale-100 active:scale-90 duration-500 shadow-xl"
             >
               <Eye size={20} />
-            </Link>
+            </button>
           </div>
           <Link
             to={`/products/${product.handle}`}

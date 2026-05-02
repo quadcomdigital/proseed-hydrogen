@@ -13,6 +13,14 @@ const HOMEPAGE_QUERY = `#graphql
     $language: LanguageCode
     $first: Int!
   ) @inContext(country: $country, language: $language) {
+    blog(handle: "journal") {
+      articles(first: 3) {
+        nodes {
+          id title handle excerpt publishedAt
+          image { url altText }
+        }
+      }
+    }
     products(first: $first, sortKey: BEST_SELLING) {
       nodes {
         id
@@ -47,11 +55,12 @@ export async function loader({context}: Route.LoaderArgs) {
     variables: {first: 8},
   });
 
-  return {products: data.products.nodes};
+  const articles = data?.blog?.articles?.nodes || [];
+  return {products: data.products.nodes, articles};
 }
 
 export default function Home({loaderData}: Route.ComponentProps) {
-  const {products} = loaderData;
+  const {products, articles} = loaderData;
 
   return (
     <div>
@@ -171,7 +180,15 @@ export default function Home({loaderData}: Route.ComponentProps) {
         </div>
       </section>
 
-      <BlogSection />
+      <BlogSection posts={articles.map((a: any) => ({
+        slug: a.handle,
+        title: a.title,
+        excerpt: a.excerpt || '',
+        image: a.image?.url || '/images/placeholder.svg',
+        date: new Date(a.publishedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'}),
+        category: 'Blog',
+        readTime: '5 min',
+      }))} />
       <SeoContent />
     </div>
   );

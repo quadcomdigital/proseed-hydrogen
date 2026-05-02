@@ -295,6 +295,20 @@ export type HomePageQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type HomePageQuery = {
+  blog?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'title' | 'handle' | 'excerpt' | 'publishedAt'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText'>
+          >;
+        }
+      >;
+    };
+  }>;
   products: {
     nodes: Array<
       Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
@@ -315,6 +329,62 @@ export type HomePageQuery = {
       }
     >;
   };
+};
+
+export type BlogDetailQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type BlogDetailQuery = {
+  blog?: StorefrontAPI.Maybe<{
+    articleByHandle?: StorefrontAPI.Maybe<
+      Pick<
+        StorefrontAPI.Article,
+        | 'id'
+        | 'title'
+        | 'handle'
+        | 'excerpt'
+        | 'contentHtml'
+        | 'publishedAt'
+        | 'tags'
+      > & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText'>
+        >;
+      }
+    >;
+  }>;
+};
+
+export type BlogIndexQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type BlogIndexQuery = {
+  blog?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Blog, 'title'> & {
+      articles: {
+        nodes: Array<
+          Pick<
+            StorefrontAPI.Article,
+            | 'id'
+            | 'title'
+            | 'handle'
+            | 'excerpt'
+            | 'contentHtml'
+            | 'publishedAt'
+          > & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'url' | 'altText'>
+            >;
+          }
+        >;
+      };
+    }
+  >;
 };
 
 export type CollectionByHandleQueryVariables = StorefrontAPI.Exact<{
@@ -537,9 +607,17 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query HomePage(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        variants(first: 1) {\n          nodes {\n            id\n            availableForSale\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query HomePage(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      articles(first: 3) {\n        nodes {\n          id title handle excerpt publishedAt\n          image { url altText }\n        }\n      }\n    }\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        variants(first: 1) {\n          nodes {\n            id\n            availableForSale\n          }\n        }\n      }\n    }\n  }\n': {
     return: HomePageQuery;
     variables: HomePageQueryVariables;
+  };
+  '#graphql\n  query BlogDetail(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      articleByHandle(handle: $handle) {\n        id\n        title\n        handle\n        excerpt\n        contentHtml\n        publishedAt\n        image { url altText }\n        tags\n      }\n    }\n  }\n': {
+    return: BlogDetailQuery;
+    variables: BlogDetailQueryVariables;
+  };
+  '#graphql\n  query BlogIndex(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      title\n      articles(first: 12) {\n        nodes {\n          id\n          title\n          handle\n          excerpt\n          contentHtml\n          publishedAt\n          image { url altText }\n        }\n      }\n    }\n  }\n': {
+    return: BlogIndexQuery;
+    variables: BlogIndexQueryVariables;
   };
   '#graphql\n  query CollectionByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      title\n      description\n      products(first: $first) {\n        nodes {\n          id\n          handle\n          title\n          featuredImage {\n            url\n            altText\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          variants(first: 1) {\n            nodes {\n              id\n              availableForSale\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: CollectionByHandleQuery;

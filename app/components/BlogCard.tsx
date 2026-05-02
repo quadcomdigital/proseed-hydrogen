@@ -54,13 +54,8 @@ export default function BlogCard({post}: {post: BlogPostCard}) {
   );
 }
 
-const FALLBACK_POSTS: BlogPostCard[] = [
-  {slug: 'basilico-inverno', title: 'Come coltivare il Basilico perfetto in inverno', excerpt: 'Scopri i segreti per mantenere il basilico rigoglioso anche durante i mesi pi\u00f9 freddi.', image: '/images/blog-basilico.jpg', date: '14 Febbraio 2024', category: 'Guida alla semina', readTime: '5 min'},
-  {slug: 'idroponica-casa', title: 'La rivoluzione dell\'idroponica in casa', excerpt: 'Niente terra? Nessun problema. Ti spieghiamo come iniziare la tua avventura idroponica urbana.', image: '/images/blog-idroponica.jpg', date: '10 Febbraio 2024', category: 'Innovazione', readTime: '8 min'},
-  {slug: 'consociazioni-pomodori', title: 'Consociazioni: cosa piantare vicino ai pomodori', excerpt: 'Migliora la salute del tuo orto sfruttando le naturali sinergie tra le piante.', image: '/images/blog-consociazioni.jpg', date: '05 Febbraio 2024', category: 'Tecniche Bio', readTime: '6 min'},
-];
-
-export function BlogSection() {
+export function BlogSection({posts = []}: {posts?: BlogPostCard[]}) {
+  if (!posts.length) return null;
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 lg:py-14">
       <div className="mb-8 flex items-center justify-between">
@@ -72,14 +67,14 @@ export function BlogSection() {
         </Link>
       </div>
       <div className="flex lg:hidden overflow-x-auto space-x-6 pb-4 -mx-4 px-4 snap-x">
-        {FALLBACK_POSTS.map((post) => (
+        {posts.map((post) => (
           <div key={post.slug} className="min-w-[85vw] snap-start">
             <BlogCard post={post} />
           </div>
         ))}
       </div>
       <div className="hidden lg:grid grid-cols-3 gap-8">
-        {FALLBACK_POSTS.map((post) => (
+        {posts.map((post) => (
           <BlogCard key={post.slug} post={post} />
         ))}
       </div>

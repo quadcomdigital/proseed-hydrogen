@@ -247,6 +247,9 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
       {/* Sowing + Description two-column section */}
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 pb-10 items-start">
+          <div>
+            <ProductTabs descriptionHtml={product.descriptionHtml} />
+          </div>
           <div className="space-y-6 lg:space-y-8 lg:sticky lg:top-24">
             <SowingCalendar
               semenzaio={product.semina_semenzaio?.value}
@@ -263,9 +266,6 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
               </p>
             </div>
             <SpecsGrid product={product} />
-          </div>
-          <div>
-            <ProductTabs descriptionHtml={product.descriptionHtml} />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
+  Link,
   Outlet,
   useRouteError,
   isRouteErrorResponse,
@@ -84,10 +85,9 @@ export async function loader(args: Route.LoaderArgs) {
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
     }),
     consent: {
-      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       withPrivacyBanner: false,
-      // localize the privacy banner
       country: args.context.storefront.i18n.country,
       language: args.context.storefront.i18n.language,
     },
@@ -146,7 +146,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
 
   return (
-    <html lang="en">
+    <html lang="it">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -187,7 +187,7 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  let errorMessage = 'Unknown error';
+  let errorMessage = 'Errore sconosciuto';
   let errorStatus = 500;
 
   if (isRouteErrorResponse(error)) {
@@ -197,15 +197,37 @@ export function ErrorBoundary() {
     errorMessage = error.message;
   }
 
+  if (errorStatus === 404) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center">
+        <h1 className="text-6xl font-black text-emerald-900 lg:text-8xl">404</h1>
+        <h2 className="mt-4 text-2xl font-black text-lime-700">Pagina non trovata</h2>
+        <p className="mt-3 text-base text-emerald-950/70">
+          La pagina che stai cercando non esiste o &egrave; stata spostata.
+        </p>
+        <Link
+          to="/"
+          className="mt-8 rounded-2xl bg-lime-600 px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-lime-700"
+        >
+          Torna alla home
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="route-error">
-      <h1>Oops</h1>
-      <h2>{errorStatus}</h2>
-      {errorMessage && (
-        <fieldset>
-          <pre>{errorMessage}</pre>
-        </fieldset>
-      )}
+    <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center">
+      <h1 className="text-6xl font-black text-emerald-900 lg:text-8xl">{errorStatus}</h1>
+      <h2 className="mt-4 text-2xl font-black text-red-600">Errore del server</h2>
+      <p className="mt-3 text-base text-emerald-950/70">
+        Si &egrave; verificato un errore imprevisto. Riprova pi&ugrave; tardi.
+      </p>
+      <Link
+        to="/"
+        className="mt-8 rounded-2xl bg-lime-600 px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-lime-700"
+      >
+        Torna alla home
+      </Link>
     </div>
   );
 }

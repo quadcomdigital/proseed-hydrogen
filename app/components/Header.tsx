@@ -112,15 +112,26 @@ export function HeaderMenu({
   return (
     <nav className={className} role="navigation">
       {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={close}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
-          Home
-        </NavLink>
+        <>
+          <NavLink
+            end
+            onClick={close}
+            prefetch="intent"
+            style={activeLinkStyle}
+            to="/"
+          >
+            Home
+          </NavLink>
+          <NavLink
+            end
+            onClick={close}
+            prefetch="intent"
+            style={activeLinkStyle}
+            to="/catalogo"
+          >
+            Catalogo
+          </NavLink>
+        </>
       )}
       {items.map((item) => (
         <NavLink
@@ -151,9 +162,9 @@ function HeaderCtas({
         to="/account"
         className="hidden text-sm font-bold text-emerald-900 hover:text-lime-700 lg:block"
       >
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
+        <Suspense fallback="Accedi">
+          <Await resolve={isLoggedIn} errorElement="Accedi">
+            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Accedi')}
           </Await>
         </Suspense>
       </NavLink>
@@ -234,7 +245,7 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609500728',
       resourceId: null,
       tags: [],
-      title: 'Collections',
+      title: 'Collezioni',
       type: 'HTTP',
       url: '/collections',
       items: [],
@@ -243,27 +254,27 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Blog',
+      title: 'Catalogo',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/catalogo',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461609566264',
       resourceId: null,
       tags: [],
-      title: 'Policies',
+      title: 'Ricerca',
       type: 'HTTP',
-      url: '/policies',
+      url: '/search',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461609599032',
       resourceId: 'gid://shopify/Page/92591030328',
       tags: [],
-      title: 'About',
+      title: 'Smart Garden',
       type: 'PAGE',
-      url: '/pages/about',
+      url: '/smart-garden',
       items: [],
     },
   ],

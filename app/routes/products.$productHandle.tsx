@@ -1,7 +1,7 @@
-import {Suspense, useMemo, useState, useEffect} from 'react';
-import {Await, Link, useNavigation, useFetcher} from 'react-router';
+import {Suspense, useMemo, useState} from 'react';
+import {Await, Link, useNavigation} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
-import {Check, Leaf} from 'lucide-react';
+import {Check, Leaf, ShoppingCart} from 'lucide-react';
 import type {Route} from './+types/products.$productHandle';
 import ProductGallery from '~/components/ProductGallery';
 import ProductTabs from '~/components/ProductTabs';
@@ -146,16 +146,17 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
     variants[0]?.selectedOptions?.forEach((o: any) => { initial[o.name] = o.value; });
     return initial;
   });
-  const addFetcher = useFetcher();
-  const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState<'idle' | 'loading' | 'added'>('idle');
 
-  useEffect(() => {
-    if (addFetcher.state === 'idle' && added === false && addFetcher.data !== undefined) {
-      setAdded(true);
-      const t = setTimeout(() => setAdded(false), 1500);
-      return () => clearTimeout(t);
-    }
-  }, [addFetcher.state]);
+  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (adding !== 'idle' || !currentVariant?.availableForSale) return;
+    setAdding('loading');
+    const fd = new FormData(e.currentTarget);
+    try { await fetch('/cart', {method: 'POST', body: fd}); } catch {}
+    setAdding('added');
+    setTimeout(() => setAdding('idle'), 1500);
+  };
 
   const currentVariant = useMemo(() => {
     if (!options.length || !variants.length) return variants[0];
@@ -278,28 +279,30 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
           )}
 
           {currentVariant && (
-            <addFetcher.Form method="post" action="/cart">
+            <form onSubmit={handleAdd} method="post" action="/cart">
               <input type="hidden" name="cartFormInput" value={JSON.stringify({
                 action: CartForm.ACTIONS.LinesAdd,
                 inputs: {lines: [{merchandiseId: currentVariant.id, quantity: 1}]},
               })} />
               <button
                 type="submit"
-                disabled={!currentVariant.availableForSale || addFetcher.state !== 'idle'}
+                disabled={!currentVariant.availableForSale || adding !== 'idle'}
                 className={`w-full mt-6 font-black py-4 rounded-xl transition-all text-sm uppercase tracking-widest flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                  added
+                  adding === 'added'
                     ? 'bg-green-600 text-white scale-[1.02] shadow-lg'
                     : 'bg-[#78c13b] text-white hover:bg-[#68a632] shadow-lg shadow-[#78c13b]/20'
                 }`}
               >
-                {addFetcher.state !== 'idle' ? (
+                {adding === 'loading' ? (
                   <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : added ? (
+                ) : adding === 'added' ? (
                   <Check size={20} className="animate-bounce" />
-                ) : null}
-                <span>{added ? 'Aggiunto!' : currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}</span>
+                ) : (
+                  <ShoppingCart size={20} />
+                )}
+                <span>{adding === 'added' ? 'Aggiunto!' : currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}</span>
               </button>
-            </addFetcher.Form>
+            </form>
           )}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">

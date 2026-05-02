@@ -1,5 +1,4 @@
-import {useState, useEffect} from 'react';
-import {useFetcher} from 'react-router';
+import {useState} from 'react';
 import {CartForm} from '@shopify/hydrogen';
 import {Check, ShoppingCart} from 'lucide-react';
 
@@ -11,16 +10,17 @@ interface MobileStickyProps {
 }
 
 export default function MobileStickyAddToCart({variantId, price, currencyCode, enabled}: MobileStickyProps) {
-  const fetcher = useFetcher();
-  const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState<'idle' | 'loading' | 'added'>('idle');
 
-  useEffect(() => {
-    if (fetcher.state === 'idle' && added === false && fetcher.data !== undefined) {
-      setAdded(true);
-      const t = setTimeout(() => setAdded(false), 1500);
-      return () => clearTimeout(t);
-    }
-  }, [fetcher.state]);
+  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (adding !== 'idle' || !variantId) return;
+    setAdding('loading');
+    const fd = new FormData(e.currentTarget);
+    try { await fetch('/cart', {method: 'POST', body: fd}); } catch {}
+    setAdding('added');
+    setTimeout(() => setAdding('idle'), 1500);
+  };
 
   if (!enabled || !variantId) return null;
 
@@ -34,30 +34,30 @@ export default function MobileStickyAddToCart({variantId, price, currencyCode, e
           </p>
         </div>
         <div className="flex items-center space-x-3">
-          <fetcher.Form method="post" action="/cart">
+          <form onSubmit={handleAdd} method="post" action="/cart">
             <input type="hidden" name="cartFormInput" value={JSON.stringify({
               action: CartForm.ACTIONS.LinesAdd,
               inputs: {lines: [{merchandiseId: variantId, quantity: 1}]},
             })} />
             <button
               type="submit"
-              disabled={fetcher.state !== 'idle'}
+              disabled={adding !== 'idle'}
               className={`font-black py-3 px-8 rounded-xl text-sm transition-all flex items-center space-x-2 shadow-lg ${
-                added
+                adding === 'added'
                   ? 'bg-green-600 text-white scale-105'
                   : 'bg-[#78c13b] text-white hover:bg-[#68a632] shadow-[#78c13b]/20'
               }`}
             >
-              {fetcher.state !== 'idle' ? (
+              {adding === 'loading' ? (
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : added ? (
+              ) : adding === 'added' ? (
                 <Check size={18} className="animate-bounce" />
               ) : (
                 <ShoppingCart size={18} />
               )}
-              <span>{added ? 'Aggiunto!' : 'Aggiungi'}</span>
+              <span>{adding === 'added' ? 'Aggiunto!' : 'Aggiungi'}</span>
             </button>
-          </fetcher.Form>
+          </form>
         </div>
       </div>
     </div>

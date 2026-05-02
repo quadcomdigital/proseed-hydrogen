@@ -1,22 +1,38 @@
-import {Form} from 'react-router';
+import {Form, useActionData} from 'react-router';
+import type {Route} from './+types/account.login';
+
+export async function action({context}: Route.ActionArgs) {
+  return context.customerAccount.login();
+}
 
 export default function AccountLogin() {
-  return (
-    <div className="mx-auto max-w-md px-4 py-10 lg:py-14">
-      <h1 className="text-3xl font-black text-emerald-900">Login account</h1>
-      <p className="mt-3 text-sm text-emerald-900/75">
-        Placeholder temporaneo: integriamo il Customer Account flow completo nel prossimo step.
-      </p>
+  const error = useActionData() as any;
 
-      <Form className="mt-6 grid gap-3 rounded-2xl border border-emerald-100 bg-white p-5">
-        <input type="email" placeholder="Email" className="rounded-xl border border-emerald-200 px-4 py-3" />
-        <button
-          type="button"
-          className="rounded-xl bg-lime-600 px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-white"
-        >
-          Continua
-        </button>
-      </Form>
+  return (
+    <div className="mx-auto max-w-md px-4 py-16 lg:py-20 text-center">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 lg:p-12">
+        <h1 className="text-3xl font-black text-[#2d4a13] mb-4">Accedi al tuo account</h1>
+        <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+          Utilizza il tuo account Shopify per accedere, visualizzare i tuoi ordini e gestire i tuoi dati.
+        </p>
+
+        {error?.error && (
+          <p className="text-red-500 text-sm mb-4 p-3 bg-red-50 rounded-xl">{error.error}</p>
+        )}
+
+        <Form method="post">
+          <button
+            type="submit"
+            className="w-full bg-[#78c13b] text-white font-black py-4 rounded-xl hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 text-sm uppercase tracking-widest"
+          >
+            Accedi con Shopify
+          </button>
+        </Form>
+
+        <p className="text-xs text-gray-400 mt-6 leading-relaxed">
+          Non hai un account? Verrai reindirizzato alla registrazione Shopify.
+        </p>
+      </div>
     </div>
   );
 }

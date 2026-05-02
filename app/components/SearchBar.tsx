@@ -226,7 +226,7 @@ export function SearchBar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => query.length > 2 && setIsOpen(true)}
-            className="flex-1 px-5 py-2.5 text-sm outline-none bg-white text-gray-700 placeholder:text-gray-400"
+            className="flex-1 px-5 py-2.5 text-sm outline-none ring-0 border-0 bg-white text-gray-700 placeholder:text-gray-400"
           />
           <button className="px-6 py-2.5 bg-white text-[#78c13b] hover:scale-110 transition-transform rounded-r-full" aria-label="Cerca">
             <Search size={20} />

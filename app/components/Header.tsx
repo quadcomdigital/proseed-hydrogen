@@ -223,14 +223,14 @@ export function Header({
           <div className="flex items-center space-x-4">
             <NavLink
               to="/smart-garden"
-              className="bg-[#78c13b] text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#68a632] transition-colors shadow-lg shadow-[#78c13b]/20 flex items-center space-x-2"
+              className="bg-[#78c13b] !text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#68a632] transition-colors shadow-lg shadow-[#78c13b]/20 flex items-center space-x-2"
             >
               <Sprout size={14} />
               <span>Calcolatore Semina</span>
             </NavLink>
             <NavLink
               to="/collections"
-              className="bg-orange-500 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
+              className="bg-orange-500 !text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
             >
               Sementi di Stagione
             </NavLink>

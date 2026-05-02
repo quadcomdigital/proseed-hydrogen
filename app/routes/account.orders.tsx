@@ -1,10 +1,40 @@
-import {Link, useRouteLoaderData} from 'react-router';
-import {ShoppingBag, ArrowRight, Package } from 'lucide-react';
+import {Link} from 'react-router';
+import {AppSession} from '~/lib/session';
+import {ShoppingBag, ArrowRight, Package} from 'lucide-react';
+import type {Route} from './+types/account.orders';
 
-export default function AccountOrders() {
-  const data = useRouteLoaderData('routes/account') as any;
-  const customer = data?.customer;
-  const orders = customer?.orders?.nodes || [];
+const CUSTOMER_ORDERS_QUERY = `#graphql
+  query CustomerOrders($customerAccessToken: String!) {
+    customer(customerAccessToken: $customerAccessToken) {
+      orders(first: 50) {
+        nodes {
+          id
+          name
+          processedAt
+          totalPrice { amount currencyCode }
+          fulfillmentStatus
+        }
+      }
+    }
+  }
+`;
+
+export async function loader({context}: Route.LoaderArgs) {
+  const session = context.session as AppSession;
+  const customerAccessToken = session.get('customerAccessToken');
+  if (!customerAccessToken) {
+    throw new Response('Not found', {status: 404});
+  }
+
+  const data: any = await context.storefront.query(CUSTOMER_ORDERS_QUERY, {
+    variables: {customerAccessToken},
+  });
+
+  return {orders: data?.customer?.orders?.nodes || []};
+}
+
+export default function AccountOrders({loaderData}: Route.ComponentProps) {
+  const {orders} = loaderData as any;
 
   if (!orders.length) {
     return (

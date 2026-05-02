@@ -16,8 +16,8 @@ export default function AccountIndex() {
     <div className="space-y-6">
       <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
         <h2 className="text-2xl font-black text-[#2d4a13] mb-1">Benvenuto, {name}</h2>
-        {customer.emailAddress && (
-          <p className="text-gray-500 text-sm">{customer.emailAddress}</p>
+        {customer.email && (
+          <p className="text-gray-500 text-sm">{customer.email}</p>
         )}
       </div>
 

@@ -1,28 +1,15 @@
 import {Link, Outlet, useLocation} from 'react-router';
-import {LayoutDashboard, ShoppingBag, User, LogOut, ChevronRight} from 'lucide-react';
+import {AppSession} from '~/lib/session';
+import {LayoutDashboard, ShoppingBag, LogOut, ChevronRight, User} from 'lucide-react';
 import type {Route} from './+types/account';
 
-export async function loader({context}: Route.LoaderArgs) {
-  const isLoggedIn = await context.customerAccount.isLoggedIn();
-  let customer: any = null;
-
-  if (isLoggedIn) {
-    try {
-      const data: any = await context.customerAccount.query(CUSTOMER_DASHBOARD_QUERY);
-      customer = data?.customer;
-    } catch {}
-  }
-
-  return {isLoggedIn, customer};
-}
-
-const CUSTOMER_DASHBOARD_QUERY = `#graphql
-  query CustomerDashboard {
-    customer {
+const CUSTOMER_QUERY = `#graphql
+  query Customer($customerAccessToken: String!) {
+    customer(customerAccessToken: $customerAccessToken) {
       id
       firstName
       lastName
-      emailAddress
+      email
       displayName
       orders(first: 5) {
         nodes {
@@ -36,6 +23,24 @@ const CUSTOMER_DASHBOARD_QUERY = `#graphql
     }
   }
 `;
+
+export async function loader({context}: Route.LoaderArgs) {
+  const session = context.session as AppSession;
+  const customerAccessToken = session.get('customerAccessToken');
+
+  if (!customerAccessToken) {
+    return {isLoggedIn: false, customer: null};
+  }
+
+  try {
+    const data: any = await context.storefront.query(CUSTOMER_QUERY, {
+      variables: {customerAccessToken},
+    });
+    return {isLoggedIn: true, customer: data?.customer};
+  } catch {
+    return {isLoggedIn: false, customer: null};
+  }
+}
 
 const navItems = [
   {label: 'Dashboard', href: '/account', icon: <LayoutDashboard size={18} />},

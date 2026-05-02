@@ -1,10 +1,11 @@
 import {Link} from 'react-router';
+import {AppSession} from '~/lib/session';
 import {ArrowLeft, Package} from 'lucide-react';
 import type {Route} from './+types/account.orders.$orderId';
 
-const ORDERS_QUERY = `#graphql
-  query CustomerOrders {
-    customer {
+const CUSTOMER_ORDERS_ID_QUERY = `#graphql
+  query CustomerOrdersDetail($customerAccessToken: String!) {
+    customer(customerAccessToken: $customerAccessToken) {
       orders(first: 50) {
         nodes {
           id
@@ -12,6 +13,14 @@ const ORDERS_QUERY = `#graphql
           processedAt
           totalPrice { amount currencyCode }
           fulfillmentStatus
+          lineItems(first: 20) {
+            nodes {
+              title
+              quantity
+              originalTotalPrice { amount currencyCode }
+              variant { image { url } }
+            }
+          }
         }
       }
     }
@@ -19,22 +28,25 @@ const ORDERS_QUERY = `#graphql
 `;
 
 export async function loader({context, params}: Route.LoaderArgs) {
-  const orderId = params.orderId;
-  if (!orderId) throw new Response('Not found', {status: 404});
+  const session = context.session as AppSession;
+  const customerAccessToken = session.get('customerAccessToken');
+  if (!customerAccessToken) throw new Response('Not found', {status: 404});
 
-  try {
-    const data: any = await context.customerAccount.query(ORDERS_QUERY);
-    const orders = data?.customer?.orders?.nodes || [];
-    const order = orders.find((o: any) => o.id?.includes(orderId));
-    if (!order) throw new Response('Not found', {status: 404});
-    return {order};
-  } catch (e) {
-    throw new Response('Not found', {status: 404});
-  }
+  const data: any = await context.storefront.query(CUSTOMER_ORDERS_QUERY, {
+    variables: {customerAccessToken},
+  });
+
+  const orders = data?.customer?.orders?.nodes || [];
+  const orderId = params.orderId;
+  const order = orders.find((o: any) => o.id?.includes(orderId));
+  if (!order) throw new Response('Not found', {status: 404});
+
+  return {order};
 }
 
 export default function AccountOrderDetails({loaderData}: Route.ComponentProps) {
   const {order} = loaderData as any;
+  const items = order.lineItems?.nodes || [];
 
   return (
     <div className="space-y-6">
@@ -51,14 +63,29 @@ export default function AccountOrderDetails({loaderData}: Route.ComponentProps) 
               {new Date(order.processedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
             </p>
           </div>
-          <div className="text-right">
-            <span className="inline-block px-3 py-1 bg-[#78c13b]/10 text-[#78c13b] text-xs font-bold rounded-full">
-              {order.fulfillmentStatus === 'FULFILLED' ? 'Completato' : 'In elaborazione'}
-            </span>
-          </div>
+          <span className="inline-block px-3 py-1 bg-[#78c13b]/10 text-[#78c13b] text-xs font-bold rounded-full">
+            {order.fulfillmentStatus === 'FULFILLED' ? 'Completato' : 'In elaborazione'}
+          </span>
         </div>
 
-        <p className="text-gray-500 text-sm mb-4">Dettaglio ordine completo disponibile a breve.</p>
+        <div className="space-y-4 mb-6">
+          {items.map((item: any, i: number) => (
+            <div key={i} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-2xl">
+              <div className="w-16 h-16 bg-white rounded-xl overflow-hidden border border-gray-100 flex-shrink-0">
+                {item.variant?.image?.url ? (
+                  <img src={item.variant.image.url} alt={item.title} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="h-full flex items-center justify-center"><Package size={20} className="text-gray-300" /></div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-[#2d4a13] text-sm truncate">{item.title}</p>
+                <p className="text-xs text-gray-400 mt-0.5">Q.tà: {item.quantity}</p>
+              </div>
+              <p className="text-sm font-black text-[#78c13b]">&euro;{Number(item.originalTotalPrice?.amount || 0).toFixed(2)}</p>
+            </div>
+          ))}
+        </div>
 
         <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
           <span className="text-gray-500 text-sm">Totale</span>

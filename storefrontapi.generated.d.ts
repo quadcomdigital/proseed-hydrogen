@@ -403,18 +403,61 @@ export type ProductByHandleQueryVariables = StorefrontAPI.Exact<{
 
 export type ProductByHandleQuery = {
   product?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Product, 'id' | 'title' | 'description'> & {
+    Pick<
+      StorefrontAPI.Product,
+      'id' | 'title' | 'description' | 'descriptionHtml' | 'productType'
+    > & {
       featuredImage?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Image, 'url' | 'altText'>
+        Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
       >;
+      images: {
+        nodes: Array<
+          Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+        >;
+      };
+      options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
       variants: {
         nodes: Array<
           Pick<StorefrontAPI.ProductVariant, 'id' | 'availableForSale'> & {
+            selectedOptions: Array<
+              Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+            >;
             price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+            compareAtPrice?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+            >;
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+            >;
           }
         >;
       };
     }
+  >;
+};
+
+export type ProductRecommendationsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type ProductRecommendationsQuery = {
+  productRecommendations?: StorefrontAPI.Maybe<
+    Array<
+      Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText'>
+        >;
+        priceRange: {
+          minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+        };
+        variants: {nodes: Array<Pick<StorefrontAPI.ProductVariant, 'id'>>};
+      }
+    >
   >;
 };
 
@@ -483,9 +526,13 @@ interface GeneratedQueryTypes {
     return: PoliciesIndexQuery;
     variables: PoliciesIndexQueryVariables;
   };
-  '#graphql\n  query ProductByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      id\n      title\n      description\n      featuredImage {\n        url\n        altText\n      }\n      variants(first: 1) {\n        nodes {\n          id\n          availableForSale\n          price {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query ProductByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      id\n      title\n      description\n      descriptionHtml\n      productType\n      featuredImage { url altText width height }\n      images(first: 6) { nodes { url altText width height } }\n      options { name values }\n      variants(first: 100) {\n        nodes {\n          id\n          availableForSale\n          selectedOptions { name value }\n          price { amount currencyCode }\n          compareAtPrice { amount currencyCode }\n          image { url altText width height }\n        }\n      }\n    }\n  }\n': {
     return: ProductByHandleQuery;
     variables: ProductByHandleQueryVariables;
+  };
+  '#graphql\n  query ProductRecommendations(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    productRecommendations(productHandle: $handle) {\n      id\n      handle\n      title\n      featuredImage { url altText }\n      priceRange { minVariantPrice { amount currencyCode } }\n      variants(first: 1) { nodes { id } }\n    }\n  }\n': {
+    return: ProductRecommendationsQuery;
+    variables: ProductRecommendationsQueryVariables;
   };
   '#graphql\n  query SearchResults(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    search(query: $query, first: $first, types: [PRODUCT]) {\n      nodes {\n        ... on Product {\n          id\n          handle\n          title\n          featuredImage {\n            url\n            altText\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: SearchResultsQuery;

@@ -1,5 +1,12 @@
-import {Money, CartForm} from '@shopify/hydrogen';
+import {Suspense, useMemo, useState} from 'react';
+import {Await, Link, useNavigation} from 'react-router';
+import {CartForm, Image, Money} from '@shopify/hydrogen';
 import type {Route} from './+types/products.$productHandle';
+import ProductGallery from '~/components/ProductGallery';
+import ProductTabs from '~/components/ProductTabs';
+import SocialShare from '~/components/SocialShare';
+import MobileStickyAddToCart from '~/components/MobileStickyAddToCart';
+import ProductCard from '~/components/ProductCard';
 
 const PRODUCT_QUERY = `#graphql
   query ProductByHandle(
@@ -11,40 +18,67 @@ const PRODUCT_QUERY = `#graphql
       id
       title
       description
-      featuredImage {
-        url
-        altText
-      }
-      variants(first: 1) {
+      descriptionHtml
+      productType
+      featuredImage { url altText width height }
+      images(first: 6) { nodes { url altText width height } }
+      options { name values }
+      variants(first: 100) {
         nodes {
           id
           availableForSale
-          price {
-            amount
-            currencyCode
-          }
+          selectedOptions { name value }
+          price { amount currencyCode }
+          compareAtPrice { amount currencyCode }
+          image { url altText width height }
         }
       }
     }
   }
 `;
 
+const RECOMMENDATIONS_QUERY = `#graphql
+  query ProductRecommendations(
+    $country: CountryCode
+    $language: LanguageCode
+    $handle: String!
+  ) @inContext(country: $country, language: $language) {
+    productRecommendations(productHandle: $handle) {
+      id
+      handle
+      title
+      featuredImage { url altText }
+      priceRange { minVariantPrice { amount currencyCode } }
+      variants(first: 1) { nodes { id } }
+    }
+  }
+`;
+
+type ShopifyVariant = {
+  id: string;
+  availableForSale: boolean;
+  selectedOptions: {name: string; value: string}[];
+  price: {amount: string; currencyCode: string};
+  compareAtPrice?: {amount: string; currencyCode: string} | null;
+  image?: {url: string; altText?: string; width?: number; height?: number};
+};
+
 export async function loader({context, params}: Route.LoaderArgs) {
   const handle = params.productHandle;
-  if (!handle) {
-    throw new Response('Not found', {status: 404});
-  }
+  if (!handle) throw new Response('Not found', {status: 404});
 
   const data = await context.storefront.query(PRODUCT_QUERY, {
     cache: context.storefront.CacheShort(),
     variables: {handle},
   });
 
-  if (!data.product) {
-    throw new Response('Not found', {status: 404});
-  }
+  if (!data.product) throw new Response('Not found', {status: 404});
 
-  return {product: data.product};
+  const recommendations = context.storefront
+    .query(RECOMMENDATIONS_QUERY, {cache: context.storefront.CacheShort(), variables: {handle}})
+    .catch(() => ({productRecommendations: []}));
+
+  return {product: data.product as any, recommendations};
 }
 
 export async function action({request, context}: Route.ActionArgs) {
@@ -66,51 +100,213 @@ export async function action({request, context}: Route.ActionArgs) {
 }
 
 export default function ProductPage({loaderData}: Route.ComponentProps) {
-  const product = loaderData.product;
-  const firstVariant = product.variants.nodes[0];
+  const {product, recommendations} = loaderData;
+  const navigation = useNavigation();
+  const isLoading = navigation.state === 'loading';
+
+  const variants: ShopifyVariant[] = product.variants?.nodes || [];
+  const options: {name: string; values: string[]}[] = product.options || [];
+  const images = product.images?.nodes || [];
+  const allImages = images.length > 0 ? images : (product.featuredImage ? [product.featuredImage] : []);
+
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+
+  const currentVariant = useMemo(() => {
+    if (!options.length || !variants.length) return variants[0];
+    const sel = Object.entries(selectedOptions);
+    if (!sel.length) return variants[0];
+    return variants.find((v) =>
+      sel.every(([name, value]) =>
+        v.selectedOptions?.some((o) => o.name === name && o.value === value),
+      ),
+    ) || variants[0];
+  }, [options, variants, selectedOptions]);
+
+  const hasDiscount = currentVariant?.compareAtPrice?.amount
+    && Number(currentVariant.compareAtPrice.amount) > Number(currentVariant.price.amount);
+
+  const featuredImage = currentVariant?.image || product.featuredImage;
+  const variantImageUrl = currentVariant?.image?.url;
+  const galleryImages = currentVariant?.image && variantImageUrl
+    ? [currentVariant.image, ...allImages.filter((i: any) => i.url !== variantImageUrl)]
+    : allImages;
+
+  if (isLoading) return <PdpSkeleton />;
 
   return (
-    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-10 lg:grid-cols-2 lg:py-14">
-      <div className="overflow-hidden rounded-3xl bg-emerald-50">
-        {product.featuredImage ? (
-          <img
-            src={product.featuredImage.url}
-            alt={product.featuredImage.altText || product.title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex min-h-[400px] items-center justify-center text-emerald-800">
-            No image
-          </div>
-        )}
+    <>
+      <div className="mx-auto max-w-7xl px-4 pt-6 pb-4">
+        <Link to="/collections" className="text-xs font-bold text-[#78c13b] uppercase tracking-widest hover:underline">
+          &larr; Torna al catalogo
+        </Link>
       </div>
 
-      <div>
-        <h1 className="text-3xl font-black text-emerald-900 lg:text-5xl">{product.title}</h1>
-        {firstVariant?.price ? (
-          <p className="mt-4 text-2xl font-black text-lime-700">
-            <Money data={firstVariant.price} />
-          </p>
-        ) : null}
+      <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-10 px-4 pb-24 lg:pb-14">
+        <ProductGallery images={galleryImages} title={product.title} hasDiscount={!!hasDiscount} />
 
-        {product.description ? (
-          <p className="mt-6 text-base leading-relaxed text-emerald-950/80">{product.description}</p>
-        ) : null}
+        <div className="flex flex-col">
+          {product.productType && (
+            <span className="text-[10px] font-black text-[#78c13b] uppercase tracking-[0.3em] mb-2">{product.productType}</span>
+          )}
+          <h1 className="text-3xl font-black text-[#2d4a13] lg:text-5xl">{product.title}</h1>
 
-        {firstVariant ? (
-          <CartForm
-            route="/cart"
-            action={CartForm.ACTIONS.LinesAdd}
-            inputs={{lines: [{merchandiseId: firstVariant.id, quantity: 1}]}}
-          >
-            <button
-              type="submit"
-              className="rounded-full bg-lime-600 px-7 py-3 text-sm font-bold text-white transition hover:bg-lime-700"
+          <div className="mt-4 flex items-center space-x-3">
+            {hasDiscount ? (
+              <>
+                <p className="text-2xl font-black text-[#78c13b]">&euro;{Number(currentVariant.price.amount).toFixed(2)}</p>
+                <p className="text-lg font-bold text-gray-400 line-through">&euro;{Number(currentVariant.compareAtPrice!.amount).toFixed(2)}</p>
+                <span className="bg-[#ff5a24] text-white text-[10px] font-black px-2 py-1 rounded-full">
+                  -{Math.round((1 - Number(currentVariant.price.amount) / Number(currentVariant.compareAtPrice!.amount)) * 100)}%
+                </span>
+              </>
+            ) : (
+              <p className="text-2xl font-black text-[#78c13b]">
+                &euro;{currentVariant ? Number(currentVariant.price.amount).toFixed(2) : '0.00'}
+              </p>
+            )}
+          </div>
+
+          {product.description && (
+            <p className="mt-4 text-sm text-gray-500 leading-relaxed">{product.description}</p>
+          )}
+
+          {options.length > 1 && (
+            <div className="mt-6">
+              {options.map((opt) => (
+                <div key={opt.name} className="mb-4">
+                  <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{opt.name}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {opt.values.map((val) => {
+                      const isSelected = selectedOptions[opt.name] === val || (!selectedOptions[opt.name] && variants[0]?.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val));
+                      const isAvailable = variants.some((v) =>
+                        v.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val)
+                        && v.availableForSale,
+                      );
+                      return (
+                        <button
+                          key={val}
+                          disabled={!isAvailable}
+                          onClick={() => setSelectedOptions((p) => ({...p, [opt.name]: val}))}
+                          className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
+                            isSelected
+                              ? 'border-[#78c13b] bg-[#78c13b] text-white'
+                              : isAvailable
+                              ? 'border-gray-200 text-gray-700 hover:border-[#78c13b]'
+                              : 'border-gray-100 text-gray-300 line-through cursor-not-allowed'
+                          }`}
+                        >
+                          {val}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {currentVariant && (
+            <CartForm
+              route="/cart"
+              action={CartForm.ACTIONS.LinesAdd}
+              inputs={{lines: [{merchandiseId: currentVariant.id, quantity: 1}]}}
             >
-              Aggiungi al carrello
-            </button>
-          </CartForm>
-        ) : null}
+              <button
+                type="submit"
+                disabled={!currentVariant.availableForSale}
+                className="w-full mt-6 bg-[#78c13b] text-white font-black py-4 rounded-xl hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 text-sm uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}
+              </button>
+            </CartForm>
+          )}
+
+          <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Certificazioni</p>
+            <p className="text-xs font-bold text-gray-600">
+              Semi certificati &bull; Alta germinabilit&agrave; &bull; Qualit&agrave; controllata
+            </p>
+          </div>
+
+          <SocialShare productName={product.title} />
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pb-10">
+        <ProductTabs descriptionHtml={product.descriptionHtml} />
+      </div>
+
+      <Suspense fallback={null}>
+        <Await resolve={recommendations}>
+          {(recData: any) => {
+            const recs = recData?.productRecommendations?.filter((r: any) => r.id !== product.id) || [];
+            if (!recs.length) return null;
+            return (
+              <section className="mx-auto max-w-7xl px-4 py-10 border-t border-gray-100">
+                <h2 className="text-2xl font-black text-[#2d4a13] mb-6">Potrebbe piacerti anche</h2>
+                <div className="flex lg:hidden overflow-x-auto space-x-4 snap-x pb-4">
+                  {recs.slice(0, 4).map((rec: any) => (
+                    <div key={rec.id} className="min-w-[75vw] snap-start">
+                      <ProductCard
+                        product={{
+                          id: rec.id,
+                          handle: rec.handle,
+                          title: rec.title,
+                          price: Number(rec.priceRange?.minVariantPrice?.amount || 0),
+                          currencyCode: rec.priceRange?.minVariantPrice?.currencyCode || 'EUR',
+                          image: rec.featuredImage ? {url: rec.featuredImage.url, altText: rec.featuredImage.altText} : undefined,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="hidden lg:grid grid-cols-4 gap-6">
+                  {recs.slice(0, 4).map((rec: any) => (
+                    <ProductCard
+                      key={rec.id}
+                      product={{
+                        id: rec.id,
+                        handle: rec.handle,
+                        title: rec.title,
+                        price: Number(rec.priceRange?.minVariantPrice?.amount || 0),
+                        currencyCode: rec.priceRange?.minVariantPrice?.currencyCode || 'EUR',
+                        image: rec.featuredImage ? {url: rec.featuredImage.url, altText: rec.featuredImage.altText} : undefined,
+                      }}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          }}
+        </Await>
+      </Suspense>
+
+      <MobileStickyAddToCart
+        variantId={currentVariant?.id}
+        price={Number(currentVariant?.price?.amount || 0)}
+        currencyCode={currentVariant?.price?.currencyCode || 'EUR'}
+        enabled={!!currentVariant?.availableForSale}
+      />
+    </>
+  );
+}
+
+function PdpSkeleton() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-10 animate-pulse">
+      <div className="h-4 w-40 bg-gray-200 rounded mb-6" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="aspect-[4/5] bg-gray-100 rounded-3xl" />
+        <div>
+          <div className="h-6 w-24 bg-gray-200 rounded mb-3" />
+          <div className="h-10 w-3/4 bg-gray-200 rounded mb-4" />
+          <div className="h-8 w-32 bg-gray-200 rounded mb-4" />
+          <div className="space-y-2 mb-6">
+            <div className="h-4 w-full bg-gray-100 rounded" />
+            <div className="h-4 w-2/3 bg-gray-100 rounded" />
+          </div>
+          <div className="h-14 w-full bg-gray-200 rounded-xl" />
+        </div>
       </div>
     </div>
   );

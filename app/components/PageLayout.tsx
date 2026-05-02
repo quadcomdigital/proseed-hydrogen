@@ -1,5 +1,6 @@
 import {Await, Link} from 'react-router';
-import {Suspense, useId} from 'react';
+import {Suspense, useId, lazy} from 'react';
+const AIAssistant = lazy(() => import('~/components/AIAssistant'));
 import type {
   CartApiQueryFragment,
   FooterQuery,
@@ -53,6 +54,9 @@ export function PageLayout({
         publicStoreDomain={publicStoreDomain}
       />
       <BottomNav cart={cart} />
+      <Suspense fallback={null}>
+        <AIAssistant />
+      </Suspense>
     </Aside.Provider>
   );
 }

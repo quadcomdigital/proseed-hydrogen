@@ -307,6 +307,7 @@ export type HomePageQuery = {
             'amount' | 'currencyCode'
           >;
         };
+        variants: {nodes: Array<Pick<StorefrontAPI.ProductVariant, 'id'>>};
       }
     >;
   };
@@ -462,7 +463,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query HomePage(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query HomePage(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        variants(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
     return: HomePageQuery;
     variables: HomePageQueryVariables;
   };

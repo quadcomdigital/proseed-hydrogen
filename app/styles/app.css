@@ -114,7 +114,7 @@ aside li {
   top: 0;
   transition: opacity var(--aside-transition) ease-out;
   visibility: hidden;
-  z-index: 10;
+  z-index: 60;
 }
 
 .overlay .close-outside {

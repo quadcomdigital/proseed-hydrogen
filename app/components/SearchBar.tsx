@@ -111,7 +111,7 @@ export function SearchBar() {
   return (
     <>
       {isMobileOpen && (
-        <div className="fixed inset-0 bg-white z-[60] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <div className="fixed inset-0 bg-white z-[60] flex flex-col">
           <div className="flex items-center p-4 border-b border-gray-100 gap-3">
             <div className="flex-1 relative">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />

@@ -134,7 +134,7 @@ export default function SmartGarden({loaderData}: any) {
 
         <div className="p-8 lg:p-16 min-h-[500px] flex flex-col">
           {step === 0 && (
-            <div className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
               <div className="w-20 h-20 bg-[#78c13b]/10 rounded-full flex items-center justify-center mb-8">
                 <Sprout size={40} className="text-[#78c13b]" />
               </div>
@@ -153,7 +153,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 1 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col ">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Quando vorresti seminare?</h2>
                 <p className="text-gray-500">Scegliere il mese giusto &egrave; la chiave di un orto sano</p>
@@ -173,7 +173,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 2 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col ">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Dove vorresti seminare?</h2>
                 <p className="text-gray-500">Ogni spazio ha le sue caratteristiche e le sue regole</p>
@@ -197,7 +197,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 3 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col ">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Coltivazione precedente</h2>
                 <p className="text-gray-500">Per rispettare la rotazione delle colture</p>
@@ -218,7 +218,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 4 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col ">
               <div className="text-center mb-8">
                 <span className="inline-block px-4 py-1 bg-[#78c13b]/10 text-[#78c13b] rounded-full text-xs font-bold tracking-widest uppercase mb-4">
                   La tua semina

@@ -86,27 +86,27 @@ export default function Home({loaderData}: Route.ComponentProps) {
     <div>
       <Hero slides={heroSlides} />
 
-      <section id="features" className="hidden px-4 py-10 lg:block">
+      <section id="features" className="px-4 py-6 lg:py-10">
         <div className="mx-auto max-w-7xl">
-          <p className="mb-8 text-center text-sm font-bold uppercase tracking-[0.2em] text-[#78c13b]">
+          <p className="mb-6 lg:mb-8 text-center text-xs lg:text-sm font-bold uppercase tracking-[0.2em] text-[#78c13b]">
             Spedizione gratuita per ordini superiori a 39 euro
           </p>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
             {[
-              {icon: <Award size={26} />, title: '1# per vendita semi online', desc: 'Semi selezionati e di qualit\u00e0 direttamente a casa tua.'},
-              {icon: <Sprout size={26} />, title: 'Germinabilit\u00e0 top', desc: 'Variet\u00e0 testate con alte percentuali di successo.'},
-              {icon: <Truck size={26} />, title: 'Spedizione veloce', desc: 'Consegna rapida in pochi giorni lavorativi.'},
-              {icon: <ShieldCheck size={26} />, title: 'Semi certificati', desc: 'Qualit\u00e0 controllata e variet\u00e0 garantite.'},
+              {icon: <Award size={22} />, title: '1# per vendita semi online', desc: 'Semi selezionati e di qualit\u00e0 direttamente a casa tua.'},
+              {icon: <Sprout size={22} />, title: 'Germinabilit\u00e0 top', desc: 'Variet\u00e0 testate con alte percentuali di successo.'},
+              {icon: <Truck size={22} />, title: 'Spedizione veloce', desc: 'Consegna rapida in pochi giorni lavorativi.'},
+              {icon: <ShieldCheck size={22} />, title: 'Semi certificati', desc: 'Qualit\u00e0 controllata e variet\u00e0 garantite.'},
             ].map((feature) => (
               <article
                 key={feature.title}
-                className="rounded-[32px] border border-gray-100 bg-white p-6 lg:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#78c13b1a]"
+                className="rounded-2xl lg:rounded-[32px] border border-gray-100 bg-white p-4 lg:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#78c13b1a]"
               >
-                <div className="w-12 h-12 lg:w-16 lg:h-16 inline-flex rounded-2xl bg-[#78c13b1a] text-[#78c13b] p-3 group-hover:bg-[#78c13b] group-hover:text-white transition-all duration-500">
+                <div className="w-10 h-10 lg:w-16 lg:h-16 inline-flex rounded-xl lg:rounded-2xl bg-[#78c13b1a] text-[#78c13b] p-2.5 lg:p-3 group-hover:bg-[#78c13b] group-hover:text-white transition-all duration-500">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-2 lg:mb-3">{feature.title}</h3>
-                <p className="mt-2 text-sm lg:text-base font-medium text-gray-500 leading-relaxed">{feature.desc}</p>
+                <h3 className="text-sm lg:text-xl font-bold text-gray-800 mt-3 lg:mt-4 lg:mb-3">{feature.title}</h3>
+                <p className="text-xs lg:text-base font-medium text-gray-500 leading-relaxed mt-1 lg:mt-2 hidden lg:block">{feature.desc}</p>
               </article>
             ))}
           </div>
@@ -130,9 +130,9 @@ export default function Home({loaderData}: Route.ComponentProps) {
             Vedi tutto il catalogo
           </Link>
         </div>
-        <div className="flex lg:hidden overflow-x-auto space-x-4 pb-4 snap-x">
+        <div className="flex lg:hidden overflow-x-auto space-x-3 pb-4 snap-x">
           {products.map((product: any) => (
-            <div key={product.id} className="min-w-[75vw] snap-start">
+            <div key={product.id} className="min-w-[68vw] snap-start">
               <ProductCard
                 product={{
                   id: product.id,
@@ -170,7 +170,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
       </section>
 
       <section className="px-4 py-8 lg:py-14">
-        <div className="mx-auto max-w-7xl rounded-[56px] bg-[#2d4a13] p-8 lg:p-20 relative overflow-hidden">
+        <div className="mx-auto max-w-7xl rounded-3xl lg:rounded-[56px] bg-[#2d4a13] p-6 lg:p-20 relative overflow-hidden">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#78c13b] opacity-20 blur-[150px] rounded-full animate-pulse" />
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#78c13b] opacity-20 blur-[150px] rounded-full" />
           <span className="inline-block rounded-full bg-[#78c13b] px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.3em] text-white mb-6 lg:mb-8">

@@ -1,5 +1,7 @@
-import {CartForm, useOptimisticCart} from '@shopify/hydrogen';
-import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {useState, useEffect} from 'react';
+import {useFetcher} from 'react-router';
+import {CartForm} from '@shopify/hydrogen';
+import {Check, ShoppingCart} from 'lucide-react';
 
 interface MobileStickyProps {
   variantId: string;
@@ -9,6 +11,17 @@ interface MobileStickyProps {
 }
 
 export default function MobileStickyAddToCart({variantId, price, currencyCode, enabled}: MobileStickyProps) {
+  const fetcher = useFetcher();
+  const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && added === false && fetcher.data !== undefined) {
+      setAdded(true);
+      const t = setTimeout(() => setAdded(false), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [fetcher.state]);
+
   if (!enabled || !variantId) return null;
 
   return (
@@ -21,30 +34,32 @@ export default function MobileStickyAddToCart({variantId, price, currencyCode, e
           </p>
         </div>
         <div className="flex items-center space-x-3">
-          <CartForm
-            route="/cart"
-            action={CartForm.ACTIONS.LinesAdd}
-            inputs={{lines: [{merchandiseId: variantId, quantity: 1}]}}
-          >
+          <fetcher.Form method="post" action="/cart">
+            <input type="hidden" name="cartFormInput" value={JSON.stringify({
+              action: CartForm.ACTIONS.LinesAdd,
+              inputs: {lines: [{merchandiseId: variantId, quantity: 1}]},
+            })} />
             <button
               type="submit"
-              className="bg-[#78c13b] text-white font-black py-3 px-8 rounded-xl text-sm hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 flex items-center space-x-2"
+              disabled={fetcher.state !== 'idle'}
+              className={`font-black py-3 px-8 rounded-xl text-sm transition-all flex items-center space-x-2 shadow-lg ${
+                added
+                  ? 'bg-green-600 text-white scale-105'
+                  : 'bg-[#78c13b] text-white hover:bg-[#68a632] shadow-[#78c13b]/20'
+              }`}
             >
-              <ShoppingCartIcon />
-              <span>Aggiungi</span>
+              {fetcher.state !== 'idle' ? (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : added ? (
+                <Check size={18} className="animate-bounce" />
+              ) : (
+                <ShoppingCart size={18} />
+              )}
+              <span>{added ? 'Aggiunto!' : 'Aggiungi'}</span>
             </button>
-          </CartForm>
+          </fetcher.Form>
         </div>
       </div>
     </div>
-  );
-}
-
-function ShoppingCartIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
-      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-    </svg>
   );
 }

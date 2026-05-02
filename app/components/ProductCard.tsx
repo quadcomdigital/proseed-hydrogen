@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
 import {Link, useFetcher} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
-import {Heart, ShoppingCart} from 'lucide-react';
+import {Heart, ShoppingCart, Check} from 'lucide-react';
 
 interface ProductCardData {
   id: string;
@@ -34,6 +34,7 @@ function toggleWishlistId(id: string): boolean {
 
 export default function ProductCard({product}: {product: ProductCardData}) {
   const [isSaved, setSaved] = useState(false);
+  const [added, setAdded] = useState(false);
   const fetcher = useFetcher();
   const isAdding = fetcher.state !== 'idle';
   const canAdd = Boolean(product.variantId && product.availableForSale !== false);
@@ -41,6 +42,14 @@ export default function ProductCard({product}: {product: ProductCardData}) {
   useEffect(() => {
     setSaved(getWishlistIds().includes(product.handle));
   }, [product.handle]);
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && isAdding === false && added === false && fetcher.data !== undefined) {
+      setAdded(true);
+      const t = setTimeout(() => setAdded(false), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [fetcher.state]);
 
   const handleWishlist = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -107,10 +116,20 @@ export default function ProductCard({product}: {product: ProductCardData}) {
                 <button
                   type="submit"
                   disabled={isAdding}
-                  className="py-2.5 bg-[#78c13b] text-white rounded-xl text-xs font-bold hover:bg-[#68a632] transition-all flex items-center justify-center space-x-1.5 disabled:opacity-60"
+                  className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
+                    added
+                      ? 'bg-green-600 text-white scale-105'
+                      : 'bg-[#78c13b] text-white hover:bg-[#68a632]'
+                  } disabled:opacity-60`}
                 >
-                  <ShoppingCart size={14} />
-                  <span>{isAdding ? '...' : 'Carrello'}</span>
+                  {isAdding ? (
+                    <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : added ? (
+                    <Check size={14} className="animate-bounce" />
+                  ) : (
+                    <ShoppingCart size={14} />
+                  )}
+                  <span>{added ? 'Aggiunto!' : 'Carrello'}</span>
                 </button>
               </fetcher.Form>
             ) : (

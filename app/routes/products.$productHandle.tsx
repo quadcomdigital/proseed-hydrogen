@@ -1,7 +1,7 @@
-import {Suspense, useMemo, useState} from 'react';
-import {Await, Link, useNavigation} from 'react-router';
+import {Suspense, useMemo, useState, useEffect} from 'react';
+import {Await, Link, useNavigation, useFetcher} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
-import {Leaf} from 'lucide-react';
+import {Check, Leaf} from 'lucide-react';
 import type {Route} from './+types/products.$productHandle';
 import ProductGallery from '~/components/ProductGallery';
 import ProductTabs from '~/components/ProductTabs';
@@ -146,6 +146,16 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
     variants[0]?.selectedOptions?.forEach((o: any) => { initial[o.name] = o.value; });
     return initial;
   });
+  const addFetcher = useFetcher();
+  const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    if (addFetcher.state === 'idle' && added === false && addFetcher.data !== undefined) {
+      setAdded(true);
+      const t = setTimeout(() => setAdded(false), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [addFetcher.state]);
 
   const currentVariant = useMemo(() => {
     if (!options.length || !variants.length) return variants[0];
@@ -268,19 +278,28 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
           )}
 
           {currentVariant && (
-            <CartForm
-              route="/cart"
-              action={CartForm.ACTIONS.LinesAdd}
-              inputs={{lines: [{merchandiseId: currentVariant.id, quantity: 1}]}}
-            >
+            <addFetcher.Form method="post" action="/cart">
+              <input type="hidden" name="cartFormInput" value={JSON.stringify({
+                action: CartForm.ACTIONS.LinesAdd,
+                inputs: {lines: [{merchandiseId: currentVariant.id, quantity: 1}]},
+              })} />
               <button
                 type="submit"
-                disabled={!currentVariant.availableForSale}
-                className="w-full mt-6 bg-[#78c13b] text-white font-black py-4 rounded-xl hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 text-sm uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!currentVariant.availableForSale || addFetcher.state !== 'idle'}
+                className={`w-full mt-6 font-black py-4 rounded-xl transition-all text-sm uppercase tracking-widest flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  added
+                    ? 'bg-green-600 text-white scale-[1.02] shadow-lg'
+                    : 'bg-[#78c13b] text-white hover:bg-[#68a632] shadow-lg shadow-[#78c13b]/20'
+                }`}
               >
-                {currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}
+                {addFetcher.state !== 'idle' ? (
+                  <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : added ? (
+                  <Check size={20} className="animate-bounce" />
+                ) : null}
+                <span>{added ? 'Aggiunto!' : currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}</span>
               </button>
-            </CartForm>
+            </addFetcher.Form>
           )}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">

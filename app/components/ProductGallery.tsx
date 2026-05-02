@@ -58,8 +58,8 @@ export default function ProductGallery({images, title, hasDiscount}: ProductGall
             </span>
           )}
           <Image
-            data={images[0]}
-            alt={images[0].altText || title}
+            data={images[currentIndex]}
+            alt={images[currentIndex].altText || title}
             className="h-full w-full object-cover"
             sizes="(max-width: 1024px) 100vw, 50vw"
             loading="eager"

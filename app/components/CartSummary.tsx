@@ -29,7 +29,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         </button>
         {checkoutUrl && (
           <a href={checkoutUrl} target="_self" className="px-4 py-3 rounded-xl font-bold text-white bg-[#78c13b] hover:bg-[#2d4a13] transition-colors text-center flex items-center justify-center space-x-2">
-            <span>Checkout</span>
+            <span>Paga ora</span>
             <ArrowRight size={18} />
           </a>
         )}

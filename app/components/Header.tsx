@@ -10,7 +10,7 @@ import {useAside} from '~/components/Aside';
 import {SearchBar} from '~/components/SearchBar';
 import {
   Sprout, Leaf, Flower2, Sun, Hammer, Package, BookOpen,
-  Crown, User, Heart, ShoppingCart, ChevronDown, Menu, X, Truck,
+  Crown, User, Heart, ShoppingCart, ChevronDown, Menu, Truck,
   Percent,
 } from 'lucide-react';
 
@@ -41,7 +41,6 @@ export function Header({
   const [isScrolled, setIsScrolled] = useState(false);
   const [showPromoA, setShowPromoA] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -78,27 +77,28 @@ export function Header({
   );
 
   const {toggleCart} = useCartToggle();
+  const {open: openAside} = useAside();
 
   return (
     <header className="sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-sm">
       <div
-        className={`hidden lg:block bg-[#78c13b] text-white py-2 text-[11px] font-bold text-center transition-all duration-300 ${
+        className={`hidden lg:block bg-[#78c13b] text-white py-2 text-[11px] font-bold text-center transition-all duration-300 overflow-hidden ${
           isScrolled ? 'h-0 py-0 opacity-0' : 'h-auto opacity-100'
         }`}
       >
-        <span className="mx-auto text-[11px] font-black uppercase tracking-[0.2em]">
-          {showPromoA ? (
-            <span className="transition-all duration-500">
-              <Truck size={14} className="inline animate-pulse" /> {header.shop?.promoA?.value || 'Spedizione GRATUITA sopra i 39€'}
-            </span>
-          ) : (
-            <span className="transition-all duration-500">
-              {header.shop?.promoB?.value?.includes('SEED CLUB')
-                ? <>{header.shop.promoB.value.split('SEED CLUB')[0]}<span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>{header.shop.promoB.value.split('SEED CLUB')[1]}</>
-                : (header.shop?.promoB?.value || 'Entra nel SEED CLUB, ricevi i tuoi semi in abbonamento')}
-            </span>
-          )}
-        </span>
+        <div className="relative h-[22px] flex items-center justify-center">
+          <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showPromoA ? 'opacity-100' : 'opacity-0'}`}>
+            <Truck size={14} className="inline animate-pulse mr-1" /> {header.shop?.promoA?.value || 'Spedizione GRATUITA sopra i 39€'}
+          </span>
+          <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showPromoA ? 'opacity-0' : 'opacity-100'}`}>
+            {(() => {
+              const txt = header.shop?.promoB?.value || 'Entra nel SEED CLUB, ricevi i tuoi semi in abbonamento';
+              const idx = txt.indexOf('SEED CLUB');
+              if (idx >= 0) return <>{txt.slice(0, idx)}<span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>{txt.slice(idx + 9)}</>;
+              return txt;
+            })()}
+          </span>
+        </div>
       </div>
 
       <div
@@ -151,7 +151,7 @@ export function Header({
             </Suspense>
 
             <button
-              onClick={() => setIsMobileOpen(true)}
+              onClick={() => openAside('mobile')}
               className="lg:hidden p-2 text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
               aria-label="Apri menu"
             >
@@ -159,7 +159,7 @@ export function Header({
             </button>
 
             <button
-              onClick={() => setIsMobileOpen(true)}
+              onClick={() => openAside('mobile')}
               className="hidden lg:flex items-center justify-center px-4 py-2 border-2 border-gray-900 text-gray-900 rounded-xl hover:bg-gray-900 hover:text-white transition-all font-bold text-sm"
             >
               <span className="mr-2">Menu</span>
@@ -237,48 +237,6 @@ export function Header({
           </div>
         </div>
       </div>
-
-      {isMobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300"
-          onClick={() => setIsMobileOpen(false)}
-        >
-          <div
-            className="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 transition-transform duration-300 ease-out translate-x-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center mb-8">
-              <span className="font-black text-xl text-[#2d4a13]">Menu</span>
-              <button onClick={() => setIsMobileOpen(false)} aria-label="Chiudi menu">
-                <X size={24} />
-              </button>
-            </div>
-            <nav className="space-y-4">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.id}
-                  to={item.url}
-                  onClick={() => setIsMobileOpen(false)}
-                  className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl transition-colors"
-                >
-                  <span className="text-[#78c13b]">{item.icon}</span>
-                  <span className="font-bold text-gray-700">{item.title}</span>
-                </NavLink>
-              ))}
-              <hr className="border-gray-100" />
-              <NavLink
-                to="/account"
-                onClick={() => setIsMobileOpen(false)}
-                className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl transition-colors"
-              >
-                <User size={18} className="text-[#78c13b]" />
-                <span className="font-bold text-gray-700">Account</span>
-              </NavLink>
-
-            </nav>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

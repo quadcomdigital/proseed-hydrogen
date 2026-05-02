@@ -153,7 +153,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 1 && (
-            <div className="flex-1 flex flex-col ">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Quando vorresti seminare?</h2>
                 <p className="text-gray-500">Scegliere il mese giusto &egrave; la chiave di un orto sano</p>
@@ -173,7 +173,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 2 && (
-            <div className="flex-1 flex flex-col ">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Dove vorresti seminare?</h2>
                 <p className="text-gray-500">Ogni spazio ha le sue caratteristiche e le sue regole</p>
@@ -197,7 +197,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 3 && (
-            <div className="flex-1 flex flex-col ">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Coltivazione precedente</h2>
                 <p className="text-gray-500">Per rispettare la rotazione delle colture</p>

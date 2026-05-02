@@ -120,13 +120,19 @@ export function Header({
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 lg:gap-8">
           <NavLink prefetch="intent" to="/" end className="shrink-0">
-            <img
-              src="https://proseed.it/wp-content/uploads/2021/08/proseed_logo.png"
-              alt="Proseed"
-              className={`transition-all duration-300 w-auto ${
-                isScrolled ? 'h-8' : 'h-10 lg:h-12'
-              }`}
-            />
+            {header.shop.brand?.logo?.image?.url ? (
+              <img
+                src={header.shop.brand.logo.image.url}
+                alt={header.shop.name}
+                className={`transition-all duration-300 w-auto ${isScrolled ? 'h-8' : 'h-10 lg:h-12'}`}
+              />
+            ) : (
+              <img
+                src="https://proseed.it/wp-content/uploads/2021/08/proseed_logo.png"
+                alt="Proseed"
+                className={`transition-all duration-300 w-auto ${isScrolled ? 'h-8' : 'h-10 lg:h-12'}`}
+              />
+            )}
           </NavLink>
 
           <SearchBar />

@@ -36,11 +36,19 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-8 pb-12 lg:pb-16 border-b border-gray-100">
                 <div className="lg:col-span-2 space-y-8 mb-8 lg:mb-0">
                   <NavLink prefetch="intent" to="/" end>
-                    <img
-                      src="https://proseed.it/wp-content/uploads/2021/08/proseed_logo.png"
-                      alt="Proseed"
-                      className="h-10 lg:h-12 w-auto"
-                    />
+                    {header.shop.brand?.logo?.image?.url ? (
+                      <img
+                        src={header.shop.brand.logo.image.url}
+                        alt={header.shop.name}
+                        className="h-10 lg:h-12 w-auto"
+                      />
+                    ) : (
+                      <img
+                        src="https://proseed.it/wp-content/uploads/2021/08/proseed_logo.png"
+                        alt="Proseed"
+                        className="h-10 lg:h-12 w-auto"
+                      />
+                    )}
                   </NavLink>
                   <div className="space-y-4">
                     <p className="text-gray-500 text-sm leading-relaxed max-w-sm font-medium">
@@ -115,13 +123,10 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
               </div>
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
-                <div className="flex flex-wrap items-center gap-6 justify-center lg:justify-start">
-                  <img
-                    src="/payment.png"
-                    alt="Metodi di pagamento sicuri"
-                    className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity"
-                    onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
-                  />
+                <div className="flex flex-wrap items-center gap-4 justify-center lg:justify-start">
+                  {['Visa', 'Mastercard', 'PayPal', 'Apple Pay', 'Google Pay'].map((m) => (
+                    <span key={m} className="px-3 py-1.5 bg-gray-50 rounded-lg text-[10px] font-black text-gray-400 uppercase tracking-wider">{m}</span>
+                  ))}
                 </div>
                 <div className="flex items-center justify-center">
                   <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">PROSEED SRL</div>

@@ -10,7 +10,7 @@ export interface HeroSlide {
 }
 
 const FALLBACK_SLIDES: HeroSlide[] = [
-  {title: 'Sementi Bio & Naturali', subtitle: 'Il piacere della natura direttamente a casa tua.', img: '/images/hero-bio.jpg', tag: '100% ORGANICO'},
+  {title: 'Sementi Bio & Naturali', subtitle: 'Il piacere della natura direttamente a casa tua.', img: 'https://cdn.shopify.com/s/files/1/0993/8583/5904/files/photo-1523348837708-15d4a09cfac2.avif', tag: '100% ORGANICO'},
   {title: 'Semi Per Orto, Giardino E Balcone', subtitle: 'Certificati ad alta germinabilit\u00e0 per i tuoi successi.', img: '/images/hero-stagione.jpg', tag: 'NUOVA STAGIONE'},
 ];
 

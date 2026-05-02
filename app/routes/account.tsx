@@ -53,7 +53,7 @@ export default function AccountLayout({loaderData}: Route.ComponentProps) {
   const location = useLocation();
 
   if (!isLoggedIn) {
-    if (location.pathname === '/account/login' || location.pathname === '/account/logout') {
+    if (location.pathname === '/account/login' || location.pathname === '/account/logout' || location.pathname === '/account/register') {
       return <Outlet />;
     }
     return (

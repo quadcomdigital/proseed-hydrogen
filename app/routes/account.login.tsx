@@ -34,7 +34,7 @@ export async function action({request, context}: Route.ActionArgs) {
     return {errors: [{message: 'Compila tutti i campi'}]};
   }
 
-  const data = await context.storefront.mutate(CUSTOMER_ACCESS_TOKEN_CREATE, {
+  const data: any = await context.storefront.mutate(CUSTOMER_ACCESS_TOKEN_CREATE, {
     variables: {input: {email, password}},
   });
 

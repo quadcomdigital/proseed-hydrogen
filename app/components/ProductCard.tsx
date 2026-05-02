@@ -10,6 +10,7 @@ interface ProductCardData {
   price: number;
   currencyCode: string;
   image?: {url: string; altText?: string};
+  secondImage?: {url: string; altText?: string};
   badge?: string;
   variantId?: string;
   availableForSale?: boolean;
@@ -57,12 +58,22 @@ export default function ProductCard({product}: {product: ProductCardData}) {
               {product.badge}
             </span>
           )}
-          <img
-            src={product.image?.url || '/images/placeholder.svg'}
-            alt={product.image?.altText || product.title}
-            className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            loading="lazy"
-          />
+          <div className="relative h-full w-full">
+            <img
+              src={product.image?.url || '/images/placeholder.svg'}
+              alt={product.image?.altText || product.title}
+              className={`h-full w-full object-cover transition-all duration-700 ease-out ${product.secondImage ? 'group-hover:opacity-0' : ''}`}
+              loading="lazy"
+            />
+            {product.secondImage?.url && (
+              <img
+                src={product.secondImage.url}
+                alt={product.secondImage.altText || product.title}
+                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:opacity-100"
+                loading="lazy"
+              />
+            )}
+          </div>
         </Link>
 
         <div className="hidden lg:flex absolute inset-0 bg-[#2d4a13]/20 opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px] flex-col items-center justify-center p-6 translate-y-10 group-hover:translate-y-0">

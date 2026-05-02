@@ -38,6 +38,12 @@ const HOMEPAGE_QUERY = `#graphql
           url
           altText
         }
+        images(first: 2) {
+          nodes {
+            url
+            altText
+          }
+        }
         priceRange {
           minVariantPrice {
             amount
@@ -137,6 +143,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                   image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
                   variantId: product.variants?.nodes?.[0]?.id,
                   availableForSale: product.variants?.nodes?.[0]?.availableForSale,
+                  secondImage: product.images?.nodes?.[1],
                 }}
               />
             </div>
@@ -155,6 +162,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                 image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
                 variantId: product.variants?.nodes?.[0]?.id,
                 availableForSale: product.variants?.nodes?.[0]?.availableForSale,
+                secondImage: product.images?.nodes?.[1],
               }}
             />
           ))}

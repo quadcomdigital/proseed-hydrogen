@@ -21,6 +21,12 @@ const COLLECTION_QUERY = `#graphql
             url
             altText
           }
+          images(first: 2) {
+            nodes {
+              url
+              altText
+            }
+          }
           priceRange {
             minVariantPrice {
               amount

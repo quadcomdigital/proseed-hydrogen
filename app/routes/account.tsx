@@ -1,6 +1,6 @@
 import {Link, Outlet, useLocation} from 'react-router';
 import {AppSession} from '~/lib/session';
-import {LayoutDashboard, ShoppingBag, LogOut, ChevronRight, User} from 'lucide-react';
+import {LayoutDashboard, ShoppingBag, MapPin, LogOut, ChevronRight, User} from 'lucide-react';
 import type {Route} from './+types/account';
 
 const CUSTOMER_QUERY = `#graphql
@@ -20,6 +20,10 @@ const CUSTOMER_QUERY = `#graphql
           fulfillmentStatus
         }
       }
+      defaultAddress { id address1 address2 city province zip country phone }
+      addresses(first: 10) {
+        nodes { id address1 address2 city province zip country phone }
+      }
     }
   }
 `;
@@ -29,22 +33,23 @@ export async function loader({context}: Route.LoaderArgs) {
   const customerAccessToken = session.get('customerAccessToken');
 
   if (!customerAccessToken) {
-    return {isLoggedIn: false, customer: null};
+    return {isLoggedIn: false, customer: null, addresses: []};
   }
 
   try {
     const data: any = await context.storefront.query(CUSTOMER_QUERY, {
       variables: {customerAccessToken},
     });
-    return {isLoggedIn: true, customer: data?.customer};
+    return {isLoggedIn: true, customer: data?.customer, addresses: data?.customer?.addresses?.nodes || []};
   } catch {
-    return {isLoggedIn: false, customer: null};
+    return {isLoggedIn: false, customer: null, addresses: []};
   }
 }
 
 const navItems = [
   {label: 'Dashboard', href: '/account', icon: <LayoutDashboard size={18} />},
   {label: 'Ordini', href: '/account/orders', icon: <ShoppingBag size={18} />},
+  {label: 'Indirizzi', href: '/account/addresses', icon: <MapPin size={18} />},
   {label: 'Logout', href: '/account/logout', icon: <LogOut size={18} />},
 ];
 
@@ -53,7 +58,7 @@ export default function AccountLayout({loaderData}: Route.ComponentProps) {
   const location = useLocation();
 
   if (!isLoggedIn) {
-    if (location.pathname === '/account/login' || location.pathname === '/account/logout' || location.pathname === '/account/register') {
+    if (location.pathname === '/account/login' || location.pathname === '/account/logout' || location.pathname === '/account/register' || location.pathname === '/account/addresses') {
       return <Outlet />;
     }
     return (

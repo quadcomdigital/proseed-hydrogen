@@ -352,6 +352,105 @@ export type HomePageQuery = {
   };
 };
 
+export type CustomerUpdateMutationVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+  customer: StorefrontAPI.CustomerUpdateInput;
+}>;
+
+export type CustomerUpdateMutation = {
+  customerUpdate?: StorefrontAPI.Maybe<{
+    customer?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.Customer, 'id' | 'firstName' | 'lastName' | 'email'>
+    >;
+    customerUserErrors: Array<
+      Pick<StorefrontAPI.CustomerUserError, 'code' | 'field' | 'message'>
+    >;
+  }>;
+};
+
+export type CustomerAddressCreateMutationVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+  address: StorefrontAPI.MailingAddressInput;
+}>;
+
+export type CustomerAddressCreateMutation = {
+  customerAddressCreate?: StorefrontAPI.Maybe<{
+    customerAddress?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.MailingAddress, 'id'>
+    >;
+    customerUserErrors: Array<
+      Pick<StorefrontAPI.CustomerUserError, 'code' | 'field' | 'message'>
+    >;
+  }>;
+};
+
+export type CustomerAddressUpdateMutationVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+  id: StorefrontAPI.Scalars['ID']['input'];
+  address: StorefrontAPI.MailingAddressInput;
+}>;
+
+export type CustomerAddressUpdateMutation = {
+  customerAddressUpdate?: StorefrontAPI.Maybe<{
+    customerAddress?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.MailingAddress, 'id'>
+    >;
+    customerUserErrors: Array<
+      Pick<StorefrontAPI.CustomerUserError, 'code' | 'field' | 'message'>
+    >;
+  }>;
+};
+
+export type CustomerAddressDeleteMutationVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+  id: StorefrontAPI.Scalars['ID']['input'];
+}>;
+
+export type CustomerAddressDeleteMutation = {
+  customerAddressDelete?: StorefrontAPI.Maybe<{
+    customerUserErrors: Array<
+      Pick<StorefrontAPI.CustomerUserError, 'code' | 'field' | 'message'>
+    >;
+  }>;
+};
+
+export type CustomerAddressesQueryVariables = StorefrontAPI.Exact<{
+  customerAccessToken: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type CustomerAddressesQuery = {
+  customer?: StorefrontAPI.Maybe<{
+    defaultAddress?: StorefrontAPI.Maybe<
+      Pick<
+        StorefrontAPI.MailingAddress,
+        | 'id'
+        | 'address1'
+        | 'address2'
+        | 'city'
+        | 'province'
+        | 'zip'
+        | 'country'
+        | 'phone'
+      >
+    >;
+    addresses: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.MailingAddress,
+          | 'id'
+          | 'address1'
+          | 'address2'
+          | 'city'
+          | 'province'
+          | 'zip'
+          | 'country'
+          | 'phone'
+        >
+      >;
+    };
+  }>;
+};
+
 export type CustomerAccessTokenCreateMutationVariables = StorefrontAPI.Exact<{
   input: StorefrontAPI.CustomerAccessTokenCreateInput;
 }>;
@@ -425,7 +524,22 @@ export type CustomerOrdersQuery = {
         Pick<
           StorefrontAPI.Order,
           'id' | 'name' | 'processedAt' | 'fulfillmentStatus'
-        > & {totalPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>}
+        > & {
+          totalPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          lineItems: {
+            nodes: Array<
+              Pick<StorefrontAPI.OrderLineItem, 'title' | 'quantity'> & {
+                originalTotalPrice: Pick<
+                  StorefrontAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+                variant?: StorefrontAPI.Maybe<{
+                  image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+                }>;
+              }
+            >;
+          };
+        }
       >;
     };
   }>;
@@ -449,6 +563,34 @@ export type CustomerQuery = {
           > & {
             totalPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
           }
+        >;
+      };
+      defaultAddress?: StorefrontAPI.Maybe<
+        Pick<
+          StorefrontAPI.MailingAddress,
+          | 'id'
+          | 'address1'
+          | 'address2'
+          | 'city'
+          | 'province'
+          | 'zip'
+          | 'country'
+          | 'phone'
+        >
+      >;
+      addresses: {
+        nodes: Array<
+          Pick<
+            StorefrontAPI.MailingAddress,
+            | 'id'
+            | 'address1'
+            | 'address2'
+            | 'city'
+            | 'province'
+            | 'zip'
+            | 'country'
+            | 'phone'
+          >
         >;
       };
     }
@@ -774,15 +916,19 @@ interface GeneratedQueryTypes {
     return: HomePageQuery;
     variables: HomePageQueryVariables;
   };
+  '#graphql\n    query CustomerAddresses($customerAccessToken: String!) {\n      customer(customerAccessToken: $customerAccessToken) {\n        defaultAddress { id address1 address2 city province zip country phone }\n        addresses(first: 10) {\n          nodes { id address1 address2 city province zip country phone }\n        }\n      }\n    }\n  ': {
+    return: CustomerAddressesQuery;
+    variables: CustomerAddressesQueryVariables;
+  };
   '#graphql\n  query CustomerOrdersDetail($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      orders(first: 50) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n          lineItems(first: 20) {\n            nodes {\n              title\n              quantity\n              originalTotalPrice { amount currencyCode }\n              variant { image { url } }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: CustomerOrdersDetailQuery;
     variables: CustomerOrdersDetailQueryVariables;
   };
-  '#graphql\n  query CustomerOrders($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      orders(first: 50) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query CustomerOrders($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      orders(first: 50) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n          lineItems(first: 10) {\n            nodes {\n              title\n              quantity\n              originalTotalPrice { amount currencyCode }\n              variant { image { url } }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };
-  '#graphql\n  query Customer($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      id\n      firstName\n      lastName\n      email\n      displayName\n      orders(first: 5) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query Customer($customerAccessToken: String!) {\n    customer(customerAccessToken: $customerAccessToken) {\n      id\n      firstName\n      lastName\n      email\n      displayName\n      orders(first: 5) {\n        nodes {\n          id\n          name\n          processedAt\n          totalPrice { amount currencyCode }\n          fulfillmentStatus\n        }\n      }\n      defaultAddress { id address1 address2 city province zip country phone }\n      addresses(first: 10) {\n        nodes { id address1 address2 city province zip country phone }\n      }\n    }\n  }\n': {
     return: CustomerQuery;
     variables: CustomerQueryVariables;
   };
@@ -833,6 +979,22 @@ interface GeneratedQueryTypes {
 }
 
 interface GeneratedMutationTypes {
+  '#graphql\n  mutation CustomerUpdate($customerAccessToken: String!, $customer: CustomerUpdateInput!) {\n    customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {\n      customer { id firstName lastName email }\n      customerUserErrors { code field message }\n    }\n  }\n': {
+    return: CustomerUpdateMutation;
+    variables: CustomerUpdateMutationVariables;
+  };
+  '#graphql\n  mutation CustomerAddressCreate($customerAccessToken: String!, $address: MailingAddressInput!) {\n    customerAddressCreate(customerAccessToken: $customerAccessToken, address: $address) {\n      customerAddress { id }\n      customerUserErrors { code field message }\n    }\n  }\n': {
+    return: CustomerAddressCreateMutation;
+    variables: CustomerAddressCreateMutationVariables;
+  };
+  '#graphql\n  mutation CustomerAddressUpdate($customerAccessToken: String!, $id: ID!, $address: MailingAddressInput!) {\n    customerAddressUpdate(customerAccessToken: $customerAccessToken, id: $id, address: $address) {\n      customerAddress { id }\n      customerUserErrors { code field message }\n    }\n  }\n': {
+    return: CustomerAddressUpdateMutation;
+    variables: CustomerAddressUpdateMutationVariables;
+  };
+  '#graphql\n  mutation CustomerAddressDelete($customerAccessToken: String!, $id: ID!) {\n    customerAddressDelete(customerAccessToken: $customerAccessToken, id: $id) {\n      customerUserErrors { code field message }\n    }\n  }\n': {
+    return: CustomerAddressDeleteMutation;
+    variables: CustomerAddressDeleteMutationVariables;
+  };
   '#graphql\n  mutation CustomerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {\n    customerAccessTokenCreate(input: $input) {\n      customerAccessToken { accessToken expiresAt }\n      customerUserErrors { code field message }\n    }\n  }\n': {
     return: CustomerAccessTokenCreateMutation;
     variables: CustomerAccessTokenCreateMutationVariables;

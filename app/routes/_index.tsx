@@ -70,13 +70,13 @@ export default function Home({loaderData}: Route.ComponentProps) {
             ].map((feature) => (
               <article
                 key={feature.title}
-                className="rounded-[28px] border border-gray-100 bg-white p-7 shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_40px_80px_rgba(120,193,59,0.15)]"
+                className="rounded-[32px] border border-gray-100 bg-white p-6 lg:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#78c13b1a]"
               >
-                <div className="mb-5 inline-flex rounded-2xl bg-gray-50 p-3 text-gray-600 group-hover:bg-[#78c13b] group-hover:text-white transition-colors">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 inline-flex rounded-2xl bg-[#78c13b1a] text-[#78c13b] p-3 group-hover:bg-[#78c13b] group-hover:text-white transition-all duration-500">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-black text-[#2d4a13]">{feature.title}</h3>
-                <p className="mt-2 text-sm font-medium text-gray-500">{feature.desc}</p>
+                <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-2 lg:mb-3">{feature.title}</h3>
+                <p className="mt-2 text-sm lg:text-base font-medium text-gray-500 leading-relaxed">{feature.desc}</p>
               </article>
             ))}
           </div>
@@ -137,30 +137,31 @@ export default function Home({loaderData}: Route.ComponentProps) {
 
       <section className="px-4 py-8 lg:py-14">
         <div className="mx-auto max-w-7xl rounded-[56px] bg-[#2d4a13] p-8 lg:p-20 relative overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#78c13b] opacity-20 blur-[150px] animate-pulse" />
-          <span className="inline-block rounded-full bg-[#78c13b] px-4 py-1 text-[10px] font-black uppercase tracking-[0.3em] text-white">
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#78c13b] opacity-20 blur-[150px] rounded-full animate-pulse" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#78c13b] opacity-20 blur-[150px] rounded-full" />
+          <span className="inline-block rounded-full bg-[#78c13b] px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.3em] text-white mb-6 lg:mb-8">
             Innovation Hub
           </span>
           <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-              <h2 className="text-4xl font-black leading-tight text-white lg:text-6xl">
+              <h2 className="text-4xl lg:text-7xl font-black leading-[1.1] tracking-tighter italic text-white">
                 Calcolatore <span className="text-[#78c13b]">semina</span>
               </h2>
-              <p className="mt-5 text-base font-medium leading-relaxed text-white/75 lg:text-lg">
+              <p className="mt-5 text-base lg:text-lg font-medium leading-relaxed text-white/60">
                 Pianifica il tuo orto con dati reali e consigli personalizzati per stagione.
               </p>
               <Link
                 to="/smart-garden"
-                className="mt-8 inline-flex rounded-2xl bg-[#78c13b] px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-[#68a632] hover:scale-[1.02] active:scale-95 shadow-lg shadow-[#78c13b]/30"
+                className="mt-8 inline-flex rounded-2xl bg-[#78c13b] px-10 py-5 text-xs font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-white hover:text-[#78c13b] hover:scale-105 active:scale-95 shadow-2xl shadow-[#78c13b44]"
               >
                 Inizia ora gratis
               </Link>
             </div>
-            <div>
+            <div className="mt-12 lg:mt-0 relative">
               <img
                 src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?q=80&w=1600&auto=format&fit=crop"
                 alt="Smart Garden"
-                className="w-full rounded-3xl border border-white/15 object-cover shadow-2xl hover:rotate-1 hover:scale-105 transition-transform duration-700"
+                className="w-full rounded-3xl border-4 border-white/10 object-cover shadow-2xl hover:rotate-1 hover:scale-105 transition-all duration-1000"
               />
             </div>
           </div>

@@ -19,6 +19,13 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    imgSrc: [
+      'https://cdn.shopify.com',
+      'https://images.unsplash.com',
+    ],
+    connectSrc: [
+      `https://${context.env.PUBLIC_STORE_DOMAIN}`,
+    ],
   });
 
   const body = await renderToReadableStream(

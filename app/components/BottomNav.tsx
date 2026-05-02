@@ -8,7 +8,7 @@ export function BottomNav({cart}: {cart: Promise<CartApiQueryFragment | null>}) 
   const location = useLocation();
   const pathname = location.pathname;
 
-  if (pathname.startsWith('/prodotto/') || pathname === '/cart' || pathname === '/checkout') {
+  if (pathname.startsWith('/products/') || pathname === '/cart' || pathname === '/checkout') {
     return null;
   }
 

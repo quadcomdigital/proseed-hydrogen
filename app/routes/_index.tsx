@@ -64,7 +64,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to="/catalogo"
+                to="/collections"
                 className="rounded-2xl bg-lime-600 px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-lime-700"
               >
                 Vai al catalogo
@@ -106,14 +106,14 @@ export default function Home({loaderData}: Route.ComponentProps) {
           <h2 className="text-2xl font-black text-emerald-900 lg:text-4xl">
             I Nostri <span className="text-lime-700">Bestsellers</span>
           </h2>
-          <Link to="/catalogo" className="text-sm font-black uppercase tracking-[0.18em] text-lime-700">
+          <Link to="/collections" className="text-sm font-black uppercase tracking-[0.18em] text-lime-700">
             Vedi tutto
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product: any) => (
             <Link
-              to={`/prodotto/${product.handle}`}
+              to={`/products/${product.handle}`}
               key={product.id}
               className="group overflow-hidden rounded-[30px] border border-emerald-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition hover:-translate-y-1 hover:shadow-[0_40px_80px_rgba(132,204,22,0.2)]"
             >

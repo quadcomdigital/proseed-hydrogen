@@ -64,7 +64,7 @@ export default function CollectionPage({loaderData}: Route.ComponentProps) {
         {collection.products.nodes.map((product: any) => (
           <Link
             key={product.id}
-            to={`/prodotto/${product.handle}`}
+            to={`/products/${product.handle}`}
             className="group overflow-hidden rounded-3xl border border-emerald-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="aspect-[4/5] bg-emerald-50">

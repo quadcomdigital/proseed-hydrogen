@@ -318,7 +318,7 @@ export function HeaderMenu({
           <NavLink end onClick={close} prefetch="intent" style={activeLinkStyle} to="/">
             Home
           </NavLink>
-          <NavLink end onClick={close} prefetch="intent" style={activeLinkStyle} to="/catalogo">
+           <NavLink end onClick={close} prefetch="intent" style={activeLinkStyle} to="/collections">
             Catalogo
           </NavLink>
         </>

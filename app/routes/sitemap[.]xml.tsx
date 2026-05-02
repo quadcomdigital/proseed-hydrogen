@@ -22,7 +22,7 @@ export async function loader({request, context}: Route.LoaderArgs) {
     cache: context.storefront.CacheLong(),
   });
 
-  const staticUrls = ['/', '/catalogo', '/collections', '/search'];
+  const staticUrls = ['/', '/collections', '/search'];  
   const productUrls = data.products.nodes.map((node: any) => `/products/${node.handle}`);
   const collectionUrls = data.collections.nodes.map((node: any) => `/collections/${node.handle}`);
   const pageUrls = data.pages.nodes.map((node: any) => `/pages/${node.handle}`);

@@ -143,7 +143,7 @@ export function SearchBar() {
                 {results.map((product) => (
                   <Link
                     key={product.id}
-                    to={`/prodotto/${product.handle}`}
+                    to={`/products/${product.handle}`}
                     onClick={handleClose}
                     className="flex items-center space-x-4 p-2 active:bg-gray-50 rounded-xl transition-colors"
                   >
@@ -245,7 +245,7 @@ export function SearchBar() {
                 {results.map((product) => (
                   <Link
                     key={product.id}
-                    to={`/prodotto/${product.handle}`}
+                    to={`/products/${product.handle}`}
                     onClick={handleClose}
                     className="flex items-start space-x-4 p-3 hover:bg-gray-50 rounded-xl transition-colors group"
                   >

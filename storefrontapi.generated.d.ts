@@ -312,30 +312,6 @@ export type HomePageQuery = {
   };
 };
 
-export type CatalogQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  first: StorefrontAPI.Scalars['Int']['input'];
-}>;
-
-export type CatalogQuery = {
-  products: {
-    nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
-        featuredImage?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Image, 'url' | 'altText'>
-        >;
-        priceRange: {
-          minVariantPrice: Pick<
-            StorefrontAPI.MoneyV2,
-            'amount' | 'currencyCode'
-          >;
-        };
-      }
-    >;
-  };
-};
-
 export type CollectionByHandleQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -441,18 +417,6 @@ export type ProductByHandleQuery = {
   >;
 };
 
-export type CartLinesAddMutationVariables = StorefrontAPI.Exact<{
-  cartId: StorefrontAPI.Scalars['ID']['input'];
-  lines: Array<StorefrontAPI.CartLineInput> | StorefrontAPI.CartLineInput;
-}>;
-
-export type CartLinesAddMutation = {
-  cartLinesAdd?: StorefrontAPI.Maybe<{
-    cart?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Cart, 'id'>>;
-    userErrors: Array<Pick<StorefrontAPI.CartUserError, 'field' | 'message'>>;
-  }>;
-};
-
 export type SearchResultsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -502,10 +466,6 @@ interface GeneratedQueryTypes {
     return: HomePageQuery;
     variables: HomePageQueryVariables;
   };
-  '#graphql\n  query Catalog(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n  }\n': {
-    return: CatalogQuery;
-    variables: CatalogQueryVariables;
-  };
   '#graphql\n  query CollectionByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      title\n      description\n      products(first: $first) {\n        nodes {\n          id\n          handle\n          title\n          featuredImage {\n            url\n            altText\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: CollectionByHandleQuery;
     variables: CollectionByHandleQueryVariables;
@@ -536,12 +496,7 @@ interface GeneratedQueryTypes {
   };
 }
 
-interface GeneratedMutationTypes {
-  '#graphql\n  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {\n    cartLinesAdd(cartId: $cartId, lines: $lines) {\n      cart {\n        id\n      }\n      userErrors {\n        field\n        message\n      }\n    }\n  }\n': {
-    return: CartLinesAddMutation;
-    variables: CartLinesAddMutationVariables;
-  };
-}
+interface GeneratedMutationTypes {}
 
 declare module '@shopify/hydrogen' {
   interface StorefrontQueries extends GeneratedQueryTypes {}

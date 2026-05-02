@@ -39,15 +39,15 @@ export default function ProductCard({product}: {product: ProductCardData}) {
   const canAdd = Boolean(product.variantId && product.availableForSale !== false);
 
   useEffect(() => {
-    setSaved(getWishlistIds().includes(product.id));
-  }, [product.id]);
+    setSaved(getWishlistIds().includes(product.handle));
+  }, [product.handle]);
 
   const handleWishlist = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const now = toggleWishlistId(product.id);
+    const now = toggleWishlistId(product.handle);
     setSaved(now);
-  }, [product.id]);
+  }, [product.handle]);
 
   return (
     <article className="group relative">

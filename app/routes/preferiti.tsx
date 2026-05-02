@@ -19,30 +19,34 @@ function getLocalWishlistIds(): string[] {
   } catch { return []; }
 }
 
-interface WishlistItem {
-  id: string;
-  handle: string;
-  title: string;
-  price: number;
-  currencyCode: string;
-  image: string;
-  variantId?: string;
+const PRODUCT_FRAGMENT = `fragment WishlistProduct on Product {
+  id
+  handle
+  title
+  featuredImage { url altText }
+  priceRange { minVariantPrice { amount currencyCode } }
+  variants(first: 1) { nodes { id } }
+}`;
+
+function buildProductsQuery(handles: string[]): string {
+  const aliases = handles.map((h, i) => `p${i}: product(handle: "${h}") { ...WishlistProduct }`).join('\n');
+  return `#graphql\nquery WishlistProducts {\n${aliases}\n}\n${PRODUCT_FRAGMENT}`;
 }
 
 export async function loader({context}: Route.LoaderArgs) {
   const {storefront, customerAccount} = context;
   const isLoggedIn = await customerAccount.isLoggedIn();
-  let serverIds: string[] = [];
+  let serverHandles: string[] = [];
 
   if (isLoggedIn) {
     try {
       const data: any = await customerAccount.query(CUSTOMER_METAFIELD_QUERY);
       const raw = data?.customer?.metafield?.value;
-      if (raw) serverIds = JSON.parse(raw) as string[];
+      if (raw) serverHandles = JSON.parse(raw) as string[];
     } catch {}
   }
 
-  return {isLoggedIn, serverIds};
+  return {isLoggedIn, serverHandles};
 }
 
 export async function action({request, context}: Route.ActionArgs) {
@@ -72,64 +76,65 @@ export async function action({request, context}: Route.ActionArgs) {
 }
 
 export default function Preferiti() {
-  const {isLoggedIn, serverIds} = useLoaderData() as any;
-  const [localIds, setLocalIds] = useState<string[]>([]);
+  const {isLoggedIn, serverHandles} = useLoaderData() as any;
+  const [localHandles, setLocalHandles] = useState<string[]>([]);
   const [products, setProducts] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const fetcher = useFetcher();
 
   useEffect(() => {
     const stored = getLocalWishlistIds();
-    const merged = isLoggedIn
-      ? [...new Set([...serverIds, ...stored])]
-      : stored;
-    setLocalIds(merged);
-  }, [isLoggedIn, serverIds]);
+    setLocalHandles(isLoggedIn ? [...new Set([...serverHandles, ...stored])] : stored);
+  }, [isLoggedIn, serverHandles]);
 
   useEffect(() => {
-    if (!localIds.length) { setLoading(false); setProducts([]); return; }
+    if (!localHandles.length) { setLoading(false); setProducts([]); return; }
 
-    const storefrontId = localIds.map((id) => {
-      const parts = id.split('/');
-      return parts[parts.length - 1];
-    }).join(' OR ');
+    const query = buildProductsQuery(localHandles);
+    const storefrontToken = '915c445077ac88666cd9bbd235dff058';
 
-    fetch('/api/search', {
+    fetch('https://proseed-1785.myshopify.com/api/2025-01/graphql.json', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({search: storefrontId, first: 50}),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': storefrontToken,
+      },
+      body: JSON.stringify({query}),
     })
       .then((r) => r.json())
       .then((data: any) => {
-        const nodes = data?.data?.search?.nodes || data?.products || [];
-        setProducts(
-          nodes.map((n: any) => ({
-            id: n.id,
-            handle: n.handle,
-            title: n.title,
-            price: Number(n.priceRange?.minVariantPrice?.amount || 0),
-            currencyCode: n.priceRange?.minVariantPrice?.currencyCode || 'EUR',
-            image: n.featuredImage?.url || '/images/placeholder.svg',
-            variantId: n.variants?.nodes?.[0]?.id,
-          })),
-        );
+        const items: WishlistItem[] = [];
+        localHandles.forEach((h, i) => {
+          const node = data?.data?.[`p${i}`] as any;
+          if (!node) return;
+          items.push({
+            id: node.id,
+            handle: node.handle,
+            title: node.title,
+            price: Number(node.priceRange?.minVariantPrice?.amount || 0),
+            currencyCode: node.priceRange?.minVariantPrice?.currencyCode || 'EUR',
+            image: node.featuredImage?.url || '/images/placeholder.svg',
+            variantId: node.variants?.nodes?.[0]?.id,
+          });
+        });
+        setProducts(items);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [localIds]);
+  }, [localHandles]);
 
-  const removeItem = (productId: string) => {
-    const updated = localIds.filter((id) => id !== productId);
-    setLocalIds(updated);
+  const removeItem = (handle: string) => {
+    const updated = localHandles.filter((h) => h !== handle);
+    setLocalHandles(updated);
     localStorage.setItem(WISHLIST_KEY, JSON.stringify(updated));
-    if (isLoggedIn && updated.length >= 0) {
+    if (isLoggedIn) {
       const fd = new FormData();
       fd.set('ids', JSON.stringify(updated));
       fetcher.submit(fd, {method: 'post', action: '/preferiti'});
     }
   };
 
-  if (!isLoggedIn && !localIds.length) {
+  if (!isLoggedIn && !localHandles.length) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 lg:py-24 text-center">
         <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
@@ -189,7 +194,7 @@ export default function Preferiti() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
-          <div key={product.id} className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
+          <div key={product.handle} className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
             <Link to={`/products/${product.handle}`} className="block">
               <div className="aspect-[4/5] bg-gray-50 overflow-hidden relative">
                 <img src={product.image} alt={product.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -214,7 +219,7 @@ export default function Preferiti() {
                   </CartForm>
                 ) : null}
                 <button
-                  onClick={() => removeItem(product.id)}
+                  onClick={() => removeItem(product.handle)}
                   className="p-3 bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                 >
                   <Trash2 size={18} />
@@ -226,4 +231,14 @@ export default function Preferiti() {
       </div>
     </div>
   );
+}
+
+interface WishlistItem {
+  id: string;
+  handle: string;
+  title: string;
+  price: number;
+  currencyCode: string;
+  image: string;
+  variantId?: string;
 }

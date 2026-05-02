@@ -3,7 +3,6 @@
 @theme {
   --font-geist: 'Geist', sans-serif;
   --font-mono: 'Geist Mono', monospace;
-  --animate-in-duration: .15s;
 }
 
 @keyframes enter {
@@ -27,7 +26,8 @@
 
 @utility animate-in {
   animation-name: enter;
-  animation-duration: var(--animate-in-duration);
+  animation-duration: 0.5s;
+  animation-fill-mode: backwards;
   --tw-enter-opacity: initial;
   --tw-enter-scale: initial;
   --tw-enter-rotate: initial;

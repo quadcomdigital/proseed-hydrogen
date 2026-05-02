@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import {RichText} from '@shopify/hydrogen';
 import {FileText, Truck, RefreshCw} from 'lucide-react';
 
 const tabs = [
@@ -31,8 +30,8 @@ export default function ProductTabs({descriptionHtml}: {descriptionHtml?: string
       </div>
       <div className="p-6 lg:p-8">
         {active === 'description' && descriptionHtml ? (
-          <RichText data={descriptionHtml} className="prose prose-green prose-sm max-w-none" />
-        ) : active === 'description' ? null : null}
+          <div className="prose prose-green prose-sm max-w-none" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        ) : null}
         {active === 'shipping' && (
           <div className="prose prose-sm max-w-none text-gray-600">
             <p>Le spedizioni vengono effettuate entro 24/48 ore lavorative dal pagamento. La consegna avviene in 2-5 giorni lavorativi tramite corriere espresso.</p>

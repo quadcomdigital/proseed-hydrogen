@@ -101,15 +101,20 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
-    storefront.query(HEADER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        headerMenuHandle: 'main-menu', // Adjust to your header menu handle
-      },
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  const header = await storefront.query(HEADER_QUERY, {
+    cache: storefront.CacheShort(),
+    variables: {
+      headerMenuHandle: 'main-menu',
+    },
+  });
+
+  if (!header?.shop?.brand?.logo?.image?.url) {
+    const fresh = await storefront.query(HEADER_QUERY, {
+      cache: storefront.CacheNone(),
+      variables: {headerMenuHandle: 'main-menu'},
+    });
+    return {header: fresh};
+  }
 
   return {header};
 }

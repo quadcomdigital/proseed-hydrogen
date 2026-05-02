@@ -162,7 +162,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
             </div>
             <div className="mt-12 lg:mt-0 relative">
               <img
-                src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?q=80&w=1600&auto=format&fit=crop"
+                src="/images/innovation-preview.jpg"
                 alt="Smart Garden"
                 className="w-full rounded-3xl border-4 border-white/10 object-cover shadow-2xl hover:rotate-1 hover:scale-105 transition-all duration-1000"
               />

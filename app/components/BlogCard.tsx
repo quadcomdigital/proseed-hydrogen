@@ -55,9 +55,9 @@ export default function BlogCard({post}: {post: BlogPostCard}) {
 }
 
 const FALLBACK_POSTS: BlogPostCard[] = [
-  {slug: 'basilico-inverno', title: 'Come coltivare il Basilico perfetto in inverno', excerpt: 'Scopri i segreti per mantenere il basilico rigoglioso anche durante i mesi pi\u00f9 freddi.', image: 'https://images.unsplash.com/photo-1515471209610-dae1c92d814e?q=80&w=1974&auto=format&fit=crop', date: '14 Febbraio 2024', category: 'Guida alla semina', readTime: '5 min'},
-  {slug: 'idroponica-casa', title: 'La rivoluzione dell\'idroponica in casa', excerpt: 'Niente terra? Nessun problema. Ti spieghiamo come iniziare la tua avventura idroponica urbana.', image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1932&auto=format&fit=crop', date: '10 Febbraio 2024', category: 'Innovazione', readTime: '8 min'},
-  {slug: 'consociazioni-pomodori', title: 'Consociazioni: cosa piantare vicino ai pomodori', excerpt: 'Migliora la salute del tuo orto sfruttando le naturali sinergie tra le piante.', image: 'https://images.unsplash.com/photo-1592841208389-52317a7027ae?q=80&w=2070&auto=format&fit=crop', date: '05 Febbraio 2024', category: 'Tecniche Bio', readTime: '6 min'},
+  {slug: 'basilico-inverno', title: 'Come coltivare il Basilico perfetto in inverno', excerpt: 'Scopri i segreti per mantenere il basilico rigoglioso anche durante i mesi pi\u00f9 freddi.', image: '/images/blog-basilico.jpg', date: '14 Febbraio 2024', category: 'Guida alla semina', readTime: '5 min'},
+  {slug: 'idroponica-casa', title: 'La rivoluzione dell\'idroponica in casa', excerpt: 'Niente terra? Nessun problema. Ti spieghiamo come iniziare la tua avventura idroponica urbana.', image: '/images/blog-idroponica.jpg', date: '10 Febbraio 2024', category: 'Innovazione', readTime: '8 min'},
+  {slug: 'consociazioni-pomodori', title: 'Consociazioni: cosa piantare vicino ai pomodori', excerpt: 'Migliora la salute del tuo orto sfruttando le naturali sinergie tra le piante.', image: '/images/blog-consociazioni.jpg', date: '05 Febbraio 2024', category: 'Tecniche Bio', readTime: '6 min'},
 ];
 
 export function BlogSection() {

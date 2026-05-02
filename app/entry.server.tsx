@@ -21,7 +21,6 @@ export default async function handleRequest(
     },
     imgSrc: [
       'https://cdn.shopify.com',
-      'https://images.unsplash.com',
     ],
     connectSrc: [
       `https://${context.env.PUBLIC_STORE_DOMAIN}`,

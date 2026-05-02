@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60" viewBox="0 0 400 60" fill="none">
+  <rect x="0" y="5" width="60" height="40" rx="4" fill="#1A1F71"/>
+  <text x="8" y="30" font-family="Arial" font-weight="bold" font-size="10" fill="white">VISA</text>
+  <rect x="70" y="5" width="60" height="40" rx="4" fill="#EB001B"/>
+  <text x="76" y="30" font-family="Arial" font-weight="bold" font-size="10" fill="white">MC</text>
+  <rect x="140" y="5" width="60" height="40" rx="4" fill="#003087"/>
+  <text x="147" y="30" font-family="Arial" font-weight="bold" font-size="9" fill="white">PP</text>
+  <rect x="210" y="5" width="60" height="40" rx="4" fill="#2c2c2c"/>
+  <text x="215" y="30" font-family="Arial" font-weight="bold" font-size="8" fill="white">APL</text>
+  <rect x="280" y="5" width="60" height="40" rx="4" fill="#4285F4"/>
+  <text x="286" y="30" font-family="Arial" font-weight="bold" font-size="8" fill="white">GPY</text>
+</svg>

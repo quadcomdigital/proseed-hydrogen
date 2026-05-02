@@ -44,7 +44,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                       />
                     ) : (
                       <img
-                        src="https://proseed.it/wp-content/uploads/2021/08/proseed_logo.png"
+                        src="/images/proseed-logo.png"
                         alt="Proseed"
                         className="h-10 lg:h-12 w-auto"
                       />
@@ -123,11 +123,9 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
               </div>
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
-                <div className="flex flex-wrap items-center gap-4 justify-center lg:justify-start">
-                  {['Visa', 'Mastercard', 'PayPal', 'Apple Pay', 'Google Pay'].map((m) => (
-                    <span key={m} className="px-3 py-1.5 bg-gray-50 rounded-lg text-[10px] font-black text-gray-400 uppercase tracking-wider">{m}</span>
-                  ))}
-                </div>
+                  <div className="flex flex-wrap items-center justify-center lg:justify-start">
+                    <img src="/images/payment-badges.svg" alt="Metodi di pagamento" className="h-8 w-auto opacity-80" />
+                  </div>
                 <div className="flex items-center justify-center">
                   <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">PROSEED SRL</div>
                 </div>

@@ -31,7 +31,7 @@ export default function ProductCard({product}: {product: ProductCardData}) {
             </span>
           )}
           <img
-            src={product.image?.url || '/placeholder.svg'}
+            src={product.image?.url || '/images/placeholder.svg'}
             alt={product.image?.altText || product.title}
             className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
             loading="lazy"

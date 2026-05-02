@@ -3,8 +3,8 @@ import {Link} from 'react-router';
 import {ChevronLeft, ChevronRight, ArrowRight} from 'lucide-react';
 
 const SLIDES = [
-  {title: 'Sementi Bio & Naturali', subtitle: 'Il piacere della natura direttamente a casa tua.', img: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2070&auto=format&fit=crop', tag: '100% ORGANICO'},
-  {title: 'Semi Per Orto, Giardino E Balcone', subtitle: 'Certificati ad alta germinabilit\u00e0 per i tuoi successi.', img: 'https://images.unsplash.com/photo-1592150621344-3a4ef51732bb?q=80&w=2072&auto=format&fit=crop', tag: 'NUOVA STAGIONE'},
+  {title: 'Sementi Bio & Naturali', subtitle: 'Il piacere della natura direttamente a casa tua.', img: '/images/hero-bio.jpg', tag: '100% ORGANICO'},
+  {title: 'Semi Per Orto, Giardino E Balcone', subtitle: 'Certificati ad alta germinabilit\u00e0 per i tuoi successi.', img: '/images/hero-stagione.jpg', tag: 'NUOVA STAGIONE'},
 ];
 
 export default function Hero() {

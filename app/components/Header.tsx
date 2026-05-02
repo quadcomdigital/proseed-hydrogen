@@ -128,7 +128,7 @@ export function Header({
               />
             ) : (
               <img
-                src="https://proseed.it/wp-content/uploads/2021/08/proseed_logo.png"
+                src="/images/proseed-logo.png"
                 alt="Proseed"
                 className={`transition-all duration-300 w-auto ${isScrolled ? 'h-8' : 'h-10 lg:h-12'}`}
               />

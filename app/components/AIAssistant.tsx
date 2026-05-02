@@ -61,7 +61,7 @@ export default function AIAssistant() {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[350px] sm:w-[400px] h-[550px] bg-white rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col animate-float">
+        <div className="absolute bottom-20 right-0 w-[350px] sm:w-[400px] h-[550px] bg-white rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col animate-in fade-in zoom-in duration-500">
           <div className="p-6 bg-[#2d4a13] text-white flex items-center justify-between relative overflow-hidden">
             <div className="absolute top-0 right-0 p-2 opacity-10">
               <Bot size={80} />

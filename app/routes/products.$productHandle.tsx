@@ -39,6 +39,7 @@ const PRODUCT_QUERY = `#graphql
         nodes {
           id
           availableForSale
+          quantityAvailable
           selectedOptions { name value }
           price { amount currencyCode }
           compareAtPrice { amount currencyCode }
@@ -87,6 +88,7 @@ function getColorHex(name: string): string {
 type ShopifyVariant = {
   id: string;
   availableForSale: boolean;
+  quantityAvailable?: number;
   selectedOptions: {name: string; value: string}[];
   price: {amount: string; currencyCode: string};
   compareAtPrice?: {amount: string; currencyCode: string} | null;
@@ -204,52 +206,62 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
             <p className="mt-4 text-sm text-gray-500 leading-relaxed">{product.description}</p>
           )}
 
-          {options.length > 0 && (
-            <div className="mt-6">
-              {options.map((opt) => {
-                const isColor = /colou?r/i.test(opt.name);
+          {variants.length > 1 && (
+            <div className="mt-6 space-y-3">
+              <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">Varianti disponibili</p>
+              {variants.map((v) => {
+                const optLabel = v.selectedOptions?.filter((o: any) => o.value !== 'Default Title').map((o: any) => o.value).join(' / ') || v.id;
+                const isSelected = currentVariant?.id === v.id;
+                const hasDiscount = v.compareAtPrice?.amount && Number(v.compareAtPrice.amount) > Number(v.price.amount);
+                const isColor = options.some((o) => /colou?r/i.test(o.name) && v.selectedOptions?.some((so: any) => so.name === o.name));
+                const pricePerUnit = v.price?.amount ? Number(v.price.amount) / (v.quantityAvailable || 1) : 0;
+
                 return (
-                  <div key={opt.name} className="mb-4">
-                    <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{opt.name}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {opt.values.map((val) => {
-                        const isSelected = selectedOptions[opt.name] === val || (!selectedOptions[opt.name] && variants[0]?.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val));
-                        const isAvailable = variants.some((v) =>
-                          v.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val)
-                          && v.availableForSale,
-                        );
-                        if (isColor) {
-                          const hex = getColorHex(val);
-                          return (
-                            <button
-                              key={val}
-                              disabled={!isAvailable}
-                              onClick={() => setSelectedOptions((p) => ({...p, [opt.name]: val}))}
-                              title={val}
-                              className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'ring-2 ring-offset-1 ring-[#78c13b]' : ''} ${!isAvailable ? 'opacity-30 cursor-not-allowed' : ''}`}
-                              style={{backgroundColor: hex}}
-                            />
-                          );
-                        }
-                        return (
-                          <button
-                            key={val}
-                            disabled={!isAvailable}
-                            onClick={() => setSelectedOptions((p) => ({...p, [opt.name]: val}))}
-                            className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
-                              isSelected
-                                ? 'border-[#78c13b] bg-[#78c13b] text-white'
-                                : isAvailable
-                                ? 'border-gray-200 text-gray-700 hover:border-[#78c13b]'
-                                : 'border-gray-100 text-gray-300 line-through cursor-not-allowed'
-                            }`}
-                          >
-                            {val}
-                          </button>
-                        );
-                      })}
+                  <button
+                    key={v.id}
+                    disabled={!v.availableForSale}
+                    onClick={() => {
+                      const sel: Record<string, string> = {};
+                      v.selectedOptions?.forEach((o: any) => { sel[o.name] = o.value; });
+                      setSelectedOptions(sel);
+                    }}
+                    className={`w-full text-left border-2 rounded-2xl p-4 transition-all ${
+                      isSelected
+                        ? 'border-[#78c13b] bg-[#78c13b]/5 shadow-md'
+                        : v.availableForSale
+                        ? 'border-gray-100 bg-white hover:border-gray-300'
+                        : 'border-gray-100 bg-gray-50 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        {isColor && (
+                          <div className="w-8 h-8 rounded-full border-2 border-gray-200 shrink-0" style={{backgroundColor: getColorHex(optLabel)}} />
+                        )}
+                        <div>
+                          <p className={`font-bold text-base ${isSelected ? 'text-[#78c13b]' : 'text-[#2d4a13]'}`}>{optLabel}</p>
+                          <p className={`text-xs font-medium ${v.availableForSale ? 'text-green-600' : 'text-red-400'}`}>
+                            {v.availableForSale ? (v.quantityAvailable ? `${v.quantityAvailable} pezzi disponibili` : 'Disponibile') : 'Esaurito'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center space-x-2">
+                          {hasDiscount ? (
+                            <>
+                              <p className="text-lg font-black text-[#78c13b]">&euro;{Number(v.price.amount).toFixed(2)}</p>
+                              <p className="text-sm font-bold text-gray-400 line-through">&euro;{Number(v.compareAtPrice!.amount).toFixed(2)}</p>
+                            </>
+                          ) : (
+                            <p className="text-lg font-black text-[#2d4a13]">&euro;{Number(v.price.amount).toFixed(2)}</p>
+                          )}
+                        </div>
+                        {pricePerUnit > 0 && Number(v.price.amount) !== pricePerUnit && (
+                          <p className="text-xs text-gray-400 mt-0.5">&euro;{pricePerUnit.toFixed(2)} / pezzo</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

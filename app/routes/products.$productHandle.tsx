@@ -66,6 +66,24 @@ const RECOMMENDATIONS_QUERY = `#graphql
   }
 `;
 
+function getColorHex(name: string): string {
+  const map: Record<string, string> = {
+    rosso: '#EF4444', red: '#EF4444', cherry: '#DC2626',
+    blu: '#3B82F6', blue: '#3B82F6', navy: '#1E3A5F',
+    verde: '#22C55E', green: '#22C55E', oliva: '#65A30D',
+    nero: '#171717', black: '#171717', scuro: '#171717',
+    bianco: '#FFFFFF', white: '#FFFFFF',
+    grigio: '#9CA3AF', grey: '#9CA3AF', gray: '#9CA3AF', argento: '#D1D5DB',
+    giallo: '#EAB308', yellow: '#EAB308', oro: '#D97706',
+    arancione: '#F97316', orange: '#F97316',
+    viola: '#A855F7', purple: '#A855F7', lilla: '#C084FC',
+    rosa: '#EC4899', pink: '#EC4899',
+    marrone: '#92400E', brown: '#92400E',
+    beige: '#F5E6D3',
+  };
+  return map[name.toLowerCase().trim()] || '#CBD5E1';
+}
+
 type ShopifyVariant = {
   id: string;
   availableForSale: boolean;
@@ -184,36 +202,52 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
 
           {options.length > 1 && (
             <div className="mt-6">
-              {options.map((opt) => (
-                <div key={opt.name} className="mb-4">
-                  <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{opt.name}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {opt.values.map((val) => {
-                      const isSelected = selectedOptions[opt.name] === val || (!selectedOptions[opt.name] && variants[0]?.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val));
-                      const isAvailable = variants.some((v) =>
-                        v.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val)
-                        && v.availableForSale,
-                      );
-                      return (
-                        <button
-                          key={val}
-                          disabled={!isAvailable}
-                          onClick={() => setSelectedOptions((p) => ({...p, [opt.name]: val}))}
-                          className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
-                            isSelected
-                              ? 'border-[#78c13b] bg-[#78c13b] text-white'
-                              : isAvailable
-                              ? 'border-gray-200 text-gray-700 hover:border-[#78c13b]'
-                              : 'border-gray-100 text-gray-300 line-through cursor-not-allowed'
-                          }`}
-                        >
-                          {val}
-                        </button>
-                      );
-                    })}
+              {options.map((opt) => {
+                const isColor = /colou?r/i.test(opt.name);
+                return (
+                  <div key={opt.name} className="mb-4">
+                    <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{opt.name}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {opt.values.map((val) => {
+                        const isSelected = selectedOptions[opt.name] === val || (!selectedOptions[opt.name] && variants[0]?.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val));
+                        const isAvailable = variants.some((v) =>
+                          v.selectedOptions?.some((o: any) => o.name === opt.name && o.value === val)
+                          && v.availableForSale,
+                        );
+                        if (isColor) {
+                          const hex = getColorHex(val);
+                          return (
+                            <button
+                              key={val}
+                              disabled={!isAvailable}
+                              onClick={() => setSelectedOptions((p) => ({...p, [opt.name]: val}))}
+                              title={val}
+                              className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'ring-2 ring-offset-1 ring-[#78c13b]' : ''} ${!isAvailable ? 'opacity-30 cursor-not-allowed' : ''}`}
+                              style={{backgroundColor: hex}}
+                            />
+                          );
+                        }
+                        return (
+                          <button
+                            key={val}
+                            disabled={!isAvailable}
+                            onClick={() => setSelectedOptions((p) => ({...p, [opt.name]: val}))}
+                            className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
+                              isSelected
+                                ? 'border-[#78c13b] bg-[#78c13b] text-white'
+                                : isAvailable
+                                ? 'border-gray-200 text-gray-700 hover:border-[#78c13b]'
+                                : 'border-gray-100 text-gray-300 line-through cursor-not-allowed'
+                            }`}
+                          >
+                            {val}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 

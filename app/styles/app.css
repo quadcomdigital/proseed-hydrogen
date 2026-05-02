@@ -6,6 +6,7 @@
   --header-height: 64px;
   --color-dark: #000;
   --color-light: #fff;
+  --aside-transition: 300ms;
 }
 
 img {
@@ -41,20 +42,32 @@ aside {
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
-  transition: transform 200ms ease-in-out;
+  transition: transform var(--aside-transition) ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 aside header {
   align-items: center;
-  border-bottom: 1px solid var(--color-dark);
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   height: var(--header-height);
   justify-content: space-between;
   padding: 0 20px;
+  flex-shrink: 0;
 }
 
 aside header h3 {
   margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #2d4a13;
+}
+
+aside main {
+  margin: 1rem;
+  flex: 1;
+  overflow-y: auto;
 }
 
 aside header .close {
@@ -91,7 +104,7 @@ aside li {
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -99,8 +112,7 @@ aside li {
   position: fixed;
   right: 0;
   top: 0;
-  transition: opacity 400ms ease-in-out;
-  transition: opacity 400ms;
+  transition: opacity var(--aside-transition) ease-out;
   visibility: hidden;
   z-index: 10;
 }

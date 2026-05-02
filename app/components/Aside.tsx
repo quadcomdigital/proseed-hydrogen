@@ -13,16 +13,6 @@ type AsideContextValue = {
   close: () => void;
 };
 
-/**
- * A side bar component with Overlay
- * @example
- * ```jsx
- * <Aside type="search" heading="SEARCH">
- *  <input type="search" />
- *  ...
- * </Aside>
- * ```
- */
 export function Aside({
   children,
   heading,
@@ -37,34 +27,25 @@ export function Aside({
 
   useEffect(() => {
     const abortController = new AbortController();
-
     if (expanded) {
-      document.addEventListener(
-        'keydown',
-        function handler(event: KeyboardEvent) {
-          if (event.key === 'Escape') {
-            close();
-          }
-        },
-        {signal: abortController.signal},
-      );
+      document.addEventListener('keydown', function handler(event: KeyboardEvent) {
+        if (event.key === 'Escape') close();
+      }, {signal: abortController.signal});
+      document.body.style.overflow = 'hidden';
     }
-    return () => abortController.abort();
+    return () => {
+      abortController.abort();
+      document.body.style.overflow = 'unset';
+    };
   }, [close, expanded]);
 
   return (
-    <div
-      aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
-      role="dialog"
-    >
+    <div aria-modal className={`overlay ${expanded ? 'expanded' : ''}`} role="dialog">
       <button className="close-outside" onClick={close} />
       <aside>
         <header>
           <h3>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
-          </button>
+          <button className="close reset" onClick={close} aria-label="Chiudi">&times;</button>
         </header>
         <main>{children}</main>
       </aside>
@@ -76,15 +57,8 @@ const AsideContext = createContext<AsideContextValue | null>(null);
 
 Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [type, setType] = useState<AsideType>('closed');
-
   return (
-    <AsideContext.Provider
-      value={{
-        type,
-        open: setType,
-        close: () => setType('closed'),
-      }}
-    >
+    <AsideContext.Provider value={{type, open: setType, close: () => setType('closed')}}>
       {children}
     </AsideContext.Provider>
   );
@@ -92,8 +66,6 @@ Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
 
 export function useAside() {
   const aside = useContext(AsideContext);
-  if (!aside) {
-    throw new Error('useAside must be used within an AsideProvider');
-  }
+  if (!aside) throw new Error('useAside must be used within an AsideProvider');
   return aside;
 }

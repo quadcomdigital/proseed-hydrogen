@@ -67,12 +67,23 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside type="cart" heading="CART">
-      <Suspense fallback={<p>Loading cart ...</p>}>
+    <Aside type="cart" heading={
+      <Suspense fallback={null}>
         <Await resolve={cart}>
-          {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
-          }}
+          {(c) => (
+            <div className="flex items-center space-x-2">
+              <span>Il tuo Carrello</span>
+              {c?.totalQuantity ? (
+                <span className="bg-[#78c13b]/10 text-[#78c13b] text-xs font-bold px-2 py-1 rounded-full">{c.totalQuantity}</span>
+              ) : null}
+            </div>
+          )}
+        </Await>
+      </Suspense>
+    }>
+      <Suspense fallback={<p>Caricamento...</p>}>
+        <Await resolve={cart}>
+          {(cart) => <CartMain cart={cart} layout="aside" />}
         </Await>
       </Suspense>
     </Aside>

@@ -4,6 +4,7 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
+import {ShoppingCart} from 'lucide-react';
 
 export type CartLayout = 'page' | 'aside';
 
@@ -12,26 +13,16 @@ export type CartMainProps = {
   layout: CartLayout;
 };
 
-/**
- * The main cart component that displays the cart items and summary.
- * It is used by both the /cart route and the cart aside dialog.
- */
 export function CartMain({layout, cart: originalCart}: CartMainProps) {
-  // The useOptimisticCart hook applies pending actions to the cart
-  // so the user immediately sees feedback when they modify the cart.
   const cart = useOptimisticCart(originalCart);
-
   const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
-  const withDiscount =
-    cart &&
-    Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
+  const className = `cart-main ${layout === 'aside' ? '' : ''}`;
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
 
   return (
     <div className={className}>
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details">
+      <div className="cart-details" style={{display: linesCount ? 'block' : 'none'}}>
         <div aria-labelledby="cart-lines">
           <ul>
             {(cart?.lines?.nodes ?? []).map((line) => (
@@ -45,23 +36,20 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   );
 }
 
-function CartEmpty({
-  hidden = false,
-}: {
-  hidden: boolean;
-  layout?: CartMainProps['layout'];
-}) {
+function CartEmpty({hidden = false, layout}: {hidden: boolean; layout?: CartLayout}) {
   const {close} = useAside();
+  if (hidden) return null;
   return (
-    <div hidden={hidden}>
-      <br />
-      <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
-      </p>
-      <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
-        Continue shopping →
+    <div className="flex flex-col items-center justify-center h-full text-center space-y-4 p-4">
+      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+        <ShoppingCart size={32} className="text-gray-400" />
+      </div>
+      <div>
+        <p className="text-lg font-bold text-gray-900">Il carrello &egrave; vuoto</p>
+        <p className="text-sm text-gray-500 mt-1">Aggiungi dei prodotti per iniziare</p>
+      </div>
+      <Link to="/collections" onClick={close} className="text-[#78c13b] font-bold hover:underline">
+        Continua lo shopping
       </Link>
     </div>
   );

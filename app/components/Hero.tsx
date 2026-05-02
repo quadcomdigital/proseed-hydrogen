@@ -2,26 +2,34 @@ import {useState, useEffect} from 'react';
 import {Link} from 'react-router';
 import {ChevronLeft, ChevronRight, ArrowRight} from 'lucide-react';
 
-const SLIDES = [
+export interface HeroSlide {
+  title: string;
+  subtitle: string;
+  img: string;
+  tag: string;
+}
+
+const FALLBACK_SLIDES: HeroSlide[] = [
   {title: 'Sementi Bio & Naturali', subtitle: 'Il piacere della natura direttamente a casa tua.', img: '/images/hero-bio.jpg', tag: '100% ORGANICO'},
   {title: 'Semi Per Orto, Giardino E Balcone', subtitle: 'Certificati ad alta germinabilit\u00e0 per i tuoi successi.', img: '/images/hero-stagione.jpg', tag: 'NUOVA STAGIONE'},
 ];
 
-export default function Hero() {
+export default function Hero({slides}: {slides?: HeroSlide[]}) {
+  const items = slides && slides.length > 0 ? slides : FALLBACK_SLIDES;
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setActive((p) => (p + 1) % SLIDES.length), 8000);
+    const t = setInterval(() => setActive((p) => (p + 1) % items.length), 8000);
     return () => clearInterval(t);
-  }, []);
+  }, [items.length]);
 
-  const prev = () => setActive((p) => (p - 1 + SLIDES.length) % SLIDES.length);
-  const next = () => setActive((p) => (p + 1) % SLIDES.length);
+  const prev = () => setActive((p) => (p - 1 + items.length) % items.length);
+  const next = () => setActive((p) => (p + 1) % items.length);
 
   return (
     <section className="relative h-[80vh] min-h-[600px] w-full mt-0 px-4">
       <div className="mx-auto max-w-7xl h-full relative overflow-hidden rounded-[40px] shadow-2xl shadow-[#78c13b1a]">
-        {SLIDES.map((slide, i) => (
+        {items.map((slide, i) => (
           <div
             key={i}
             className={`absolute inset-0 transition-opacity duration-1000 ${active === i ? 'opacity-100' : 'opacity-0'}`}
@@ -39,13 +47,13 @@ export default function Hero() {
         <div className="relative z-20 h-full flex items-center px-12 lg:px-24">
           <div className="max-w-2xl text-white">
             <span className="inline-block px-4 py-1 bg-[#78c13b] rounded-full text-xs font-bold tracking-widest mb-6 animate-bounce">
-              {SLIDES[active].tag}
+              {items[active].tag}
             </span>
             <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight mb-6 drop-shadow-lg">
-              {SLIDES[active].title}
+              {items[active].title}
             </h1>
             <p className="text-xl lg:text-2xl text-white/90 mb-10 max-w-lg font-light">
-              {SLIDES[active].subtitle}
+              {items[active].subtitle}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -75,7 +83,7 @@ export default function Hero() {
         </div>
 
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex space-x-3">
-          {SLIDES.map((_, i) => (
+          {items.map((_, i) => (
             <button
               key={i}
               onClick={() => setActive(i)}

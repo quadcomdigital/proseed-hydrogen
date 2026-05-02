@@ -226,6 +226,8 @@ export type ShopFragment = Pick<
       image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
     }>;
   }>;
+  promoA?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  promoB?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
 };
 
 export type HeaderQueryVariables = StorefrontAPI.Exact<{
@@ -242,6 +244,8 @@ export type HeaderQuery = {
         image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
       }>;
     }>;
+    promoA?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+    promoB?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
   };
   menu?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Menu, 'id'> & {
@@ -295,6 +299,22 @@ export type HomePageQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type HomePageQuery = {
+  heroSlides: {
+    nodes: Array<{
+      image?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText'>
+          >;
+        }>;
+      }>;
+      title?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
+      subtitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.MetaobjectField, 'value'>
+      >;
+      tag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
+    }>;
+  };
   blog?: StorefrontAPI.Maybe<{
     articles: {
       nodes: Array<
@@ -635,7 +655,7 @@ export type SmartGardenProductsQuery = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
+  '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n    promoA: metafield(namespace: "custom", key: "promo_text_a") { value }\n    promoB: metafield(namespace: "custom", key: "promo_text_b") { value }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
     variables: HeaderQueryVariables;
   };
@@ -643,7 +663,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query HomePage(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      articles(first: 3) {\n        nodes {\n          id title handle excerpt publishedAt\n          image { url altText }\n        }\n      }\n    }\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        variants(first: 1) {\n          nodes {\n            id\n            availableForSale\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query HomePage(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    heroSlides: metaobjects(type: "hero_slide", first: 10) {\n      nodes {\n        image: field(key: "image") { reference { ... on MediaImage { image { url altText } } } }\n        title: field(key: "title") { value }\n        subtitle: field(key: "subtitle") { value }\n        tag: field(key: "tag") { value }\n      }\n    }\n    blog(handle: "journal") {\n      articles(first: 3) {\n        nodes {\n          id title handle excerpt publishedAt\n          image { url altText }\n        }\n      }\n    }\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        variants(first: 1) {\n          nodes {\n            id\n            availableForSale\n          }\n        }\n      }\n    }\n  }\n': {
     return: HomePageQuery;
     variables: HomePageQueryVariables;
   };

@@ -204,6 +204,8 @@ export const HEADER_QUERY = `#graphql
         }
       }
     }
+    promoA: metafield(namespace: "custom", key: "promo_text_a") { value }
+    promoB: metafield(namespace: "custom", key: "promo_text_b") { value }
   }
   query Header(
     $country: CountryCode

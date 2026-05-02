@@ -13,6 +13,14 @@ const HOMEPAGE_QUERY = `#graphql
     $language: LanguageCode
     $first: Int!
   ) @inContext(country: $country, language: $language) {
+    heroSlides: metaobjects(type: "hero_slide", first: 10) {
+      nodes {
+        image: field(key: "image") { reference { ... on MediaImage { image { url altText } } } }
+        title: field(key: "title") { value }
+        subtitle: field(key: "subtitle") { value }
+        tag: field(key: "tag") { value }
+      }
+    }
     blog(handle: "journal") {
       articles(first: 3) {
         nodes {
@@ -56,15 +64,21 @@ export async function loader({context}: Route.LoaderArgs) {
   });
 
   const articles = data?.blog?.articles?.nodes || [];
-  return {products: data.products.nodes, articles};
+  const heroSlides = (data?.heroSlides?.nodes || []).map((node: any) => ({
+    title: node.title?.value || '',
+    subtitle: node.subtitle?.value || '',
+    img: node.image?.reference?.image?.url || '',
+    tag: node.tag?.value || '',
+  }));
+  return {products: data.products.nodes, articles, heroSlides};
 }
 
 export default function Home({loaderData}: Route.ComponentProps) {
-  const {products, articles} = loaderData;
+  const {products, articles, heroSlides} = loaderData;
 
   return (
     <div>
-      <Hero />
+      <Hero slides={heroSlides} />
 
       <section id="features" className="hidden px-4 py-10 lg:block">
         <div className="mx-auto max-w-7xl">

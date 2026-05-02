@@ -10,7 +10,7 @@ import {useAside} from '~/components/Aside';
 import {SearchBar} from '~/components/SearchBar';
 import {
   Sprout, Leaf, Flower2, Sun, Hammer, Package, BookOpen,
-  Crown, User, Heart, ShoppingCart, ChevronDown, Menu, X, Truck,
+  Crown, User, Heart, ShoppingCart, ChevronDown, Menu, X,
   Percent,
 } from 'lucide-react';
 
@@ -87,11 +87,12 @@ export function Header({
         }`}
       >
         <span className="mx-auto text-[11px] font-black uppercase tracking-[0.2em]">
-          {showPromoA ? (
-            <><Truck size={14} className="inline animate-pulse" /> Spedizione <span className="text-[#2d4a13]">GRATUITA</span> sopra i 39&euro;</>
-          ) : (
-            <>Entra nel <span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>, ricevi i tuoi semi in abbonamento</>
-          )}
+          {(() => {
+            const shop = header.shop as any;
+            return showPromoA
+              ? (shop.promoA?.value || 'Spedizione GRATUITA sopra i 39€')
+              : (shop.promoB?.value || 'Entra nel SEED CLUB, ricevi i tuoi semi in abbonamento');
+          })()}
         </span>
       </div>
 

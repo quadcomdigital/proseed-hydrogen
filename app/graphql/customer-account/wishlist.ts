@@ -1,38 +1,17 @@
-export const CUSTOMER_WISHLIST_QUERY = `#graphql
-  query CustomerWishlist {
+export const CUSTOMER_METAFIELD_QUERY = `#graphql
+  query CustomerMetafield {
     customer {
-      wishlist {
-        items(first: 50) {
-          nodes {
-            id
-            product {
-              id
-              handle
-              title
-              featuredImage { url altText }
-              priceRange { minVariantPrice { amount currencyCode } }
-              variants(first: 1) { nodes { id availableForSale } }
-            }
-          }
-        }
+      metafield(namespace: "proseed", key: "wishlist") {
+        value
       }
     }
   }
 `;
 
-export const CUSTOMER_WISHLIST_ADD_MUTATION = `#graphql
-  mutation CustomerWishlistAddItem($productId: ID!) {
-    customerWishlistAddItem(productId: $productId) {
-      wishlist { id }
-      userErrors { field message }
-    }
-  }
-`;
-
-export const CUSTOMER_WISHLIST_REMOVE_MUTATION = `#graphql
-  mutation CustomerWishlistRemoveItem($productId: ID!) {
-    customerWishlistRemoveItem(productId: $productId) {
-      wishlist { id }
+export const CUSTOMER_METAFIELDS_SET_MUTATION = `#graphql
+  mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
+    metafieldsSet(metafields: $metafields) {
+      metafields { key value namespace }
       userErrors { field message }
     }
   }

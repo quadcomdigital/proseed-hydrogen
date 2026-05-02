@@ -271,14 +271,8 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
             </CartForm>
           )}
 
-          <div className="mt-6 flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-            <img src="/images/shipping-quality-badge.png" alt="Certificazioni" className="h-12 w-auto" />
-            <div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Certificazioni</p>
-              <p className="text-xs font-bold text-gray-600">
-                Semi certificati &bull; Alta germinabilit&agrave; &bull; Qualit&agrave; controllata
-              </p>
-            </div>
+          <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
+            <img src="/images/shipping-quality-badge.png" alt="Certificazioni" className="h-14 w-auto" />
           </div>
 
           <SocialShare productName={product.title} />

@@ -1,7 +1,7 @@
 import {Suspense, useState} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
-import {Globe, MapPin, Phone, Mail, ChevronDown} from 'lucide-react';
+import {MapPin, Phone, Mail, ChevronDown} from 'lucide-react';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -57,9 +57,15 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                       direttamente nel vostro orto, giardino e balcone.
                     </p>
                     <div className="flex items-center space-x-4 pt-4">
-                      <a href="#" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all"><Globe size={20} /></a>
-                      <a href="#" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all"><Globe size={20} /></a>
-                      <a href="#" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all"><Globe size={20} /></a>
+                      <a href="https://www.instagram.com/proseed_it" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all" aria-label="Instagram">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+                      </a>
+                      <a href="https://www.facebook.com/proseed" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all" aria-label="Facebook">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2z"/></svg>
+                      </a>
+                      <a href="https://www.linkedin.com/company/proseed" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all" aria-label="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -123,8 +129,10 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
               </div>
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
-                  <div className="flex flex-wrap items-center justify-center lg:justify-start">
-                    <img src="/images/payment-badges.svg" alt="Metodi di pagamento" className="h-8 w-auto opacity-80" />
+                  <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start">
+                    {['Visa', 'MC', 'PayPal', 'Apple Pay', 'Google Pay'].map((m) => (
+                      <span key={m} className="text-[10px] font-black text-gray-400 uppercase tracking-wider px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-100">{m}</span>
+                    ))}
                   </div>
                 <div className="flex items-center justify-center">
                   <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">PROSEED SRL</div>

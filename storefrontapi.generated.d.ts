@@ -598,6 +598,33 @@ export type SitemapDataQuery = {
   pages: {nodes: Array<Pick<StorefrontAPI.Page, 'handle'>>};
 };
 
+export type SmartGardenProductsQueryVariables = StorefrontAPI.Exact<{
+  query: StorefrontAPI.Scalars['String']['input'];
+  first: StorefrontAPI.Scalars['Int']['input'];
+}>;
+
+export type SmartGardenProductsQuery = {
+  search: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'handle' | 'description' | 'productType'
+      > & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText'>
+        >;
+        priceRange: {
+          minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+        };
+        variants: {nodes: Array<Pick<StorefrontAPI.ProductVariant, 'id'>>};
+      }
+    >;
+  };
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
@@ -650,6 +677,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query SitemapData($country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {\n    products(first: 250) {\n      nodes { handle }\n    }\n    collections(first: 250) {\n      nodes { handle }\n    }\n    pages(first: 250) {\n      nodes { handle }\n    }\n  }\n': {
     return: SitemapDataQuery;
     variables: SitemapDataQueryVariables;
+  };
+  '#graphql\n  query SmartGardenProducts($query: String!, $first: Int!)\n  @inContext(country: IT, language: IT) {\n    search(query: $query, first: $first, types: [PRODUCT]) {\n      nodes {\n        ... on Product {\n          id\n          title\n          handle\n          description\n          productType\n          featuredImage { url altText }\n          priceRange { minVariantPrice { amount currencyCode } }\n          variants(first: 1) { nodes { id } }\n        }\n      }\n    }\n  }\n': {
+    return: SmartGardenProductsQuery;
+    variables: SmartGardenProductsQueryVariables;
   };
 }
 

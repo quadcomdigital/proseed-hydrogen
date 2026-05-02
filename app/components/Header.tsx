@@ -138,13 +138,7 @@ export function Header({
           <SearchBar />
 
           <div className="flex items-center gap-2 lg:gap-4">
-            <NavLink
-              to="/preferiti"
-              className="hidden p-2.5 text-gray-500 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-full transition-all group sm:block"
-              title="Preferiti"
-            >
-              <Heart size={22} className="group-hover:fill-[#78c13b]" />
-            </NavLink>
+
 
             <NavLink
               to="/account"
@@ -286,14 +280,7 @@ export function Header({
                 <User size={18} className="text-[#78c13b]" />
                 <span className="font-bold text-gray-700">Account</span>
               </NavLink>
-              <NavLink
-                to="/preferiti"
-                onClick={() => setIsMobileOpen(false)}
-                className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl transition-colors"
-              >
-                <Heart size={18} className="text-[#78c13b]" />
-                <span className="font-bold text-gray-700">Preferiti</span>
-              </NavLink>
+
             </nav>
           </div>
         </div>

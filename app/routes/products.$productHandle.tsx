@@ -1,12 +1,14 @@
 import {Suspense, useMemo, useState} from 'react';
 import {Await, Link, useNavigation} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
+import {Leaf} from 'lucide-react';
 import type {Route} from './+types/products.$productHandle';
 import ProductGallery from '~/components/ProductGallery';
 import ProductTabs from '~/components/ProductTabs';
 import SocialShare from '~/components/SocialShare';
 import MobileStickyAddToCart from '~/components/MobileStickyAddToCart';
 import ProductCard from '~/components/ProductCard';
+import SowingCalendar, {SpecsGrid} from '~/components/SowingCalendar';
 
 const PRODUCT_QUERY = `#graphql
   query ProductByHandle(
@@ -23,6 +25,16 @@ const PRODUCT_QUERY = `#graphql
       featuredImage { url altText width height }
       images(first: 6) { nodes { url altText width height } }
       options { name values }
+      semina_semenzaio: metafield(namespace: "custom", key: "semina_semenzaio") { value }
+      semina_aperto: metafield(namespace: "custom", key: "semina_aperto") { value }
+      semina_raccolta: metafield(namespace: "custom", key: "semina_raccolta") { value }
+      difficolta: metafield(namespace: "custom", key: "difficolta") { value }
+      tempo_raccolto: metafield(namespace: "custom", key: "tempo_raccolto") { value }
+      germinazione: metafield(namespace: "custom", key: "germinazione") { value }
+      esposizione: metafield(namespace: "custom", key: "esposizione") { value }
+      tipologia: metafield(namespace: "custom", key: "tipologia") { value }
+      consiglio_esperto: metafield(namespace: "custom", key: "consiglio_esperto") { value }
+      codice: metafield(namespace: "custom", key: "codice") { value }
       variants(first: 100) {
         nodes {
           id
@@ -232,8 +244,30 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pb-10">
-        <ProductTabs descriptionHtml={product.descriptionHtml} />
+      {/* Sowing + Description two-column section */}
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 pb-10 items-start">
+          <div className="space-y-6 lg:space-y-8 lg:sticky lg:top-24">
+            <SowingCalendar
+              semenzaio={product.semina_semenzaio?.value}
+              aperto={product.semina_aperto?.value}
+              raccolta={product.semina_raccolta?.value}
+            />
+            <div className="p-6 bg-[#2d4a13] text-white rounded-[32px] relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                <Leaf size={100} />
+              </div>
+              <h4 className="font-black text-lg mb-2 relative z-10">Consiglio dell&apos;esperto</h4>
+              <p className="text-white/70 text-sm leading-relaxed relative z-10">
+                {product.consiglio_esperto?.value || 'Per una germinazione ottimale, mantieni il terreno costantemente umido ma non inzuppato. La temperatura ideale del suolo dovrebbe aggirarsi intorno ai 20-25\u00b0C.'}
+              </p>
+            </div>
+            <SpecsGrid product={product} />
+          </div>
+          <div>
+            <ProductTabs descriptionHtml={product.descriptionHtml} />
+          </div>
+        </div>
       </div>
 
       <Suspense fallback={null}>

@@ -139,7 +139,11 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
   const images = product.images?.nodes || [];
   const allImages = images.length > 0 ? images : (product.featuredImage ? [product.featuredImage] : []);
 
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    variants[0]?.selectedOptions?.forEach((o: any) => { initial[o.name] = o.value; });
+    return initial;
+  });
 
   const currentVariant = useMemo(() => {
     if (!options.length || !variants.length) return variants[0];
@@ -200,7 +204,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
             <p className="mt-4 text-sm text-gray-500 leading-relaxed">{product.description}</p>
           )}
 
-          {options.length > 1 && (
+          {options.length > 0 && (
             <div className="mt-6">
               {options.map((opt) => {
                 const isColor = /colou?r/i.test(opt.name);

@@ -1,6 +1,6 @@
 import {Await, Link} from 'react-router';
 import {Suspense, useId, lazy} from 'react';
-const AIAssistant = lazy(() => import('~/components/AIAssistant'));
+// const AIAssistant = lazy(() => import('~/components/AIAssistant'));
 const QuickViewModal = lazy(() => import('~/components/QuickViewModal'));
 import type {
   CartApiQueryFragment,
@@ -55,8 +55,9 @@ export function PageLayout({
         publicStoreDomain={publicStoreDomain}
       />
       <BottomNav cart={cart} />
+      {/* AIAssistant nascosto — Seedy disabilitato */}
       <Suspense fallback={null}>
-        <AIAssistant />
+        {null}
       </Suspense>
       <Suspense fallback={null}>
         <QuickViewModal />

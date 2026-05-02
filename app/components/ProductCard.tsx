@@ -1,4 +1,4 @@
-import {useState, useCallback} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {Link, useFetcher} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {Heart, ShoppingCart, Eye} from 'lucide-react';
@@ -15,11 +15,38 @@ interface ProductCardData {
   availableForSale?: boolean;
 }
 
+const WISHLIST_KEY = 'proseed_wishlist';
+
+function getWishlistIds(): string[] {
+  try {
+    const raw = localStorage.getItem(WISHLIST_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch { return []; }
+}
+
+function toggleWishlistId(id: string): boolean {
+  const ids = getWishlistIds();
+  const idx = ids.indexOf(id);
+  if (idx >= 0) { ids.splice(idx, 1); localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids)); return false; }
+  else { ids.push(id); localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids)); return true; }
+}
+
 export default function ProductCard({product}: {product: ProductCardData}) {
   const [isSaved, setSaved] = useState(false);
   const fetcher = useFetcher();
   const isAdding = fetcher.state !== 'idle';
   const canAdd = Boolean(product.variantId && product.availableForSale !== false);
+
+  useEffect(() => {
+    setSaved(getWishlistIds().includes(product.id));
+  }, [product.id]);
+
+  const handleWishlist = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const now = toggleWishlistId(product.id);
+    setSaved(now);
+  }, [product.id]);
 
   return (
     <article className="group relative">
@@ -41,8 +68,8 @@ export default function ProductCard({product}: {product: ProductCardData}) {
         <div className="hidden lg:flex absolute inset-0 bg-[#2d4a13]/20 opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px] flex-col items-center justify-center p-6 translate-y-10 group-hover:translate-y-0">
           <div className="flex items-center space-x-3 mb-6">
             <button
-              onClick={() => setSaved(!isSaved)}
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all scale-90 group-hover:scale-100 active:scale-75 duration-500 shadow-xl ${isSaved ? 'bg-[#78c13b] text-white' : 'bg-white text-gray-800 hover:bg-[#78c13b] hover:text-white'}`}
+              onClick={handleWishlist}
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all scale-90 group-hover:scale-100 active:scale-75 duration-500 shadow-xl ${isSaved ? 'bg-red-500 text-white' : 'bg-white text-gray-800 hover:bg-red-500 hover:text-white'}`}
             >
               <Heart size={20} fill={isSaved ? 'currentColor' : 'none'} />
             </button>
@@ -72,7 +99,7 @@ export default function ProductCard({product}: {product: ProductCardData}) {
             )}
 
             <button
-              onClick={() => {
+              onClick={(e) => {
                 window.dispatchEvent(new CustomEvent('open-quickview', {detail: product}));
               }}
               className="w-12 h-12 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-[#78c13b] hover:text-white transition-all scale-90 group-hover:scale-100 active:scale-90 duration-500 shadow-xl"

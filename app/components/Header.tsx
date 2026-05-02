@@ -138,7 +138,13 @@ export function Header({
           <SearchBar />
 
           <div className="flex items-center gap-2 lg:gap-4">
-
+            <NavLink
+              to="/preferiti"
+              className="hidden sm:block p-2.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+              title="Preferiti"
+            >
+              <Heart size={22} />
+            </NavLink>
 
             <NavLink
               to="/account"

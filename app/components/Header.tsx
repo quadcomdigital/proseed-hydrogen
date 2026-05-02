@@ -82,35 +82,17 @@ export function Header({
   return (
     <header className="sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-sm">
       <div
-        className={`hidden lg:block bg-[#78c13b] text-white py-2 text-[11px] font-bold overflow-hidden transition-all duration-300 ${
+        className={`hidden lg:block bg-[#78c13b] text-white py-2 text-[11px] font-bold text-center transition-all duration-300 ${
           isScrolled ? 'h-0 py-0 opacity-0' : 'h-auto opacity-100'
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-center px-4 text-center text-[11px] font-black uppercase tracking-[0.2em]">
-          <div
-            className={`transition-all duration-500 ${
-              showPromoA
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4 h-0 overflow-hidden'
-            }`}
-          >
-            <Truck size={14} className="inline animate-pulse" /> Spedizione{' '}
-            <span className="text-[#2d4a13]">GRATUITA</span> sopra i 39&euro;
-          </div>
-          <div
-            className={`transition-all duration-500 ${
-              !showPromoA
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 -translate-y-4 h-0 overflow-hidden'
-            }`}
-          >
-            Entra nel{' '}
-            <span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">
-              SEED CLUB
-            </span>
-            , ricevi i tuoi semi in abbonamento
-          </div>
-        </div>
+        <span className="mx-auto text-[11px] font-black uppercase tracking-[0.2em]">
+          {showPromoA ? (
+            <><Truck size={14} className="inline animate-pulse" /> Spedizione <span className="text-[#2d4a13]">GRATUITA</span> sopra i 39&euro;</>
+          ) : (
+            <>Entra nel <span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>, ricevi i tuoi semi in abbonamento</>
+          )}
+        </span>
       </div>
 
       <div

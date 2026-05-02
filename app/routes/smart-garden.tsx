@@ -37,11 +37,19 @@ const SMART_GARDEN_QUERY = `#graphql
           featuredImage { url altText }
           priceRange { minVariantPrice { amount currencyCode } }
           variants(first: 1) { nodes { id } }
+          semina_semenzaio: metafield(namespace: "custom", key: "semina_semenzaio") { value }
+          semina_aperto: metafield(namespace: "custom", key: "semina_aperto") { value }
+          semina_raccolta: metafield(namespace: "custom", key: "semina_raccolta") { value }
         }
       }
     }
   }
 `;
+
+function parseMonths(val?: string | null): number[] {
+  if (!val) return [];
+  return String(val).split(',').map(Number).filter((n) => !isNaN(n) && n >= 1 && n <= 12);
+}
 
 interface SmartProduct {
   handle: string;
@@ -51,6 +59,9 @@ interface SmartProduct {
   variantId: string;
   productType: string;
   description: string;
+  seminaSemenzaio?: string;
+  seminaAperto?: string;
+  seminaRaccolta?: string;
 }
 
 export async function loader({context}: any) {
@@ -65,6 +76,9 @@ export async function loader({context}: any) {
     variantId: node.variants?.nodes?.[0]?.id || '',
     productType: node.productType || '',
     description: node.description || '',
+    seminaSemenzaio: node.semina_semenzaio?.value,
+    seminaAperto: node.semina_aperto?.value,
+    seminaRaccolta: node.semina_raccolta?.value,
   }));
   return {products};
 }
@@ -75,7 +89,6 @@ export default function SmartGarden({loaderData}: any) {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [previousCrop, setPreviousCrop] = useState('none');
-  const [addingId, setAddingId] = useState<string | null>(null);
   const fetcher = useFetcher();
   const isAdding = fetcher.state !== 'idle';
 
@@ -87,14 +100,12 @@ export default function SmartGarden({loaderData}: any) {
     if (!selectedLocation || products.length === 0) return [];
     const family = CROP_FAMILIES.find((f) => f.id === previousCrop);
     const avoidList = family ? family.avoid : [];
+
     return products
       .filter((p: SmartProduct) => {
-        let sowingMonths: number[] = [];
-        const pt = p.productType?.toLowerCase() || '';
-        if (pt.includes('orto') || pt.includes('pomodori')) sowingMonths = [3, 4, 5, 6];
-        else if (pt.includes('fiori')) sowingMonths = [3, 4, 5];
-        else sowingMonths = [3, 4, 5, 6, 7, 8];
-        const isTimeRight = sowingMonths.includes(selectedMonth);
+        const monthsStr = selectedLocation === 'indoors' ? p.seminaSemenzaio : p.seminaAperto;
+        const sowingMonths = parseMonths(monthsStr);
+        const isTimeRight = sowingMonths.length === 0 || sowingMonths.includes(selectedMonth);
         const isRotationSafe = !avoidList.some((name) => p.title.includes(name));
         return isTimeRight && isRotationSafe;
       })
@@ -123,7 +134,7 @@ export default function SmartGarden({loaderData}: any) {
 
         <div className="p-8 lg:p-16 min-h-[500px] flex flex-col">
           {step === 0 && (
-            <div className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
               <div className="w-20 h-20 bg-[#78c13b]/10 rounded-full flex items-center justify-center mb-8">
                 <Sprout size={40} className="text-[#78c13b]" />
               </div>
@@ -142,7 +153,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 1 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Quando vorresti seminare?</h2>
                 <p className="text-gray-500">Scegliere il mese giusto &egrave; la chiave di un orto sano</p>
@@ -162,7 +173,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 2 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Dove vorresti seminare?</h2>
                 <p className="text-gray-500">Ogni spazio ha le sue caratteristiche e le sue regole</p>
@@ -186,7 +197,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 3 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Coltivazione precedente</h2>
                 <p className="text-gray-500">Per rispettare la rotazione delle colture</p>
@@ -207,7 +218,7 @@ export default function SmartGarden({loaderData}: any) {
           )}
 
           {step === 4 && (
-            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+            <div className="flex-1 flex flex-col">
               <div className="text-center mb-8">
                 <span className="inline-block px-4 py-1 bg-[#78c13b]/10 text-[#78c13b] rounded-full text-xs font-bold tracking-widest uppercase mb-4">
                   La tua semina
@@ -232,17 +243,10 @@ export default function SmartGarden({loaderData}: any) {
                           {product.variantId ? (
                             <fetcher.Form method="post" action="/cart">
                               <input type="hidden" name="cartFormInput" value={JSON.stringify({action: CartForm.ACTIONS.LinesAdd, inputs: {lines: [{merchandiseId: product.variantId, quantity: 1}]}})} />
-                              <button
-                                type="submit"
-                                className="p-2 rounded-xl transition-all duration-300 bg-gray-100 hover:bg-[#78c13b] hover:text-white"
-                              >
-                                <ShoppingCart size={18} />
-                              </button>
+                              <button type="submit" className="p-2 rounded-xl transition-all duration-300 bg-gray-100 hover:bg-[#78c13b] hover:text-white"><ShoppingCart size={18} /></button>
                             </fetcher.Form>
                           ) : (
-                            <Link to={`/products/${product.handle}`} className="p-2 rounded-xl bg-gray-100 hover:bg-[#78c13b] hover:text-white transition-all">
-                              <ShoppingCart size={18} />
-                            </Link>
+                            <Link to={`/products/${product.handle}`} className="p-2 rounded-xl bg-gray-100 hover:bg-[#78c13b] hover:text-white transition-all"><ShoppingCart size={18} /></Link>
                           )}
                         </div>
                       </div>
@@ -252,9 +256,7 @@ export default function SmartGarden({loaderData}: any) {
                   <div className="flex justify-center">
                     <fetcher.Form method="post" action="/cart">
                       <input type="hidden" name="cartFormInput" value={JSON.stringify({action: CartForm.ACTIONS.LinesAdd, inputs: {lines: recommendedProducts.filter((p) => p.variantId).map((p) => ({merchandiseId: p.variantId, quantity: 1}))}})} />
-                      <button
-                        type="submit"
-                        disabled={isAdding}
+                      <button type="submit" disabled={isAdding}
                         className={`px-8 py-4 font-bold rounded-2xl flex items-center space-x-2 transition-all shadow-lg ${isAdding ? 'bg-[#78c13b] text-white scale-105' : 'bg-[#2d4a13] hover:bg-[#78c13b] text-white'}`}
                       >
                         {isAdding ? <Check size={20} className="animate-bounce" /> : <ShoppingCart size={20} />}
@@ -270,9 +272,7 @@ export default function SmartGarden({loaderData}: any) {
                   <p className="text-gray-400 max-w-md mx-auto">
                     Sembra che non ci siano prodotti ideali per questa combinazione. Prova a cambiare i parametri.
                   </p>
-                  <button onClick={reset} className="mt-6 text-[#78c13b] font-bold hover:underline">
-                    Modifica ricerca
-                  </button>
+                  <button onClick={reset} className="mt-6 text-[#78c13b] font-bold hover:underline">Modifica ricerca</button>
                 </div>
               )}
             </div>

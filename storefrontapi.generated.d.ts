@@ -620,6 +620,15 @@ export type SmartGardenProductsQuery = {
           >;
         };
         variants: {nodes: Array<Pick<StorefrontAPI.ProductVariant, 'id'>>};
+        semina_semenzaio?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        semina_aperto?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        semina_raccolta?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
       }
     >;
   };
@@ -678,7 +687,7 @@ interface GeneratedQueryTypes {
     return: SitemapDataQuery;
     variables: SitemapDataQueryVariables;
   };
-  '#graphql\n  query SmartGardenProducts($query: String!, $first: Int!)\n  @inContext(country: IT, language: IT) {\n    search(query: $query, first: $first, types: [PRODUCT]) {\n      nodes {\n        ... on Product {\n          id\n          title\n          handle\n          description\n          productType\n          featuredImage { url altText }\n          priceRange { minVariantPrice { amount currencyCode } }\n          variants(first: 1) { nodes { id } }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query SmartGardenProducts($query: String!, $first: Int!)\n  @inContext(country: IT, language: IT) {\n    search(query: $query, first: $first, types: [PRODUCT]) {\n      nodes {\n        ... on Product {\n          id\n          title\n          handle\n          description\n          productType\n          featuredImage { url altText }\n          priceRange { minVariantPrice { amount currencyCode } }\n          variants(first: 1) { nodes { id } }\n          semina_semenzaio: metafield(namespace: "custom", key: "semina_semenzaio") { value }\n          semina_aperto: metafield(namespace: "custom", key: "semina_aperto") { value }\n          semina_raccolta: metafield(namespace: "custom", key: "semina_raccolta") { value }\n        }\n      }\n    }\n  }\n': {
     return: SmartGardenProductsQuery;
     variables: SmartGardenProductsQueryVariables;
   };

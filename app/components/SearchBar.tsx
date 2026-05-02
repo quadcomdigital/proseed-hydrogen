@@ -197,7 +197,7 @@ export function SearchBar() {
       )}
 
       <div ref={containerRef} className="relative hidden md:flex flex-1 max-w-2xl">
-        <div className="flex items-center w-full border border-gray-200 rounded-full focus-within:ring-2 focus-within:ring-[#78c13b33] transition-all bg-white relative hover:border-gray-300">
+        <div className="flex items-center w-full border-2 border-[#78c13b] rounded-full focus-within:ring-4 focus-within:ring-[#78c13b1a] transition-all bg-white relative">
           <div className="relative h-full" ref={catRef}>
             <button
               onClick={() => setIsCatOpen(!isCatOpen)}

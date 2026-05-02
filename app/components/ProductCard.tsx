@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {Link} from 'react-router';
+import {useState, useCallback} from 'react';
+import {Link, useFetcher} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {Heart, ShoppingCart, Eye} from 'lucide-react';
 
@@ -12,10 +12,14 @@ interface ProductCardData {
   image?: {url: string; altText?: string};
   badge?: string;
   variantId?: string;
+  availableForSale?: boolean;
 }
 
 export default function ProductCard({product}: {product: ProductCardData}) {
   const [isSaved, setSaved] = useState(false);
+  const fetcher = useFetcher();
+  const isAdding = fetcher.state !== 'idle';
+  const canAdd = Boolean(product.variantId && product.availableForSale !== false);
 
   return (
     <article className="group relative">
@@ -43,28 +47,36 @@ export default function ProductCard({product}: {product: ProductCardData}) {
               <Heart size={20} fill={isSaved ? 'currentColor' : 'none'} />
             </button>
 
-            {product.variantId ? (
-              <CartForm
-                route="/cart"
-                action={CartForm.ACTIONS.LinesAdd}
-                inputs={{lines: [{merchandiseId: product.variantId, quantity: 1}]}}
-              >
+            {canAdd ? (
+              <fetcher.Form method="post" action="/cart">
+                <input type="hidden" name="cartFormInput" value={JSON.stringify({
+                  action: CartForm.ACTIONS.LinesAdd,
+                  inputs: {lines: [{merchandiseId: product.variantId, quantity: 1}]},
+                })} />
                 <button
                   type="submit"
-                  className="w-14 h-14 bg-[#78c13b] text-white rounded-full flex items-center justify-center hover:bg-[#2d4a13] transition-all scale-90 group-hover:scale-110 active:scale-90 duration-500 shadow-xl"
+                  disabled={isAdding}
+                  className="w-14 h-14 bg-[#78c13b] text-white rounded-full flex items-center justify-center hover:bg-[#2d4a13] transition-all scale-90 group-hover:scale-110 active:scale-90 duration-500 shadow-xl disabled:opacity-60"
                 >
-                  <ShoppingCart size={24} />
+                  {isAdding ? (
+                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <ShoppingCart size={24} />
+                  )}
                 </button>
-              </CartForm>
+              </fetcher.Form>
             ) : (
               <button className="w-14 h-14 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center cursor-not-allowed">
                 <ShoppingCart size={24} />
               </button>
             )}
 
-            <button className="w-12 h-12 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-[#78c13b] hover:text-white transition-all scale-90 group-hover:scale-100 active:scale-90 duration-500 shadow-xl">
+            <Link
+              to={`/products/${product.handle}`}
+              className="w-12 h-12 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-[#78c13b] hover:text-white transition-all scale-90 group-hover:scale-100 active:scale-90 duration-500 shadow-xl"
+            >
               <Eye size={20} />
-            </button>
+            </Link>
           </div>
           <Link
             to={`/products/${product.handle}`}

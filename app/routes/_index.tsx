@@ -31,6 +31,7 @@ const HOMEPAGE_QUERY = `#graphql
         variants(first: 1) {
           nodes {
             id
+            availableForSale
           }
         }
       }
@@ -112,6 +113,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                   currencyCode: product.priceRange.minVariantPrice.currencyCode,
                   image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
                   variantId: product.variants?.nodes?.[0]?.id,
+                  availableForSale: product.variants?.nodes?.[0]?.availableForSale,
                 }}
               />
             </div>
@@ -129,6 +131,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                 currencyCode: product.priceRange.minVariantPrice.currencyCode,
                 image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
                 variantId: product.variants?.nodes?.[0]?.id,
+                availableForSale: product.variants?.nodes?.[0]?.availableForSale,
               }}
             />
           ))}

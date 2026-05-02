@@ -27,6 +27,12 @@ const COLLECTION_QUERY = `#graphql
               currencyCode
             }
           }
+          variants(first: 1) {
+            nodes {
+              id
+              availableForSale
+            }
+          }
         }
       }
     }

@@ -10,7 +10,7 @@ import {useAside} from '~/components/Aside';
 import {SearchBar} from '~/components/SearchBar';
 import {
   Sprout, Leaf, Flower2, Sun, Hammer, Package, BookOpen,
-  Crown, User, Heart, ShoppingCart, ChevronDown, Menu, X,
+  Crown, User, Heart, ShoppingCart, ChevronDown, Menu, X, Truck,
   Percent,
 } from 'lucide-react';
 
@@ -87,12 +87,17 @@ export function Header({
         }`}
       >
         <span className="mx-auto text-[11px] font-black uppercase tracking-[0.2em]">
-          {(() => {
-            const shop = header.shop as any;
-            return showPromoA
-              ? (shop.promoA?.value || 'Spedizione GRATUITA sopra i 39€')
-              : (shop.promoB?.value || 'Entra nel SEED CLUB, ricevi i tuoi semi in abbonamento');
-          })()}
+          {showPromoA ? (
+            <span className="transition-all duration-500">
+              <Truck size={14} className="inline animate-pulse" /> {header.shop?.promoA?.value || 'Spedizione GRATUITA sopra i 39€'}
+            </span>
+          ) : (
+            <span className="transition-all duration-500">
+              {header.shop?.promoB?.value?.includes('SEED CLUB')
+                ? <>{header.shop.promoB.value.split('SEED CLUB')[0]}<span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>{header.shop.promoB.value.split('SEED CLUB')[1]}</>
+                : (header.shop?.promoB?.value || 'Entra nel SEED CLUB, ricevi i tuoi semi in abbonamento')}
+            </span>
+          )}
         </span>
       </div>
 

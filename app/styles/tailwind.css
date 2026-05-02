@@ -1,8 +1,18 @@
 @import 'tailwindcss';
+@plugin "tailwindcss-animate";
 
 @theme {
   --font-geist: 'Geist', sans-serif;
   --font-mono: 'Geist Mono', monospace;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@utility animate-shimmer {
+  animation: shimmer 3s linear infinite;
 }
 
 @font-face {

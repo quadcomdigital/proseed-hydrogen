@@ -206,7 +206,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
             <p className="mt-4 text-sm text-gray-500 leading-relaxed">{product.description}</p>
           )}
 
-          {variants.length > 1 && (
+          {variants.length > 0 && options.some((o) => o.values.length > 1) && (
             <div className="mt-6 space-y-3">
               <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">Varianti disponibili</p>
               {variants.map((v) => {

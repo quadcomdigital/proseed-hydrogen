@@ -17,7 +17,7 @@ export default function ProductTabs({descriptionHtml}: {descriptionHtml?: string
           <button
             key={tab.key}
             onClick={() => setActive(tab.key)}
-            className={`flex items-center space-x-2 px-6 py-4 text-sm font-bold transition-all shrink-0 border-b-2 ${
+            className={`flex items-center space-x-1 lg:space-x-2 px-3 lg:px-6 py-3 lg:py-4 text-xs lg:text-sm font-bold transition-all shrink-0 border-b-2 ${
               active === tab.key
                 ? 'border-[#78c13b] text-[#78c13b] bg-[#78c13b]/5'
                 : 'border-transparent text-gray-500 hover:text-gray-800'
@@ -28,9 +28,9 @@ export default function ProductTabs({descriptionHtml}: {descriptionHtml?: string
           </button>
         ))}
       </div>
-      <div className="p-6 lg:p-8">
+      <div className="p-4 lg:p-8">
         {active === 'description' && descriptionHtml ? (
-          <div className="text-gray-500 leading-relaxed text-base lg:text-lg font-medium" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+          <div className="text-gray-500 leading-relaxed text-sm lg:text-lg font-medium" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
         ) : null}
         {active === 'shipping' && (
           <div className="text-gray-500 leading-relaxed text-sm">

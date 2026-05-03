@@ -318,12 +318,12 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
               aperto={product.semina_aperto?.value}
               raccolta={product.semina_raccolta?.value}
             />
-            <div className="p-6 bg-[#2d4a13] text-white rounded-[32px] relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700">
+            <div className="p-4 lg:p-6 bg-[#2d4a13] text-white rounded-2xl lg:rounded-[32px] relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700 hidden lg:block">
                 <Leaf size={100} />
               </div>
-              <h4 className="font-black text-lg mb-2 relative z-10">Consiglio dell&apos;esperto</h4>
-              <p className="text-white/70 text-sm leading-relaxed relative z-10">
+              <h4 className="font-black text-base lg:text-lg mb-2 relative z-10">Consiglio dell&apos;esperto</h4>
+              <p className="text-white/70 text-xs lg:text-sm leading-relaxed relative z-10">
                 {product.consiglio_esperto?.value || 'Per una germinazione ottimale, mantieni il terreno costantemente umido ma non inzuppato. La temperatura ideale del suolo dovrebbe aggirarsi intorno ai 20-25\u00b0C.'}
               </p>
             </div>

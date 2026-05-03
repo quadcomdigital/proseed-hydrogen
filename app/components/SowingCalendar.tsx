@@ -44,34 +44,25 @@ export default function SowingCalendar({semenzaio, aperto, raccolta}: SowingCale
   }
 
   return (
-    <div className="bg-white p-6 lg:p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-6 overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-xl font-black text-[#2d4a13]">Tabella di Semina</h3>
+    <div className="bg-white p-4 lg:p-8 rounded-2xl lg:rounded-[32px] border border-gray-100 shadow-sm space-y-4 lg:space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-base lg:text-xl font-black text-[#2d4a13]">Tabella di Semina</h3>
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full bg-[#78c13b]" />
           <span className="text-[10px] font-bold uppercase text-gray-400">Ottimale</span>
         </div>
       </div>
-      <div className="space-y-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-        <div className="min-w-[300px] space-y-3">
+      <div className="space-y-3 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="min-w-[280px] space-y-2">
           <Row label="In Semenzaio" activeMonths={semenzaioMonths} color="bg-blue-400" />
           <Row label="All'aperto" activeMonths={apertoMonths} color="bg-[#78c13b]" />
           <Row label="Raccolta" activeMonths={raccoltaMonths} color="bg-orange-400" />
         </div>
       </div>
-      <div className="pt-4 flex flex-wrap gap-4 items-center">
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 rounded-full bg-blue-400" />
-          <span className="text-[9px] font-black uppercase text-gray-400">Interno</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 rounded-full bg-[#78c13b]" />
-          <span className="text-[9px] font-black uppercase text-gray-400">Esterno</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 rounded-full bg-orange-400" />
-          <span className="text-[9px] font-black uppercase text-gray-400">Raccolta</span>
-        </div>
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-blue-400" /><span className="text-[9px] font-black uppercase text-gray-400">Interno</span></div>
+        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-[#78c13b]" /><span className="text-[9px] font-black uppercase text-gray-400">Esterno</span></div>
+        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-orange-400" /><span className="text-[9px] font-black uppercase text-gray-400">Raccolta</span></div>
       </div>
     </div>
   );
@@ -93,15 +84,15 @@ export function SpecsGrid({product}: {product: any}) {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-2 lg:gap-4">
       {specs.map((spec, i) => (
-        <div key={i} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#78c13b] shadow-sm shrink-0">
+        <div key={i} className="flex items-center space-x-2 lg:space-x-3 p-2 lg:p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <div className="w-6 h-6 lg:w-8 lg:h-8 bg-white rounded-full flex items-center justify-center text-[#78c13b] shadow-sm shrink-0">
             {spec.icon}
           </div>
           <div className="min-w-0">
-            <p className="text-[9px] font-black text-gray-400 uppercase truncate">{spec.label}</p>
-            <p className="text-xs font-bold text-[#2d4a13] truncate">{spec.value}</p>
+            <p className="text-[8px] lg:text-[9px] font-black text-gray-400 uppercase truncate">{spec.label}</p>
+            <p className="text-[10px] lg:text-xs font-bold text-[#2d4a13] truncate">{spec.value}</p>
           </div>
         </div>
       ))}

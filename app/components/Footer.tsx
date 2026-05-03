@@ -31,10 +31,10 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="bg-white border-t border-gray-100 pt-12 lg:pt-24 pb-12 overflow-hidden">
+          <footer className="bg-white border-t border-gray-100 pt-8 lg:pt-24 pb-12 overflow-hidden">
             <div className="mx-auto max-w-7xl px-4">
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-8 pb-12 lg:pb-16 border-b border-gray-100">
-                <div className="lg:col-span-2 space-y-8 mb-8 lg:mb-0">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 pb-8 lg:pb-16 border-b border-gray-100">
+                <div className="lg:col-span-2 space-y-6 mb-6 lg:mb-0">
                   <NavLink prefetch="intent" to="/" end>
                     {header.shop.brand?.logo?.image?.url ? (
                       <img
@@ -130,7 +130,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
                   <div className="flex flex-wrap items-center justify-center lg:justify-start">
-                    <img src="/images/payment-badges.svg" alt="Metodi di pagamento" className="h-8 w-auto opacity-80" />
+                    <img src="/images/payment-badges.png" alt="Metodi di pagamento" className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" />
                   </div>
                 <div className="flex items-center justify-center">
                   <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">PROSEED SRL</div>

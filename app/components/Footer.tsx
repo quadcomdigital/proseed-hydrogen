@@ -12,16 +12,16 @@ interface FooterProps {
 function FooterSection({title, children}: {title: string; children: React.ReactNode}) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <section className="border-b border-gray-100 lg:border-none last:border-none">
+    <section className="lg:border-none last:border-none">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-4 lg:py-0 lg:hidden group"
+        className="w-full flex items-center justify-between py-3 lg:py-0 lg:hidden group"
       >
         <h4 className="text-[11px] font-black text-[#2d4a13] uppercase tracking-[0.3em]">{title}</h4>
         <ChevronDown size={16} className={`text-[#78c13b] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       <h4 className="hidden lg:block text-[11px] font-black text-[#2d4a13] uppercase tracking-[0.3em] mb-8">{title}</h4>
-      <div className={`${isOpen ? 'block pb-4' : 'hidden'} lg:block`}>{children}</div>
+      <div className={`${isOpen ? 'block pb-3' : 'hidden'} lg:block`}>{children}</div>
     </section>
   );
 }
@@ -33,8 +33,8 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
         {(footer) => (
           <footer className="bg-white border-t border-gray-100 pt-8 lg:pt-24 pb-12 overflow-hidden">
             <div className="mx-auto max-w-7xl px-4">
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 pb-8 lg:pb-16 border-b border-gray-100">
-                <div className="lg:col-span-2 space-y-6 mb-6 lg:mb-0">
+              <div className="grid grid-cols-1 lg:grid-cols-5 lg:gap-8 pb-8 lg:pb-16 border-b border-gray-100">
+                <div className="lg:col-span-2 space-y-4 mb-4 lg:mb-0">
                   <NavLink prefetch="intent" to="/" end>
                     {header.shop.brand?.logo?.image?.url ? (
                       <img

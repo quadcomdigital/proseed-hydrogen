@@ -85,13 +85,13 @@ export default function ProductCard({product}: {product: ProductCardData}) {
             {canAdd ? (
               <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines: [{merchandiseId: product.variantId!, quantity: 1}]}}>
                 <button type="submit" onClick={handleAddClick}
-                  className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${added ? 'bg-green-600 text-white scale-105' : 'bg-[#78c13b] text-white hover:bg-[#68a632]'}`}>
+                  className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${added ? 'bg-green-600 text-white scale-105' : 'bg-[#78c13b] text-white hover:bg-[#68a632]'}`}>
                   {added ? <Check size={14} className="animate-bounce" /> : <ShoppingCart size={14} />}
                   <span>{added ? 'Aggiunto!' : 'Carrello'}</span>
                 </button>
               </CartForm>
             ) : (
-              <button className="py-2.5 bg-gray-100 text-gray-300 rounded-xl text-xs font-bold cursor-not-allowed flex items-center justify-center space-x-1.5">
+              <button className="w-full py-2.5 bg-gray-100 text-gray-300 rounded-xl text-xs font-bold cursor-not-allowed flex items-center justify-center space-x-1.5">
                 <ShoppingCart size={14} /><span>Non disp.</span>
               </button>
             )}

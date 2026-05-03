@@ -65,7 +65,7 @@ export async function action({request, context}: Route.ActionArgs) {
     const data: any = await context.storefront.query(query);
 
     const products = handles.map((h, i) => {
-      const node = data?.data?.[`p${i}`] as any;
+      const node = data?.[`p${i}`] as any;
       if (!node) return null;
       return {
         id: node.id, handle: node.handle, title: node.title,

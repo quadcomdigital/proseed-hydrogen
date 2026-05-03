@@ -43,16 +43,14 @@ export function Header({
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
-    const onScroll = () => {
-      const s = window.scrollY;
-      setIsScrolled((prev) => {
-        if (s > 100) return true;
-        if (s < 60) return false;
-        return prev;
-      });
-    };
-    window.addEventListener('scroll', onScroll, {passive: true});
-    return () => window.removeEventListener('scroll', onScroll);
+    const sentinel = document.getElementById('header-sentinel');
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsScrolled(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -84,6 +82,7 @@ export function Header({
   const {open: openAside} = useAside();
 
   return (
+    <>
     <header className="sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-sm">
       <div
         className={`hidden lg:block bg-[#78c13b] text-white py-2 text-[11px] font-bold text-center transition-all duration-300 overflow-hidden ${
@@ -242,6 +241,8 @@ export function Header({
         </div>
       </div>
     </header>
+    <div id="header-sentinel" className="h-px" />
+    </>
   );
 }
 

@@ -45,7 +45,11 @@ export function Header({
   useEffect(() => {
     const onScroll = () => {
       const s = window.scrollY;
-      setIsScrolled(s > 80);
+      setIsScrolled((prev) => {
+        if (s > 100) return true;
+        if (s < 60) return false;
+        return prev;
+      });
     };
     window.addEventListener('scroll', onScroll, {passive: true});
     return () => window.removeEventListener('scroll', onScroll);

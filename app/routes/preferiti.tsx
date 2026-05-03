@@ -184,11 +184,13 @@ export default function Preferiti() {
               <p className="text-[#78c13b] font-black text-lg mt-1">&euro;{product.price.toFixed(2)}</p>
               <div className="mt-3 flex items-center space-x-2">
                 {product.variantId ? (
-                  <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines: [{merchandiseId: product.variantId, quantity: 1}]}}>
-                    <button type="submit" className="flex-1 py-3 bg-[#78c13b] text-white text-xs font-bold rounded-xl hover:bg-[#68a632] transition-all flex items-center justify-center space-x-2">
-                      <ShoppingCart size={16} /><span>Carrello</span>
-                    </button>
-                  </CartForm>
+                  <div className="flex-1">
+                    <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines: [{merchandiseId: product.variantId, quantity: 1}]}}>
+                      <button type="submit" className="w-full py-3 bg-[#78c13b] text-white text-xs font-bold rounded-xl hover:bg-[#68a632] transition-all flex items-center justify-center space-x-2">
+                        <ShoppingCart size={16} /><span>Carrello</span>
+                      </button>
+                    </CartForm>
+                  </div>
                 ) : null}
                 <button onClick={() => removeItem(product.handle)} className="p-3 bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
                   <Trash2 size={18} />

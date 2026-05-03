@@ -84,15 +84,15 @@ export function SpecsGrid({product}: {product: any}) {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-2">
       {specs.map((spec, i) => (
-        <div key={i} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#78c13b] shadow-sm shrink-0">
+        <div key={i} className="flex items-center space-x-2 p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+          <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center text-[#78c13b] shadow-sm shrink-0">
             {spec.icon}
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] font-black text-gray-400 uppercase">{spec.label}</p>
-            <p className="text-sm font-bold text-[#2d4a13] break-words">{spec.value}</p>
+            <p className="text-[9px] font-black text-gray-400 uppercase">{spec.label}</p>
+            <p className="text-[11px] font-bold text-[#2d4a13]">{spec.value}</p>
           </div>
         </div>
       ))}

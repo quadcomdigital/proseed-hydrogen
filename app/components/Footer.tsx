@@ -15,13 +15,13 @@ function FooterSection({title, children}: {title: string; children: React.ReactN
     <section className="border-b border-gray-100 lg:border-none last:border-none">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-6 lg:py-0 lg:hidden group"
+        className="w-full flex items-center justify-between py-4 lg:py-0 lg:hidden group"
       >
         <h4 className="text-[11px] font-black text-[#2d4a13] uppercase tracking-[0.3em]">{title}</h4>
         <ChevronDown size={16} className={`text-[#78c13b] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       <h4 className="hidden lg:block text-[11px] font-black text-[#2d4a13] uppercase tracking-[0.3em] mb-8">{title}</h4>
-      <div className={`${isOpen ? 'block pb-6' : 'hidden'} lg:block`}>{children}</div>
+      <div className={`${isOpen ? 'block pb-4' : 'hidden'} lg:block`}>{children}</div>
     </section>
   );
 }
@@ -72,15 +72,15 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
 
                 <FooterSection title="Esplora">
                   <nav>
-                    <ul className="space-y-4">
+                    <ul>
                       {[
                         {label: 'Catalogo Completo', href: '/collections'},
                         {label: 'Seed Box', href: '/seed-box'},
                         {label: 'Smart Garden', href: '/smart-garden'},
                         {label: 'Seed Club', href: '/seed-club'},
-                        {label: 'Blog & Guide', href: '/blog'},
+                        {label: "Blog & Guide", href: '/blog'},
                       ].map((item) => (
-                        <li key={item.label}>
+                        <li key={item.label} className="m-0">
                           <NavLink prefetch="intent" to={item.href} className="text-sm font-bold text-gray-400 hover:text-[#78c13b] transition-colors">
                             {item.label}
                           </NavLink>
@@ -92,7 +92,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
 
                 <FooterSection title="Assistenza">
                   <nav>
-                    <ul className="space-y-4">
+                    <ul>
                       {[
                         {label: "Centro Aiuto & FAQ", href: '/faq'},
                         {label: "Stato dell'Ordine", href: '/stato-ordine'},
@@ -100,7 +100,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                         {label: 'Termini e Condizioni', href: '/termini-e-condizioni'},
                         {label: 'Privacy Policy', href: '/privacy-policy'},
                       ].map((item) => (
-                        <li key={item.label}>
+                        <li key={item.label} className="m-0">
                           <NavLink prefetch="intent" to={item.href} className="text-sm font-bold text-gray-400 hover:text-[#78c13b] transition-colors">
                             {item.label}
                           </NavLink>

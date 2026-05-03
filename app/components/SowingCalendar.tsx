@@ -75,24 +75,24 @@ export function SpecsGrid({product}: {product: any}) {
   };
 
   const specs = [
-    {label: 'Difficolt\u00e0', value: mf('difficolta', 'Media'), icon: <Droplets className="text-[#78c13b]" size={18} />},
-    {label: 'Raccolto', value: mf('tempo_raccolto', '60-90 giorni'), icon: <Calendar className="text-[#78c13b]" size={18} />},
-    {label: 'Germinazione', value: mf('germinazione', '90%'), icon: <Sun className="text-[#78c13b]" size={18} />},
-    {label: 'Esposizione', value: mf('esposizione', 'Pieno Sole'), icon: <ThermometerSun className="text-[#78c13b]" size={18} />},
-    {label: 'Tipologia', value: mf('tipologia', 'Erbacea Annuale'), icon: <Sprout className="text-[#78c13b]" size={18} />},
-    {label: 'Codice', value: mf('codice', product.id?.split('/')?.pop() || '-'), icon: <Info className="text-[#78c13b]" size={18} />},
+    {label: 'Difficolt\u00e0', value: mf('difficolta', 'Media'), icon: <Droplets size={16} />},
+    {label: 'Raccolto', value: mf('tempo_raccolto', '60-90 giorni'), icon: <Calendar size={16} />},
+    {label: 'Germinazione', value: mf('germinazione', '90%'), icon: <Sun size={16} />},
+    {label: 'Esposizione', value: mf('esposizione', 'Pieno Sole'), icon: <ThermometerSun size={16} />},
+    {label: 'Tipologia', value: mf('tipologia', 'Erbacea Annuale'), icon: <Sprout size={16} />},
+    {label: 'Codice', value: mf('codice', product.id?.split('/')?.pop() || '-'), icon: <Info size={16} />},
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-2 lg:gap-4">
+    <div className="grid grid-cols-2 gap-3">
       {specs.map((spec, i) => (
-        <div key={i} className="flex items-center space-x-2 lg:space-x-3 p-2 lg:p-3 bg-gray-50 rounded-xl border border-gray-100">
-          <div className="w-6 h-6 lg:w-8 lg:h-8 bg-white rounded-full flex items-center justify-center text-[#78c13b] shadow-sm shrink-0">
+        <div key={i} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#78c13b] shadow-sm shrink-0">
             {spec.icon}
           </div>
           <div className="min-w-0">
-            <p className="text-[8px] lg:text-[9px] font-black text-gray-400 uppercase truncate">{spec.label}</p>
-            <p className="text-[10px] lg:text-xs font-bold text-[#2d4a13] truncate">{spec.value}</p>
+            <p className="text-[10px] font-black text-gray-400 uppercase">{spec.label}</p>
+            <p className="text-sm font-bold text-[#2d4a13] break-words">{spec.value}</p>
           </div>
         </div>
       ))}

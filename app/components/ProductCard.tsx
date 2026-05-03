@@ -1,5 +1,5 @@
 import {useState, useEffect, useCallback} from 'react';
-import {Link, useFetcher} from 'react-router';
+import {Link} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {Heart, ShoppingCart, Check} from 'lucide-react';
 
@@ -19,10 +19,8 @@ interface ProductCardData {
 const WISHLIST_KEY = 'proseed_wishlist';
 
 function getWishlistIds(): string[] {
-  try {
-    const raw = localStorage.getItem(WISHLIST_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
-  } catch { return []; }
+  try { const raw = localStorage.getItem(WISHLIST_KEY); return raw ? (JSON.parse(raw) as string[]) : []; }
+  catch { return []; }
 }
 
 function toggleWishlistId(id: string): boolean {
@@ -35,28 +33,20 @@ function toggleWishlistId(id: string): boolean {
 export default function ProductCard({product}: {product: ProductCardData}) {
   const [isSaved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
-  const fetcher = useFetcher();
-  const isAdding = fetcher.state !== 'idle';
   const canAdd = Boolean(product.variantId && product.availableForSale !== false);
 
-  useEffect(() => {
-    setSaved(getWishlistIds().includes(product.handle));
-  }, [product.handle]);
-
-  useEffect(() => {
-    if (fetcher.state === 'idle' && isAdding === false && added === false && fetcher.data !== undefined) {
-      setAdded(true);
-      const t = setTimeout(() => setAdded(false), 1500);
-      return () => clearTimeout(t);
-    }
-  }, [fetcher.state]);
+  useEffect(() => { setSaved(getWishlistIds().includes(product.handle)); }, [product.handle]);
 
   const handleWishlist = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     const now = toggleWishlistId(product.handle);
     setSaved(now);
   }, [product.handle]);
+
+  const handleAddClick = () => {
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   return (
     <article className="group relative">
@@ -68,19 +58,11 @@ export default function ProductCard({product}: {product: ProductCardData}) {
             </span>
           )}
           <div className="relative h-full w-full">
-            <img
-              src={product.image?.url || '/images/placeholder.svg'}
-              alt={product.image?.altText || product.title}
-              className={`h-full w-full object-cover transition-all duration-700 ease-out ${product.secondImage ? 'group-hover:opacity-0' : ''}`}
-              loading="lazy"
-            />
+            <img src={product.image?.url || '/images/placeholder.svg'} alt={product.image?.altText || product.title}
+              className={`h-full w-full object-cover transition-all duration-700 ease-out ${product.secondImage ? 'group-hover:opacity-0' : ''}`} loading="lazy" />
             {product.secondImage?.url && (
-              <img
-                src={product.secondImage.url}
-                alt={product.secondImage.altText || product.title}
-                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:opacity-100"
-                loading="lazy"
-              />
+              <img src={product.secondImage.url} alt={product.secondImage.altText || product.title}
+                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:opacity-100" loading="lazy" />
             )}
           </div>
         </div>
@@ -96,46 +78,21 @@ export default function ProductCard({product}: {product: ProductCardData}) {
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <button
-              onClick={handleWishlist}
-              className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
-                isSaved
-                  ? 'bg-red-500 text-white'
-                  : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500'
-              }`}
-            >
-              <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} />
-              <span>Salva</span>
+            <button onClick={handleWishlist}
+              className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${isSaved ? 'bg-red-500 text-white' : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500'}`}>
+              <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} /><span>Salva</span>
             </button>
             {canAdd ? (
-              <fetcher.Form method="post" action="/cart" className="contents">
-                <input type="hidden" name="cartFormInput" value={JSON.stringify({
-                  action: CartForm.ACTIONS.LinesAdd,
-                  inputs: {lines: [{merchandiseId: product.variantId, quantity: 1}]},
-                })} />
-                <button
-                  type="submit"
-                  disabled={isAdding}
-                  className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
-                    added
-                      ? 'bg-green-600 text-white scale-105'
-                      : 'bg-[#78c13b] text-white hover:bg-[#68a632]'
-                  } disabled:opacity-60`}
-                >
-                  {isAdding ? (
-                    <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : added ? (
-                    <Check size={14} className="animate-bounce" />
-                  ) : (
-                    <ShoppingCart size={14} />
-                  )}
+              <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines: [{merchandiseId: product.variantId!, quantity: 1}]}}>
+                <button type="submit" onClick={handleAddClick}
+                  className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${added ? 'bg-green-600 text-white scale-105' : 'bg-[#78c13b] text-white hover:bg-[#68a632]'}`}>
+                  {added ? <Check size={14} className="animate-bounce" /> : <ShoppingCart size={14} />}
                   <span>{added ? 'Aggiunto!' : 'Carrello'}</span>
                 </button>
-              </fetcher.Form>
+              </CartForm>
             ) : (
               <button className="py-2.5 bg-gray-100 text-gray-300 rounded-xl text-xs font-bold cursor-not-allowed flex items-center justify-center space-x-1.5">
-                <ShoppingCart size={14} />
-                <span>Non disp.</span>
+                <ShoppingCart size={14} /><span>Non disp.</span>
               </button>
             )}
           </div>

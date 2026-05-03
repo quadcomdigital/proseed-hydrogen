@@ -1,5 +1,5 @@
-import {Suspense, useMemo, useState, useEffect} from 'react';
-import {Await, Link, useNavigation, useFetcher} from 'react-router';
+import {Suspense, useMemo, useState} from 'react';
+import {Await, Link, useNavigation} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
 import {Check, Leaf, ShoppingCart} from 'lucide-react';
 import type {Route} from './+types/products.$productHandle';
@@ -146,26 +146,12 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
     variants[0]?.selectedOptions?.forEach((o: any) => { initial[o.name] = o.value; });
     return initial;
   });
-  const fetcher = useFetcher();
-  const [adding, setAdding] = useState<'idle' | 'loading' | 'added'>('idle');
+  const [cartState, setCartState] = useState<'idle' | 'added'>('idle');
 
-  useEffect(() => {
-    if (fetcher.state === 'idle' && adding === 'loading') {
-      setAdding('added');
-      const t = setTimeout(() => setAdding('idle'), 1500);
-      return () => clearTimeout(t);
-    }
-  }, [fetcher.state, adding]);
-
-  const handleAdd = () => {
-    if (adding !== 'idle' || !currentVariant?.availableForSale) return;
-    setAdding('loading');
-    const fd = new FormData();
-    fd.set('cartFormInput', JSON.stringify({
-      action: CartForm.ACTIONS.LinesAdd,
-      inputs: {lines: [{merchandiseId: currentVariant.id, quantity: 1}]},
-    }));
-    fetcher.submit(fd, {method: 'post', action: '/cart'});
+  const handleCartClick = () => {
+    if (cartState === 'added' || !currentVariant?.availableForSale) return;
+    setCartState('added');
+    setTimeout(() => setCartState('idle'), 2000);
   };
 
   const currentVariant = useMemo(() => {
@@ -289,24 +275,27 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
           )}
 
           {currentVariant && (
-            <button
-              onClick={handleAdd}
-              disabled={!currentVariant.availableForSale || adding !== 'idle'}
-              className={`w-full mt-6 font-black py-4 rounded-xl transition-all text-sm uppercase tracking-widest flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                adding === 'added'
-                  ? 'bg-green-600 text-white scale-[1.02] shadow-lg'
-                  : 'bg-[#78c13b] text-white hover:bg-[#68a632] shadow-lg shadow-[#78c13b]/20'
-              }`}
+            <CartForm
+              route="/cart"
+              action={CartForm.ACTIONS.LinesAdd}
+              inputs={{lines: [{merchandiseId: currentVariant.id, quantity: 1}]}}
             >
-              {adding === 'loading' ? (
-                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : adding === 'added' ? (
-                <Check size={20} className="animate-bounce" />
-              ) : (
-                <ShoppingCart size={20} />
-              )}
-              <span>{adding === 'added' ? 'Aggiunto!' : currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}</span>
-            </button>
+              <button
+                type="submit"
+                disabled={!currentVariant.availableForSale}
+                onClick={handleCartClick}
+                className={`w-full mt-6 font-black py-4 rounded-xl transition-all text-sm uppercase tracking-widest flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  cartState === 'added'
+                    ? 'bg-green-600 text-white scale-[1.02] shadow-lg'
+                    : 'bg-[#78c13b] text-white hover:bg-[#68a632] shadow-lg shadow-[#78c13b]/20'
+                }`}
+              >
+                {cartState === 'added' ? (
+                  <Check size={20} className="animate-bounce" />
+                ) : null}
+                <span>{cartState === 'added' ? 'Aggiunto!' : currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}</span>
+              </button>
+            </CartForm>
           )}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">

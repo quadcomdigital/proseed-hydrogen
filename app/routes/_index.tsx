@@ -116,23 +116,23 @@ export default function Home({loaderData}: Route.ComponentProps) {
       <Categories />
 
       <section className="mx-auto max-w-7xl px-4 py-8 lg:py-14">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 lg:mb-8 flex items-center justify-between">
           <div className="relative">
             <div className="absolute -left-4 top-0 w-1 h-full bg-[#78c13b]" />
             <div className="pl-6">
-              <p className="text-[11px] font-black text-[#78c13b] uppercase tracking-[0.3em] mb-1">Collezione 2024</p>
-              <h2 className="text-2xl font-black text-[#2d4a13] lg:text-4xl italic">
+              <p className="text-[10px] lg:text-[11px] font-black text-[#78c13b] uppercase tracking-[0.3em] mb-1">Collezione 2026</p>
+              <h2 className="text-xl lg:text-4xl font-black text-[#2d4a13] italic">
                 I Nostri <span className="text-[#78c13b] not-italic">Bestsellers</span>
               </h2>
             </div>
           </div>
-          <Link to="/collections" className="text-sm font-black uppercase tracking-[0.18em] text-[#78c13b] py-3 px-6 rounded-xl shadow-lg shadow-[#78c13b]/20 bg-[#78c13b] text-white transition-all hover:bg-[#68a632]">
-            Vedi tutto il catalogo
+          <Link to="/collections" className="text-[10px] lg:text-sm font-black uppercase tracking-[0.18em] text-white py-2 px-4 lg:py-3 lg:px-6 rounded-xl bg-[#78c13b] hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 whitespace-nowrap">
+            Vedi tutto
           </Link>
         </div>
         <div className="flex lg:hidden overflow-x-auto space-x-3 pb-4 snap-x">
           {products.map((product: any) => (
-            <div key={product.id} className="min-w-[68vw] snap-start">
+            <div key={product.id} className="min-w-[55vw] snap-start">
               <ProductCard
                 product={{
                   id: product.id,

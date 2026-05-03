@@ -129,10 +129,8 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
               </div>
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
-                  <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start">
-                    {['Visa', 'MC', 'PayPal', 'Apple Pay', 'Google Pay'].map((m) => (
-                      <span key={m} className="text-[10px] font-black text-gray-400 uppercase tracking-wider px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-100">{m}</span>
-                    ))}
+                  <div className="flex flex-wrap items-center justify-center lg:justify-start">
+                    <img src="/images/payment-badges.svg" alt="Metodi di pagamento" className="h-8 w-auto opacity-80" />
                   </div>
                 <div className="flex items-center justify-center">
                   <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">PROSEED SRL</div>

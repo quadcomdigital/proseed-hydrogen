@@ -27,8 +27,8 @@ export default function Hero({slides}: {slides?: HeroSlide[]}) {
   const next = () => setActive((p) => (p + 1) % items.length);
 
   return (
-    <section className="relative h-[80vh] min-h-[600px] w-full mt-0 px-4">
-      <div className="mx-auto max-w-7xl h-full relative overflow-hidden rounded-[40px] shadow-2xl shadow-[#78c13b1a]">
+    <section className="relative h-[60vh] lg:h-[80vh] min-h-[400px] lg:min-h-[600px] w-full mt-0 px-2 lg:px-4">
+      <div className="mx-auto max-w-7xl h-full relative overflow-hidden rounded-[24px] lg:rounded-[40px] shadow-2xl shadow-[#78c13b1a]">
         {items.map((slide, i) => (
           <div
             key={i}
@@ -44,28 +44,28 @@ export default function Hero({slides}: {slides?: HeroSlide[]}) {
           </div>
         ))}
 
-        <div className="relative z-20 h-full flex items-center px-12 lg:px-24">
+        <div className="relative z-20 h-full flex items-center px-6 lg:px-24">
           <div className="max-w-2xl text-white">
-            <span className="inline-block px-4 py-1 bg-[#78c13b] rounded-full text-xs font-bold tracking-widest mb-6 animate-bounce">
+            <span className="inline-block px-3 lg:px-4 py-1 bg-[#78c13b] rounded-full text-[10px] lg:text-xs font-bold tracking-widest mb-4 lg:mb-6 animate-bounce">
               {items[active].tag}
             </span>
-            <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight mb-6 drop-shadow-lg">
+            <h1 className="text-3xl lg:text-7xl font-extrabold leading-tight mb-4 lg:mb-6 drop-shadow-lg">
               {items[active].title}
             </h1>
-            <p className="text-xl lg:text-2xl text-white/90 mb-10 max-w-lg font-light">
+            <p className="text-base lg:text-2xl text-white/90 mb-6 lg:mb-10 max-w-lg font-light">
               {items[active].subtitle}
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3">
               <Link
                 to="/collections"
-                className="px-8 py-4 bg-[#78c13b] hover:bg-[#68a632] text-white font-bold rounded-2xl flex items-center space-x-2 transition-all hover:translate-x-1 group"
+                className="px-6 py-3 lg:px-8 lg:py-4 bg-[#78c13b] hover:bg-[#68a632] text-white font-bold rounded-2xl flex items-center space-x-2 transition-all hover:translate-x-1 group text-sm lg:text-base"
               >
                 <span>Vai al catalogo</span>
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <button
                 onClick={() => document.getElementById('features')?.scrollIntoView({behavior: 'smooth'})}
-                className="px-8 py-4 backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/40 text-white font-bold rounded-2xl transition-all"
+                className="px-6 py-3 lg:px-8 lg:py-4 backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/40 text-white font-bold rounded-2xl transition-all text-sm lg:text-base"
               >
                 Scopri di pi&ugrave;
               </button>
@@ -73,16 +73,16 @@ export default function Hero({slides}: {slides?: HeroSlide[]}) {
           </div>
         </div>
 
-        <div className="absolute bottom-10 right-10 z-30 flex items-center space-x-4">
-          <button onClick={prev} className="w-12 h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors">
-            <ChevronLeft size={24} />
+        <div className="absolute bottom-6 right-6 lg:bottom-10 lg:right-10 z-30 flex items-center space-x-3">
+          <button onClick={prev} className="w-10 h-10 lg:w-12 lg:h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors text-sm">
+            <ChevronLeft size={20} />
           </button>
-          <button onClick={next} className="w-12 h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors">
-            <ChevronRight size={24} />
+          <button onClick={next} className="w-10 h-10 lg:w-12 lg:h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors text-sm">
+            <ChevronRight size={20} />
           </button>
         </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex space-x-3">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex space-x-2 lg:space-x-3">
           {items.map((_, i) => (
             <button
               key={i}

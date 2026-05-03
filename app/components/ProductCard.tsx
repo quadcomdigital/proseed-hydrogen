@@ -51,7 +51,7 @@ export default function ProductCard({product}: {product: ProductCardData}) {
   return (
     <article className="group relative">
       <Link to={`/products/${product.handle}`} className="block">
-        <div className="aspect-[4/5] bg-white rounded-[40px] overflow-hidden mb-5 relative shadow-[0_20px_50px_rgba(0,0,0,0.03)] group-hover:shadow-[0_40px_80px_rgba(120,193,59,0.15)] transition-all duration-700">
+        <div className="aspect-[3/4] lg:aspect-[4/5] bg-white rounded-[24px] lg:rounded-[40px] overflow-hidden mb-4 lg:mb-5 relative shadow-[0_20px_50px_rgba(0,0,0,0.03)] group-hover:shadow-[0_40px_80px_rgba(120,193,59,0.15)] transition-all duration-700">
           {product.badge && (
             <span className="absolute top-6 left-6 z-10 bg-[#2d4a13] text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest shadow-lg">
               {product.badge}

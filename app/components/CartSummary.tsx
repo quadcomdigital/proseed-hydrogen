@@ -1,6 +1,6 @@
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
-import {CartForm, type OptimisticCart} from '@shopify/hydrogen';
+import {type OptimisticCart} from '@shopify/hydrogen';
 import {ArrowRight} from 'lucide-react';
 import {useAside} from './Aside';
 

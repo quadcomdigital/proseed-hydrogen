@@ -1,4 +1,4 @@
-import {Sprout, Calendar, Sun, ThermometerSun, Droplets, Info, Leaf} from 'lucide-react';
+import {Sprout, Calendar, Sun, ThermometerSun, Droplets, Info} from 'lucide-react';
 
 interface SowingCalendarProps {
   semenzaio?: string | null;

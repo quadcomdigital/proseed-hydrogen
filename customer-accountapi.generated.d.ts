@@ -3,14 +3,6 @@
 /* eslint-disable */
 import type * as CustomerAccountAPI from '@shopify/hydrogen/customer-account-api-types';
 
-export type CustomerAccountPingQueryVariables = CustomerAccountAPI.Exact<{
-  [key: string]: never;
-}>;
-
-export type CustomerAccountPingQuery = {
-  customer: Pick<CustomerAccountAPI.Customer, 'id'>;
-};
-
 export type CustomerMetafieldQueryVariables = CustomerAccountAPI.Exact<{
   [key: string]: never;
 }>;
@@ -41,10 +33,6 @@ export type MetafieldsSetMutation = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\n  query CustomerAccountPing {\n    customer {\n      id\n    }\n  }\n': {
-    return: CustomerAccountPingQuery;
-    variables: CustomerAccountPingQueryVariables;
-  };
   '#graphql\n  query CustomerMetafield {\n    customer {\n      metafield(namespace: "proseed", key: "wishlist") {\n        value\n      }\n    }\n  }\n': {
     return: CustomerMetafieldQuery;
     variables: CustomerMetafieldQueryVariables;

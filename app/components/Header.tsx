@@ -78,7 +78,6 @@ export function Header({
     [rawItems, publicStoreDomain, header.shop.primaryDomain.url],
   );
 
-  const {toggleCart} = useCartToggle();
   const {open: openAside} = useAside();
 
   return (
@@ -290,44 +289,6 @@ export function HeaderMenu({
   );
 }
 
-function HeaderCtas({
-  isLoggedIn,
-  cart,
-}: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
-  return (
-    <nav className="flex items-center gap-3" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" className="hidden text-sm font-bold text-emerald-900 hover:text-lime-700 lg:block">
-        <Suspense fallback="Accedi">
-          <Await resolve={isLoggedIn} errorElement="Accedi">
-            {(loggedIn) => (loggedIn ? 'Account' : 'Accedi')}
-          </Await>
-        </Suspense>
-      </NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
-    </nav>
-  );
-}
-
-function HeaderMenuMobileToggle() {
-  const {open} = useAside();
-  return (
-    <button className="hidden rounded-xl border border-emerald-200 px-3 py-2 text-sm font-bold text-emerald-900" onClick={() => open('mobile')}>
-      <h3>Menu</h3>
-    </button>
-  );
-}
-
-function SearchToggle() {
-  const {open} = useAside();
-  return (
-    <button className="rounded-xl border border-emerald-200 px-3 py-2 text-sm font-bold text-emerald-900 hover:bg-emerald-50" onClick={() => open('search')}>
-      Cerca
-    </button>
-  );
-}
-
 function CartBadge({count}: {count: number | null}) {
   const {open} = useAside();
   const {publish, shop, cart, prevCart} = useAnalytics();
@@ -345,22 +306,6 @@ function CartBadge({count}: {count: number | null}) {
       Carrello {count === null ? <span>&nbsp;</span> : count}
     </a>
   );
-}
-
-function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
-  return (
-    <Suspense fallback={<CartBadge count={null} />}>
-      <Await resolve={cart}>
-        <CartBanner />
-      </Await>
-    </Suspense>
-  );
-}
-
-function CartBanner() {
-  const originalCart = useAsyncValue() as CartApiQueryFragment | null;
-  const cart = useOptimisticCart(originalCart);
-  return <CartBadge count={cart?.totalQuantity ?? 0} />;
 }
 
 function CartDesktop({cart}: {cart: CartApiQueryFragment | null}) {
@@ -466,9 +411,4 @@ function normalizeMenu(
           : rawUrl;
       return {id: item.id, title: item.title, url};
     });
-}
-
-function useCartToggle() {
-  const {open} = useAside();
-  return {toggleCart: () => open('cart')};
 }

@@ -184,7 +184,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
         </Link>
       </div>
 
-      <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-10 px-4 pb-24 lg:pb-14">
+      <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 px-4 pb-20 lg:pb-14">
         <ProductGallery images={galleryImages} title={product.title} hasDiscount={!!hasDiscount} />
 
         <div className="flex flex-col">

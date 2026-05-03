@@ -53,7 +53,7 @@ export async function action({request, context}: Route.ActionArgs) {
 export default function CartPage({loaderData}: Route.ComponentProps) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 lg:py-14">
-      <h1 className="mb-6 text-2xl lg:text-5xl font-black text-emerald-900">Carrello</h1>
+      <h1 className="mb-6 text-2xl lg:text-4xl font-black text-[#2d4a13]">Carrello</h1>
       <CartMain cart={loaderData.cart} layout="page" />
     </div>
   );

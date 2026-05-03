@@ -106,7 +106,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                   {feature.icon}
                 </div>
                 <h3 className="text-sm lg:text-xl font-bold text-gray-800 mt-3 lg:mt-4 lg:mb-3">{feature.title}</h3>
-                <p className="text-xs lg:text-base font-medium text-gray-500 leading-relaxed mt-1 lg:mt-2 hidden lg:block">{feature.desc}</p>
+                <p className="text-xs lg:text-base font-medium text-gray-500 leading-relaxed mt-1 lg:mt-2 line-clamp-2">{feature.desc}</p>
               </article>
             ))}
           </div>
@@ -132,7 +132,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
         </div>
         <div className="flex lg:hidden overflow-x-auto space-x-3 pb-4 snap-x">
           {products.map((product: any) => (
-            <div key={product.id} className="min-w-[55vw] snap-start">
+            <div key={product.id} className="min-w-[50vw] snap-start">
               <ProductCard
                 product={{
                   id: product.id,
@@ -191,7 +191,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                 Inizia ora gratis
               </Link>
             </div>
-            <div className="mt-12 lg:mt-0 relative">
+            <div className="mt-8 lg:mt-0 relative">
               <img
                 src="/images/innovation-preview.jpg"
                 alt="Smart Garden"

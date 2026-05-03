@@ -1,6 +1,6 @@
 export default function SeoContent() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 lg:py-16 border-t border-gray-100 bg-gray-50/50">
+    <section className="mx-auto max-w-7xl px-4 py-8 lg:py-16 border-t border-gray-100 bg-gray-50/50">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl lg:text-4xl font-black text-[#2d4a13] mb-6 text-center">
           Semi online di qualit&agrave; per orto, giardino e balcone su ProSeed.it

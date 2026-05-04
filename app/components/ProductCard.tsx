@@ -62,9 +62,11 @@ export default function ProductCard({product}: {product: ProductCardData}) {
           )}
           <div className="relative h-full w-full">
             <img src={product.image?.url || '/images/placeholder.svg'} alt={product.image?.altText || product.title}
+              width="400" height="500"
               className={`h-full w-full object-cover transition-all duration-700 ease-out ${product.secondImage ? 'group-hover:opacity-0' : ''}`} loading="lazy" />
             {product.secondImage?.url && (
               <img src={product.secondImage.url} alt={product.secondImage.altText || product.title}
+                width="400" height="500"
                 className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:opacity-100" loading="lazy" />
             )}
           </div>

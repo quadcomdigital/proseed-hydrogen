@@ -43,8 +43,11 @@ export default function Hero({slides}: {slides?: HeroSlide[]}) {
             <img
               src={slide.img}
               alt={slide.title}
+              width="1440"
+              height="900"
               className="h-full w-full object-cover scale-105 hover:scale-110 transition-transform duration-[10s] ease-linear"
               loading={i === 0 ? 'eager' : 'lazy'}
+              fetchPriority={i === 0 ? 'high' : 'low'}
             />
           </div>
         ))}

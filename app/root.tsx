@@ -84,6 +84,8 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
+    {rel: 'preload', href: '/fonts/GeistVF.woff', as: 'font', type: 'font/woff', crossOrigin: 'anonymous'},
+    {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 }

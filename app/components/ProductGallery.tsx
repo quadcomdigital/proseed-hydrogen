@@ -65,6 +65,7 @@ export default function ProductGallery({images, title, hasDiscount}: ProductGall
             className="h-full w-full object-cover"
             sizes="(max-width: 1024px) 100vw, 50vw"
             loading="eager"
+            fetchPriority="high"
           />
         </div>
         {images.length > 1 && (

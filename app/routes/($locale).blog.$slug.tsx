@@ -123,7 +123,9 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
           <img
             src={featuredImage}
             alt={article.title}
+            width="1200" height="675"
             className="h-full w-full object-cover"
+            loading="eager"
           />
         </div>
       </section>

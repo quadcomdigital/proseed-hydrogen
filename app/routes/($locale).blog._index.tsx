@@ -142,8 +142,10 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
                     <img
                       src={posts[0].image}
                       alt={posts[0].title}
+                      width="800" height="500"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 1024px) 100vw, 70vw"
+                      loading="eager" fetchPriority="high"
                     />
                   </div>
                   <div className="lg:col-span-5 lg:pl-8">

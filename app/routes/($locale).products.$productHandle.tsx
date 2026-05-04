@@ -215,11 +215,17 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
     name: product.title,
     description: product.description?.slice(0, 200),
     image: product.featuredImage?.url,
+    sku: product.codice?.value || product.id?.split('/').pop(),
+    mpn: product.id?.split('/').pop() || '',
+    brand: { '@type': 'Brand', name: 'Proseed' },
+    category: product.productType || '',
     offers: {
       '@type': 'Offer',
       price: currentVariant.price?.amount,
       priceCurrency: currentVariant.price?.currencyCode,
       availability: currentVariant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: `https://proseed.it${lang === 'en' ? '/en' : ''}/products/${product.handle}`,
+      priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     },
   } : null;
 

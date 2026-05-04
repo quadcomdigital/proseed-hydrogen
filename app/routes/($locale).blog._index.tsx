@@ -50,9 +50,9 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
     title: post.title,
     excerpt: post.excerpt || '',
     image: post.image?.url || '/images/placeholder.svg',
-    date: new Date(post.publishedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'}),
-    category: post.tags?.[0] || 'Blog',
-    readTime: '5 min',
+    date: new Date(post.publishedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'it-IT', {day: 'numeric', month: 'long', year: 'numeric'}),
+    category: post.tags?.[0] || t('blog.blog_section_title', lang),
+    readTime: t('blog.read_time', lang),
   }));
 
   const categories = [t('blog.all', lang), ...Array.from(new Set(posts.map((p) => p.category)))];

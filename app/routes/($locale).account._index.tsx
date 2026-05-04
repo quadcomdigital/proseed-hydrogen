@@ -136,7 +136,7 @@ export default function AccountIndex() {
                 <div>
                   <p className="font-bold text-[#2d4a13] text-sm">{order.name}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {new Date(order.processedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
+                    {new Date(order.processedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
                   </p>
                 </div>
                 <div className="flex items-center space-x-4">

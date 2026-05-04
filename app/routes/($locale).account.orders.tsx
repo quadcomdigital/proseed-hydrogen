@@ -86,7 +86,7 @@ export default function AccountOrders({loaderData}: Route.ComponentProps) {
                 <div>
                   <p className="font-bold text-[#2d4a13]">{order.name}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {new Date(order.processedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
+                    {new Date(order.processedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
                   </p>
                 </div>
               </div>

@@ -9,6 +9,8 @@ import SocialShare from '~/components/SocialShare';
 import MobileStickyAddToCart from '~/components/MobileStickyAddToCart';
 import ProductCard from '~/components/ProductCard';
 import SowingCalendar, {SpecsGrid} from '~/components/SowingCalendar';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 const PRODUCT_QUERY = `#graphql
   query ProductByHandle(
@@ -134,6 +136,7 @@ export async function action({request, context}: Route.ActionArgs) {
 }
 
 export default function ProductPage({loaderData}: Route.ComponentProps) {
+  const lang = useLocale();
   const {product, recommendations} = loaderData;
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
@@ -182,7 +185,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
     <>
       <div className="mx-auto max-w-7xl px-4 pt-6 pb-4">
         <Link to="/collections" className="text-xs font-bold text-[#78c13b] uppercase tracking-widest hover:underline">
-          &larr; Torna al catalogo
+          &larr; {t('pdp.back_to_catalog', lang)}
         </Link>
       </div>
 
@@ -217,7 +220,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
 
           {variants.length > 0 && options.some((o) => o.values.length > 1) && (
             <div className="mt-6 space-y-3">
-              <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">Varianti disponibili</p>
+              <p className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">{t('pdp.variants_available', lang)}</p>
               {variants.map((v) => {
                 const optLabel = v.selectedOptions?.filter((o: any) => o.value !== 'Default Title').map((o: any) => o.value).join(' / ') || v.id;
                 const isSelected = currentVariant?.id === v.id;
@@ -250,7 +253,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
                         <div>
                           <p className={`font-bold text-base ${isSelected ? 'text-[#78c13b]' : 'text-[#2d4a13]'}`}>{optLabel}</p>
                           <p className={`text-xs font-medium ${v.availableForSale ? 'text-green-600' : 'text-red-400'}`}>
-                            {v.availableForSale ? (v.quantityAvailable ? `${v.quantityAvailable} pezzi disponibili` : 'Disponibile') : 'Esaurito'}
+                            {v.availableForSale ? (v.quantityAvailable ? `${v.quantityAvailable} ${t('pdp.pieces_available', lang)}` : t('pdp.available', lang)) : t('pdp.sold_out', lang)}
                           </p>
                         </div>
                       </div>
@@ -266,7 +269,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
                           )}
                         </div>
                         {pricePerUnit > 0 && Number(v.price.amount) !== pricePerUnit && (
-                          <p className="text-xs text-gray-400 mt-0.5">&euro;{pricePerUnit.toFixed(2)} / pezzo</p>
+                          <p className="text-xs text-gray-400 mt-0.5">&euro;{pricePerUnit.toFixed(2)} / {lang === 'en' ? 'piece' : 'pezzo'}</p>
                         )}
                       </div>
                     </div>
@@ -295,13 +298,13 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
                 {cartState === 'added' ? (
                   <Check size={20} className="animate-bounce" />
                 ) : null}
-                <span>{cartState === 'added' ? 'Aggiunto!' : currentVariant.availableForSale ? 'Aggiungi al carrello' : 'Non disponibile'}</span>
+                <span>{cartState === 'added' ? t('product_card.added', lang) : currentVariant.availableForSale ? t('quick_view.add_to_cart', lang) : t('quick_view.unavailable', lang)}</span>
               </button>
             </CartForm>
           )}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
-            <img src="/images/shipping-quality-badge.png" alt="Certificazioni" className="h-14 w-auto" />
+            <img src="/images/shipping-quality-badge.png" alt="" className="h-14 w-auto" />
           </div>
 
           <SocialShare productName={product.title} />
@@ -324,9 +327,9 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700 hidden lg:block">
                 <Leaf size={100} />
               </div>
-              <h4 className="font-black text-base lg:text-lg mb-2 relative z-10">Consiglio dell&apos;esperto</h4>
+              <h4 className="font-black text-base lg:text-lg mb-2 relative z-10">{t('pdp.expert_advice', lang)}</h4>
               <p className="text-white/70 text-xs lg:text-sm leading-relaxed relative z-10">
-                {product.consiglio_esperto?.value || 'Per una germinazione ottimale, mantieni il terreno costantemente umido ma non inzuppato. La temperatura ideale del suolo dovrebbe aggirarsi intorno ai 20-25\u00b0C.'}
+                {product.consiglio_esperto?.value || t('pdp.expert_fallback', lang)}
               </p>
             </div>
             <SpecsGrid product={product} />
@@ -341,7 +344,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
             if (!recs.length) return null;
             return (
               <section className="mx-auto max-w-7xl px-4 py-10 border-t border-gray-100">
-                <h2 className="text-2xl font-black text-[#2d4a13] mb-6">Potrebbe piacerti anche</h2>
+                <h2 className="text-2xl font-black text-[#2d4a13] mb-6">{t('pdp.you_may_like', lang)}</h2>
                 <div className="flex lg:hidden overflow-x-auto space-x-4 snap-x pb-4">
                   {recs.slice(0, 4).map((rec: any) => (
                     <div key={rec.id} className="min-w-[75vw] snap-start">

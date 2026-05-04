@@ -63,7 +63,7 @@ export default function AccountOrderDetails({loaderData}: Route.ComponentProps) 
           <div>
             <h2 className="text-2xl font-black text-[#2d4a13]">{order.name}</h2>
             <p className="text-sm text-gray-500 mt-1">
-              {new Date(order.processedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
+              {new Date(order.processedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'it-IT', {day: 'numeric', month: 'long', year: 'numeric'})}
             </p>
           </div>
           <span className="inline-block px-3 py-1 bg-[#78c13b]/10 text-[#78c13b] text-xs font-bold rounded-full">

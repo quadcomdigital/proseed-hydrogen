@@ -8,7 +8,7 @@ import SeoContent from '~/components/SeoContent';
 import {BlogSection} from '~/components/BlogCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import type {ShopifyProduct} from '~/lib/types';
-import {useLocale} from '~/lib/locale';
+import {useLocale, localeDateString, getLocaleFromRequest} from '~/lib/locale';
 import {t} from '~/lib/translations';
 
 const HOMEPAGE_QUERY = `#graphql
@@ -176,7 +176,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
             <div className="mt-8 lg:mt-0 relative">
               <img
                 src="/images/innovation-preview.jpg"
-                alt="Smart Garden"
+                alt={t('home.innovation_title', lang)}
                 className="w-full rounded-3xl border-4 border-white/10 object-cover shadow-2xl hover:rotate-1 hover:scale-105 transition-all duration-1000"
               />
             </div>
@@ -189,9 +189,9 @@ export default function Home({loaderData}: Route.ComponentProps) {
         title: a.title,
         excerpt: a.excerpt || '',
         image: a.image?.url || '/images/placeholder.svg',
-        date: new Date(a.publishedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'}),
-        category: 'Blog',
-        readTime: '5 min',
+        date: new Date(a.publishedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'it-IT', {day: 'numeric', month: 'long', year: 'numeric'}),
+        category: t('blog.blog_section_title', lang),
+        readTime: t('blog.read_time', lang),
       }))} />
       <SeoContent />
     </div>

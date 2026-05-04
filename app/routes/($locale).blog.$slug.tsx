@@ -47,8 +47,8 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
   const [currentUrl, setCurrentUrl] = useState('');
   const lang = useLocale();
   const featuredImage = article.image?.url || '/images/placeholder.svg';
-  const category = article.tags?.[0] || 'Blog';
-  const date = new Date(article.publishedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'});
+  const category = article.tags?.[0] || t('blog.blog_section_title', lang);
+  const date = new Date(article.publishedAt).toLocaleDateString(lang === 'en' ? 'en-GB' : 'it-IT', {day: 'numeric', month: 'long', year: 'numeric'});
 
   useEffect(() => {
     setCurrentUrl(window.location.href);

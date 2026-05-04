@@ -112,7 +112,7 @@ export default function AccountOrders({loaderData}: Route.ComponentProps) {
                     {items.map((item: ShopifyOrderItem, i: number) => (
                       <div key={i} className="flex items-center space-x-3 p-2 bg-gray-50 rounded-xl">
                         <div className="w-10 h-10 bg-white rounded-lg overflow-hidden border border-gray-100 flex-shrink-0">
-                          {item.variant?.image?.url ? <img src={item.variant.image.url} alt={item.title} className="h-full w-full object-cover" /> : <Package size={18} className="mx-auto mt-2 text-gray-300" />}
+                          {item.variant?.image?.url ? <img src={item.variant.image.url} alt={item.title} width="80" height="80" className="h-full w-full object-cover" loading="lazy" /> : <Package size={18} className="mx-auto mt-2 text-gray-300" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-bold text-[#2d4a13] truncate">{item.title}</p>

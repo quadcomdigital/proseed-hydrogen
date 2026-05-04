@@ -60,6 +60,8 @@ export default function CollectionsPage({loaderData}: Route.ComponentProps) {
                 <img
                   src={collection.image.url}
                   alt={collection.image.altText || collection.title}
+                  width="400"
+                  height="500"
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   loading="lazy"
                 />

@@ -369,7 +369,7 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
           )}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
-            <img src="/images/shipping-quality-badge.png" alt="" className="h-14 w-auto" />
+            <img src="/images/shipping-quality-badge.png" alt="" width="120" height="36" className="h-14 w-auto" />
           </div>
 
           <SocialShare productName={product.title} />

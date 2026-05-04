@@ -174,27 +174,27 @@ function AddressForm({fetcher, action, address, onClose}: {
       <input type="hidden" name="_action" value={action} />
       {address?.id && <input type="hidden" name="addressId" value={address.id} />}
       <div>
-        <label className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.address', lang)}</label>
-        <input type="text" name="address1" required defaultValue={address?.address1 || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
+        <label htmlFor="address1" className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.address', lang)}</label>
+        <input type="text" name="address1" id="address1" required defaultValue={address?.address1 || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.city', lang)}</label>
-          <input type="text" name="city" required defaultValue={address?.city || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
+          <label htmlFor="city" className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.city', lang)}</label>
+          <input type="text" name="city" id="city" required defaultValue={address?.city || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
         </div>
         <div>
-          <label className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.province', lang)}</label>
-          <input type="text" name="province" defaultValue={address?.province || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
+          <label htmlFor="province" className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.province', lang)}</label>
+          <input type="text" name="province" id="province" defaultValue={address?.province || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.zip', lang)}</label>
-          <input type="text" name="zip" defaultValue={address?.zip || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
+          <label htmlFor="zip" className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.zip', lang)}</label>
+          <input type="text" name="zip" id="zip" defaultValue={address?.zip || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
         </div>
         <div>
-          <label className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.phone', lang)}</label>
-          <input type="tel" name="phone" defaultValue={address?.phone || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
+          <label htmlFor="phone" className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1 block">{t('addresses.phone', lang)}</label>
+          <input type="tel" name="phone" id="phone" defaultValue={address?.phone || ''} className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors" />
         </div>
       </div>
       <div className="flex space-x-3">

@@ -111,21 +111,21 @@ export default function AccountRegister() {
         <Form method="post" className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.name_required', lang)}</label>
-              <input type="text" name="firstName" required className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
+              <label htmlFor="firstName" className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.name_required', lang)}</label>
+              <input type="text" name="firstName" id="firstName" required className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
             </div>
             <div>
-              <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.surname', lang)}</label>
-              <input type="text" name="lastName" className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
+              <label htmlFor="lastName" className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.surname', lang)}</label>
+              <input type="text" name="lastName" id="lastName" className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.email_required', lang)}</label>
-            <input type="email" name="email" required placeholder="la@tuaemail.com" className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
+            <label htmlFor="email" className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.email_required', lang)}</label>
+            <input type="email" name="email" id="email" required placeholder="la@tuaemail.com" className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
           </div>
           <div>
-            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.password_required', lang)}</label>
-            <input type="password" name="password" required placeholder="Minimo 5 caratteri" minLength={5} className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
+            <label htmlFor="password" className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('register.password_required', lang)}</label>
+            <input type="password" name="password" id="password" required placeholder="Minimo 5 caratteri" minLength={5} className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900" />
           </div>
           <button
             type="submit"

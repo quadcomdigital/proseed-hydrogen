@@ -118,13 +118,21 @@ export function Header({
               <img
                 src={header.shop.brand.logo.image.url}
                 alt={header.shop.name}
+                width="120"
+                height="40"
                 className={`transition-all duration-300 w-auto ${isScrolled ? 'h-8' : 'h-10 lg:h-12'}`}
+                loading="eager"
+                fetchPriority="high"
               />
             ) : (
               <img
                 src="/images/proseed-logo.png"
                 alt="Proseed"
+                width="120"
+                height="40"
                 className={`transition-all duration-300 w-auto ${isScrolled ? 'h-8' : 'h-10 lg:h-12'}`}
+                loading="eager"
+                fetchPriority="high"
               />
             )}
           </NavLink>

@@ -147,7 +147,7 @@ export function SearchBar() {
                   >
                     <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden relative flex-shrink-0">
                       {product.featuredImage?.url ? (
-                        <img src={product.featuredImage.url} alt={product.title} className="h-full w-full object-cover" />
+                        <img src={product.featuredImage.url} alt={product.title} width="80" height="80" className="h-full w-full object-cover" loading="lazy" />
                       ) : (
                         <div className="flex items-center justify-center h-full"><Search size={20} className="text-gray-300" /></div>
                       )}
@@ -249,7 +249,7 @@ export function SearchBar() {
                   >
                     <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {product.featuredImage?.url ? (
-                        <img src={product.featuredImage.url} alt={product.title} className="h-full w-full object-cover group-hover:scale-110 transition-transform" />
+                        <img src={product.featuredImage.url} alt={product.title} width="80" height="80" className="h-full w-full object-cover group-hover:scale-110 transition-transform" loading="lazy" />
                       ) : (
                         <Search size={24} className="text-gray-400" />
                       )}

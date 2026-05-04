@@ -265,7 +265,7 @@ export default function SmartGarden({loaderData}: Route.ComponentProps) {
                     {recommendedProducts.map((product) => (
                       <div key={product.handle} className="group bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl hover:border-[#78c13b]/30 transition-all">
                         <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 bg-gray-100">
-                          <img src={product.image} alt={product.title} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <img src={product.image} alt={product.title} width="400" height="500" className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                         </div>
                         <h3 className="font-bold text-[#2d4a13] mb-2">{product.title}</h3>
                         <div className="flex items-center justify-between">

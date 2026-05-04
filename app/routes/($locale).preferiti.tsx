@@ -197,7 +197,7 @@ export default function Preferiti() {
           <div key={product.handle} className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
             <Link to={`/products/${product.handle}`} className="block">
               <div className="aspect-[4/5] bg-gray-50 overflow-hidden relative">
-                <img src={product.image} alt={product.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <img src={product.image} alt={product.title} width="400" height="500" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
               </div>
             </Link>
             <div className="p-4">

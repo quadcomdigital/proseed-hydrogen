@@ -81,13 +81,19 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                       <img
                         src={header.shop.brand.logo.image.url}
                         alt={header.shop.name}
+                        width="120"
+                        height="40"
                         className="h-10 lg:h-12 w-auto"
+                        loading="lazy"
                       />
                     ) : (
                       <img
                         src="/images/proseed-logo.png"
                         alt="Proseed"
+                        width="120"
+                        height="40"
                         className="h-10 lg:h-12 w-auto"
+                        loading="lazy"
                       />
                     )}
                   </NavLink>
@@ -157,7 +163,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
                   <div className="flex flex-wrap items-center justify-center lg:justify-start">
-                    <img src="/images/payment-badges.png" alt={t('footer.payment_methods', lang)} className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" />
+                    <img src="/images/payment-badges.png" alt={t('footer.payment_methods', lang)} width="200" height="30" className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
                   </div>
                 <div className="flex items-center justify-center">
                   <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">{t('footer.company', lang)}</div>

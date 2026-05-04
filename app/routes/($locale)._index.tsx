@@ -116,8 +116,9 @@ export default function Home({loaderData}: Route.ComponentProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(orgSchema)}} />
       <Hero slides={heroSlides} />
 
-      <section id="features" className="px-4 py-6 lg:py-10">
+      <section id="features" className="px-4 py-6 lg:py-10" aria-labelledby="features-heading">
         <div className="mx-auto max-w-7xl">
+          <h2 id="features-heading" className="sr-only">{t('home.free_shipping', lang)}</h2>
           <p className="mb-6 lg:mb-8 text-center text-xs lg:text-sm font-bold uppercase tracking-[0.2em] text-[#78c13b]">
             {t('home.free_shipping', lang)}
           </p>
@@ -225,7 +226,10 @@ export default function Home({loaderData}: Route.ComponentProps) {
               <img
                 src="/images/innovation-preview.jpg"
                 alt={t('home.innovation_title', lang)}
+                width="800"
+                height="500"
                 className="w-full rounded-3xl border-4 border-white/10 object-cover shadow-2xl hover:rotate-1 hover:scale-105 transition-all duration-1000"
+                loading="lazy"
               />
             </div>
           </div>

@@ -112,20 +112,22 @@ export default function AccountLogin() {
 
         <Form method="post" className="space-y-4">
           <div>
-            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('login.email', lang)}</label>
+            <label htmlFor="email" className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('login.email', lang)}</label>
             <input
               type="email"
               name="email"
+              id="email"
               required
               placeholder="la@tuaemail.com"
               className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900"
             />
           </div>
           <div>
-            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('login.password', lang)}</label>
+            <label htmlFor="password" className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('login.password', lang)}</label>
             <input
               type="password"
               name="password"
+              id="password"
               required
               placeholder="••••••••"
               className="w-full px-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900"

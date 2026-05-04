@@ -96,6 +96,8 @@ export default function SearchPage({loaderData}: Route.ComponentProps) {
                 <img
                   src={product.featuredImage.url}
                   alt={product.featuredImage.altText || product.title}
+                  width="400"
+                  height="500"
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   loading="lazy"
                 />

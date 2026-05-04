@@ -76,7 +76,7 @@ export default function AccountOrderDetails({loaderData}: Route.ComponentProps) 
             <div key={i} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-2xl">
               <div className="w-16 h-16 bg-white rounded-xl overflow-hidden border border-gray-100 flex-shrink-0">
                 {item.variant?.image?.url ? (
-                  <img src={item.variant.image.url} alt={item.title} className="h-full w-full object-cover" />
+                  <img src={item.variant.image.url} alt={item.title} width="80" height="80" className="h-full w-full object-cover" loading="lazy" />
                 ) : (
                   <div className="h-full flex items-center justify-center"><Package size={20} className="text-gray-300" /></div>
                 )}

@@ -71,16 +71,16 @@ export default function AccountIndex() {
           <fetcher.Form method="post" className="space-y-4 max-w-md">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-black text-gray-500 uppercase tracking-widest mb-1">{t('profile.name', lang)}</label>
+                <label htmlFor="firstName" className="block text-xs font-black text-gray-500 uppercase tracking-widest mb-1">{t('profile.name', lang)}</label>
                 <input
-                  type="text" name="firstName" defaultValue={customer.firstName || ''}
+                  type="text" name="firstName" id="firstName" defaultValue={customer.firstName || ''}
                   className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900"
                 />
               </div>
               <div>
-                <label className="block text-xs font-black text-gray-500 uppercase tracking-widest mb-1">{t('profile.surname', lang)}</label>
+                <label htmlFor="lastName" className="block text-xs font-black text-gray-500 uppercase tracking-widest mb-1">{t('profile.surname', lang)}</label>
                 <input
-                  type="text" name="lastName" defaultValue={customer.lastName || ''}
+                  type="text" name="lastName" id="lastName" defaultValue={customer.lastName || ''}
                   className="w-full px-4 py-2.5 border-2 border-gray-100 rounded-xl outline-none focus:border-[#78c13b] transition-colors bg-white text-gray-900"
                 />
               </div>

@@ -82,11 +82,11 @@ export default function Hero({slides}: {slides?: HeroSlide[]}) {
         </div>
 
         <div className="absolute bottom-6 right-6 lg:bottom-10 lg:right-10 z-30 flex items-center space-x-3">
-          <button onClick={prev} className="w-10 h-10 lg:w-12 lg:h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors text-sm">
-            <ChevronLeft size={20} />
+          <button onClick={prev} aria-label={lang === 'en' ? 'Previous slide' : 'Slide precedente'} className="w-10 h-10 lg:w-12 lg:h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors text-sm">
+            <ChevronLeft size={20} aria-hidden="true" />
           </button>
-          <button onClick={next} className="w-10 h-10 lg:w-12 lg:h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors text-sm">
-            <ChevronRight size={20} />
+          <button onClick={next} aria-label={lang === 'en' ? 'Next slide' : 'Slide successiva'} className="w-10 h-10 lg:w-12 lg:h-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-[#78c13b] transition-colors text-sm">
+            <ChevronRight size={20} aria-hidden="true" />
           </button>
         </div>
 

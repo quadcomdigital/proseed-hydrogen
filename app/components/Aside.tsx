@@ -50,7 +50,7 @@ export function Aside({
           <h3>{heading}</h3>
           <button className="close reset" onClick={close} aria-label={t('aside.close', lang)}>&times;</button>
         </header>
-        <main>{children}</main>
+        <div>{children}</div>
       </aside>
     </div>
   );

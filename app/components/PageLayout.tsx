@@ -9,6 +9,7 @@ import type {
 } from 'storefrontapi.generated';
 import {useLocale} from '~/lib/locale';
 import {t} from '~/lib/translations';
+import {Skeleton} from '~/components/Skeleton';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
@@ -50,7 +51,7 @@ export function PageLayout({
           publicStoreDomain={publicStoreDomain}
         />
       )}
-      <main>{children}</main>
+      <main className="transition-opacity duration-200">{children}</main>
       <Footer
         footer={footer}
         header={header}
@@ -85,7 +86,7 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
         </Await>
       </Suspense>
     }>
-      <Suspense fallback={<p>{t('aside.loading', lang)}</p>}>
+      <Suspense fallback={<div className="p-6 space-y-4"><Skeleton className="h-24 w-full" /><Skeleton className="h-24 w-full" /><Skeleton className="h-12 w-full" /></div>}>
         <Await resolve={cart}>
           {(cart) => <CartMain cart={cart} layout="aside" />}
         </Await>

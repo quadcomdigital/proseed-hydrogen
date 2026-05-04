@@ -4,6 +4,7 @@ import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {MapPin, Phone, Mail, ChevronDown} from 'lucide-react';
 import {useLocale} from '~/lib/locale';
 import {t} from '~/lib/translations';
+import {Skeleton} from '~/components/Skeleton';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -48,7 +49,27 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
   ];
 
   return (
-    <Suspense>
+    <Suspense fallback={
+      <footer className="bg-white border-t border-gray-100 pt-8 lg:pt-24 pb-12">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-5 lg:gap-8 pb-8 lg:pb-16 border-b border-gray-100">
+            <div className="lg:col-span-2 space-y-4 mb-4 lg:mb-0">
+              <Skeleton className="h-12 w-48" />
+              <Skeleton className="h-20 w-80" />
+            </div>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-4 w-24" />
+                {Array.from({length: 5}).map((_, j) => (
+                  <Skeleton key={j} className="h-3 w-32" />
+                ))}
+              </div>
+            ))}
+          </div>
+          <Skeleton className="h-8 w-48 mx-auto mt-12" />
+        </div>
+      </footer>
+    }>
       <Await resolve={footerPromise}>
         {(footer) => (
           <footer className="bg-white border-t border-gray-100 pt-8 lg:pt-24 pb-12 overflow-hidden">

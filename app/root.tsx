@@ -10,6 +10,7 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteLoaderData,
+  useNavigation,
 } from 'react-router';
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
@@ -160,6 +161,8 @@ function getClientLang(): string {
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
   const data = useRouteLoaderData<typeof loader>('root');
+  const nav = useNavigation();
+  const isLoading = nav.state === 'loading';
   const lang = data?.locale?.language?.toLowerCase() || getClientLang();
 
   return (
@@ -174,6 +177,9 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body>
+        <div id="loading-bar" className="fixed top-0 left-0 right-0 z-[9999] h-0.5 pointer-events-none">
+          <div className="h-full bg-[#78c13b] transition-all duration-300 ease-out" style={{width: isLoading ? '60%' : '0%', opacity: isLoading ? 1 : 0}} />
+        </div>
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
@@ -183,7 +189,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
 }
 
 export default function App() {
-  const data = useRouteLoaderData<RootLoader>('root');
+  const data = useRouteLoaderData<typeof loader>('root');
 
   if (!data) {
     return <Outlet />;

@@ -4,6 +4,7 @@ import {CartForm, Image, Money, getSeoMeta} from '@shopify/hydrogen';
 import {Check, Leaf, ShoppingCart} from 'lucide-react';
 import type {Route} from './+types/($locale).products.$productHandle';
 import ProductGallery from '~/components/ProductGallery';
+import {Breadcrumb} from '~/components/Breadcrumb';
 import ProductTabs from '~/components/ProductTabs';
 import SocialShare from '~/components/SocialShare';
 import MobileStickyAddToCart from '~/components/MobileStickyAddToCart';
@@ -246,9 +247,11 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(breadcrumbSchema)}} />
       <div className="mx-auto max-w-7xl px-4 pt-6 pb-4">
-        <Link to="/collections" className="text-xs font-bold text-[#78c13b] uppercase tracking-widest hover:underline">
-          &larr; {t('pdp.back_to_catalog', lang)}
-        </Link>
+        <Breadcrumb items={[
+          {label: 'collezioni', href: '/collections'},
+          {label: product.productType || 'prodotti', href: `/collections`},
+          {label: product.title},
+        ]} />
       </div>
 
       <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 px-4 pb-20 lg:pb-14">

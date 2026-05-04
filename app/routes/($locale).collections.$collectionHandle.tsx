@@ -5,6 +5,7 @@ import ProductCard from '~/components/ProductCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import type {ShopifyProduct} from '~/lib/types';
 import {useLocale} from '~/lib/locale';
+import {Breadcrumb} from '~/components/Breadcrumb';
 
 const COLLECTION_QUERY = `#graphql
   query CollectionByHandle(
@@ -93,6 +94,10 @@ export default function CollectionPage({loaderData}: Route.ComponentProps) {
     <div className="mx-auto max-w-7xl px-4 py-6 lg:py-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(breadcrumbSchema)}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(collectionSchema)}} />
+      <Breadcrumb items={[
+        {label: 'collezioni', href: '/collections'},
+        {label: collection.title},
+      ]} />
       <h1 className="text-2xl lg:text-4xl font-black text-[#2d4a13]">{collection.title}</h1>
       {collection.description ? (
         <p className="mt-3 max-w-3xl text-sm text-gray-500">{collection.description}</p>

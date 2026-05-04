@@ -100,9 +100,20 @@ export default function Home({loaderData}: Route.ComponentProps) {
     },
   };
 
+  const orgSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Proseed',
+    url: siteUrl,
+    logo: `${siteUrl}/images/proseed-logo.png`,
+    description: t('footer.brand_desc', lang).replace(/<[^>]*>/g, '').slice(0, 200),
+    address: { '@type': 'PostalAddress', addressLocality: 'Bari', addressCountry: 'IT' },
+  };
+
   return (
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(websiteSchema)}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(orgSchema)}} />
       <Hero slides={heroSlides} />
 
       <section id="features" className="px-4 py-6 lg:py-10">

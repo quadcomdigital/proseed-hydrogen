@@ -2,6 +2,8 @@ import {useState, useEffect, useCallback} from 'react';
 import {Link} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {Heart, ShoppingCart, Check} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 interface ProductCardData {
   id: string;
@@ -34,6 +36,7 @@ export default function ProductCard({product}: {product: ProductCardData}) {
   const [isSaved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
   const canAdd = Boolean(product.variantId && product.availableForSale !== false);
+  const lang = useLocale();
 
   useEffect(() => { setSaved(getWishlistIds().includes(product.handle)); }, [product.handle]);
 
@@ -80,19 +83,19 @@ export default function ProductCard({product}: {product: ProductCardData}) {
           <div className="mt-3 grid grid-cols-2 gap-2">
             <button onClick={handleWishlist}
               className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${isSaved ? 'bg-red-500 text-white' : 'bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500'}`}>
-              <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} /><span>Salva</span>
+              <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} /><span>{t('product_card.save', lang)}</span>
             </button>
             {canAdd ? (
               <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines: [{merchandiseId: product.variantId!, quantity: 1}]}}>
                 <button type="submit" onClick={handleAddClick}
                   className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${added ? 'bg-green-600 text-white scale-105' : 'bg-[#78c13b] text-white hover:bg-[#68a632]'}`}>
                   {added ? <Check size={14} className="animate-bounce" /> : <ShoppingCart size={14} />}
-                  <span>{added ? 'Aggiunto!' : 'Carrello'}</span>
+                  <span>{added ? t('product_card.added', lang) : t('product_card.cart', lang)}</span>
                 </button>
               </CartForm>
             ) : (
               <button className="w-full py-2.5 bg-gray-100 text-gray-300 rounded-xl text-xs font-bold cursor-not-allowed flex items-center justify-center space-x-1.5">
-                <ShoppingCart size={14} /><span>Non disp.</span>
+                <ShoppingCart size={14} /><span>{t('product_card.unavailable', lang)}</span>
               </button>
             )}
           </div>

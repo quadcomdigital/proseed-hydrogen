@@ -7,6 +7,8 @@ import {
   type PredictiveSearchReturn,
 } from '~/lib/search';
 import {useAside} from './Aside';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 type PredictiveSearchItems = PredictiveSearchReturn['result']['items'];
 
@@ -263,13 +265,14 @@ function SearchResultsPredictiveEmpty({
 }: {
   term: React.MutableRefObject<string>;
 }) {
+  const lang = useLocale();
   if (!term.current) {
     return null;
   }
 
   return (
     <p>
-      No results found for <q>{term.current}</q>
+      {t('search_bar.no_results_for', lang)} <q>{term.current}</q>
     </p>
   );
 }

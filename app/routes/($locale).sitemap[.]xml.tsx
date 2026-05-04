@@ -1,4 +1,4 @@
-import type {Route} from './+types/sitemap[.]xml';
+import type {Route} from './+types/($locale).sitemap[.]xml';
 
 const SITEMAP_QUERY = `#graphql
   query SitemapData($country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {

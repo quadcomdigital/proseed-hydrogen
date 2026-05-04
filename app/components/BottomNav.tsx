@@ -3,6 +3,8 @@ import {Await, NavLink, useLocation, useAsyncValue} from 'react-router';
 import {useOptimisticCart} from '@shopify/hydrogen';
 import {Home, Search, ShoppingCart, User} from 'lucide-react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 export function BottomNav({cart}: {cart: Promise<CartApiQueryFragment | null>}) {
   const location = useLocation();
@@ -20,7 +22,7 @@ export function BottomNav({cart}: {cart: Promise<CartApiQueryFragment | null>}) 
           className={({isActive}) => `flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[#78c13b]' : 'text-gray-400'}`}
         >
           <Home size={24} />
-          <span className="text-[10px] font-medium">Home</span>
+          <span className="text-[10px] font-medium">{t('bottom_nav.home', useLocale())}</span>
         </NavLink>
 
         <button
@@ -28,7 +30,7 @@ export function BottomNav({cart}: {cart: Promise<CartApiQueryFragment | null>}) 
           className="flex flex-col items-center justify-center w-full h-full space-y-1 text-gray-400"
         >
           <Search size={24} />
-          <span className="text-[10px] font-medium">Cerca</span>
+          <span className="text-[10px] font-medium">{t('bottom_nav.search', useLocale())}</span>
         </button>
 
         <Suspense fallback={<BottomNavCartBadge count={0} />}>
@@ -42,7 +44,7 @@ export function BottomNav({cart}: {cart: Promise<CartApiQueryFragment | null>}) 
           className={({isActive}) => `flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[#78c13b]' : 'text-gray-400'}`}
         >
           <User size={24} />
-          <span className="text-[10px] font-medium">Account</span>
+          <span className="text-[10px] font-medium">{t('bottom_nav.account', useLocale())}</span>
         </NavLink>
       </div>
     </div>
@@ -69,7 +71,7 @@ function BottomNavCartBadge({count}: {count: number}) {
           </span>
         )}
       </div>
-      <span className="text-[10px] font-medium">Carrello</span>
+      <span className="text-[10px] font-medium">{t('bottom_nav.cart', useLocale())}</span>
     </NavLink>
   );
 }

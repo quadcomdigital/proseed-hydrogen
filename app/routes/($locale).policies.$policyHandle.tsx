@@ -1,4 +1,4 @@
-import type {Route} from './+types/policies.$policyHandle';
+import type {Route} from './+types/($locale).policies.$policyHandle';
 
 const POLICIES_QUERY = `#graphql
   query PoliciesIndex($country: CountryCode, $language: LanguageCode)
@@ -64,8 +64,8 @@ export default function PolicyPage({loaderData}: Route.ComponentProps) {
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-10 lg:py-14">
-      <h1 className="text-3xl font-black text-emerald-900 lg:text-5xl">{policy.title}</h1>
-      <div className="prose prose-emerald mt-6 max-w-none" dangerouslySetInnerHTML={{__html: policy.body}} />
+      <h1 className="text-3xl font-black text-[#2d4a13] lg:text-5xl">{policy.title}</h1>
+      <div className="prose prose-green mt-6 max-w-none" dangerouslySetInnerHTML={{__html: policy.body}} />
     </article>
   );
 }

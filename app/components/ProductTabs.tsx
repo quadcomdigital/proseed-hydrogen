@@ -1,14 +1,17 @@
 import {useState} from 'react';
 import {FileText, Truck, RefreshCw} from 'lucide-react';
-
-const tabs = [
-  {key: 'description', label: 'Descrizione', icon: <FileText size={18} />},
-  {key: 'shipping', label: 'Spedizioni', icon: <Truck size={18} />},
-  {key: 'returns', label: 'Resi e Rimborsi', icon: <RefreshCw size={18} />},
-];
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 export default function ProductTabs({descriptionHtml}: {descriptionHtml?: string}) {
   const [active, setActive] = useState('description');
+  const lang = useLocale();
+
+  const tabs = [
+    {key: 'description', label: t('product_tabs.description', lang), icon: <FileText size={18} />},
+    {key: 'shipping', label: t('product_tabs.shipping', lang), icon: <Truck size={18} />},
+    {key: 'returns', label: t('product_tabs.returns', lang), icon: <RefreshCw size={18} />},
+  ];
 
   return (
     <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white">
@@ -34,14 +37,12 @@ export default function ProductTabs({descriptionHtml}: {descriptionHtml?: string
         ) : null}
         {active === 'shipping' && (
           <div className="text-gray-500 leading-relaxed text-sm">
-            <p className="mb-3">Le spedizioni vengono effettuate entro 24/48 ore lavorative dal pagamento. La consegna avviene in 2-5 giorni lavorativi tramite corriere espresso.</p>
-            <p><strong>Gratuita</strong> per ordini superiori a 39 &euro;.</p>
+            <p>{t('product_tabs.shipping_content', lang)}</p>
           </div>
         )}
         {active === 'returns' && (
           <div className="text-gray-500 leading-relaxed text-sm">
-            <p className="mb-3">Hai diritto di recesso entro 14 giorni dalla ricezione del prodotto. I prodotti devono essere restituiti integri e non aperti.</p>
-            <p>Per richiedere un reso, contatta il nostro servizio clienti all&apos;indirizzo email <strong>info@proseed.it</strong>.</p>
+            <p>{t('product_tabs.returns_content', lang)}</p>
           </div>
         )}
       </div>

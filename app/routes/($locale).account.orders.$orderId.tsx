@@ -1,7 +1,9 @@
 import {Link} from 'react-router';
 import {AppSession} from '~/lib/session';
 import {ArrowLeft, Package} from 'lucide-react';
-import type {Route} from './+types/account.orders.$orderId';
+import type {Route} from './+types/($locale).account.orders.$orderId';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 const CUSTOMER_ORDERS_ID_QUERY = `#graphql
   query CustomerOrdersDetail($customerAccessToken: String!) {
@@ -47,12 +49,13 @@ export async function loader({context, params}: Route.LoaderArgs) {
 export default function AccountOrderDetails({loaderData}: Route.ComponentProps) {
   const {order} = loaderData as any;
   const items = order.lineItems?.nodes || [];
+  const lang = useLocale();
 
   return (
     <div className="space-y-6">
       <Link to="/account/orders" className="inline-flex items-center space-x-2 text-sm font-bold text-[#78c13b] hover:underline">
         <ArrowLeft size={16} />
-        <span>Torna agli ordini</span>
+        <span>{t('orders.back_to_orders', lang)}</span>
       </Link>
 
       <div className="bg-white border border-gray-100 rounded-3xl p-6 lg:p-8 shadow-sm">
@@ -64,7 +67,7 @@ export default function AccountOrderDetails({loaderData}: Route.ComponentProps) 
             </p>
           </div>
           <span className="inline-block px-3 py-1 bg-[#78c13b]/10 text-[#78c13b] text-xs font-bold rounded-full">
-            {order.fulfillmentStatus === 'FULFILLED' ? 'Completato' : 'In elaborazione'}
+            {order.fulfillmentStatus === 'FULFILLED' ? t('orders.fulfilled', lang) : t('orders.in_progress', lang)}
           </span>
         </div>
 
@@ -80,7 +83,7 @@ export default function AccountOrderDetails({loaderData}: Route.ComponentProps) 
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-[#2d4a13] text-sm truncate">{item.title}</p>
-                <p className="text-xs text-gray-400 mt-0.5">Q.tà: {item.quantity}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{t('orders.qty', lang)}: {item.quantity}</p>
               </div>
               <p className="text-sm font-black text-[#78c13b]">&euro;{Number(item.originalTotalPrice?.amount || 0).toFixed(2)}</p>
             </div>
@@ -88,7 +91,7 @@ export default function AccountOrderDetails({loaderData}: Route.ComponentProps) 
         </div>
 
         <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
-          <span className="text-gray-500 text-sm">Totale</span>
+          <span className="text-gray-500 text-sm">{t('orders.total', lang)}</span>
           <span className="text-2xl font-black text-[#78c13b]">
             &euro;{Number(order.totalPrice?.amount || 0).toFixed(2)}
           </span>

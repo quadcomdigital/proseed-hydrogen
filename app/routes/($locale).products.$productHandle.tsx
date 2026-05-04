@@ -2,7 +2,7 @@ import {Suspense, useMemo, useState} from 'react';
 import {Await, Link, useNavigation} from 'react-router';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
 import {Check, Leaf, ShoppingCart} from 'lucide-react';
-import type {Route} from './+types/products.$productHandle';
+import type {Route} from './+types/($locale).products.$productHandle';
 import ProductGallery from '~/components/ProductGallery';
 import ProductTabs from '~/components/ProductTabs';
 import SocialShare from '~/components/SocialShare';
@@ -106,11 +106,13 @@ export async function loader({context, params}: Route.LoaderArgs) {
 
   if (!data.product) throw new Response('Not found', {status: 404});
 
+  const product = data.product as any;
+
   const recommendations = context.storefront
     .query(RECOMMENDATIONS_QUERY, {cache: context.storefront.CacheShort(), variables: {handle}})
     .catch(() => ({productRecommendations: []}));
 
-  return {product: data.product as any, recommendations};
+  return {product, recommendations};
 }
 
 export async function action({request, context}: Route.ActionArgs) {

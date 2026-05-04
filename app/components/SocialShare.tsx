@@ -1,8 +1,11 @@
 import {useState, useEffect} from 'react';
 import {Share2} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 export default function SocialShare({productName}: {productName: string}) {
   const [url, setUrl] = useState('');
+  const lang = useLocale();
 
   useEffect(() => {
     setUrl(window.location.href);
@@ -13,7 +16,7 @@ export default function SocialShare({productName}: {productName: string}) {
   const encodedUrl = encodeURIComponent(url);
   const encodedName = encodeURIComponent(productName);
   const shareLinks = [
-    {label: 'Email', href: `mailto:?subject=${encodedName}&body=${encodedUrl}`, icon: <MailIcon />, hoverColor: 'hover:bg-[#78c13b] hover:text-white hover:border-[#78c13b]'},
+    {label: t('social_share.email', lang), href: `mailto:?subject=${encodedName}&body=${encodedUrl}`, icon: <MailIcon />, hoverColor: 'hover:bg-[#78c13b] hover:text-white hover:border-[#78c13b]'},
     {label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, icon: <FacebookIcon />, hoverColor: 'hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2]'},
     {label: 'Twitter', href: `https://twitter.com/intent/tweet?text=${encodedName}&url=${encodedUrl}`, icon: <TwitterIcon />, hoverColor: 'hover:bg-black hover:text-white hover:border-black'},
     {label: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, icon: <LinkedInIcon />, hoverColor: 'hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2]'},
@@ -23,12 +26,12 @@ export default function SocialShare({productName}: {productName: string}) {
     <div className="flex items-center space-x-4 py-4">
       <div className="flex items-center space-x-2 text-gray-500 font-bold text-xs uppercase tracking-widest">
         <Share2 size={16} />
-        <span>Condividi:</span>
+        <span>{t('social_share.share', lang)}</span>
       </div>
       <div className="flex items-center space-x-3">
         {shareLinks.map((link) => (
           <a
-            key={link.label}
+            key={link.href}
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"

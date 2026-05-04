@@ -1,5 +1,9 @@
 import {Form, Link} from 'react-router';
-import type {Route} from './+types/search';
+import type {Route} from './+types/($locale).search';
+import {SEARCH_PRODUCT_FRAGMENT} from '~/lib/fragments';
+import type {ShopifyProduct} from '~/lib/types';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 const SEARCH_QUERY = `#graphql
   query SearchResults(
@@ -11,23 +15,12 @@ const SEARCH_QUERY = `#graphql
     search(query: $query, first: $first, types: [PRODUCT]) {
       nodes {
         ... on Product {
-          id
-          handle
-          title
-          featuredImage {
-            url
-            altText
-          }
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
+          ...SearchProduct
         }
       }
     }
   }
+  ${SEARCH_PRODUCT_FRAGMENT}
 `;
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -48,42 +41,43 @@ export async function loader({request, context}: Route.LoaderArgs) {
 
 export default function SearchPage({loaderData}: Route.ComponentProps) {
   const {q, products} = loaderData;
+  const lang = useLocale();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 lg:py-14">
-      <h1 className="mb-6 text-3xl font-black text-emerald-900 lg:text-5xl">Ricerca</h1>
+      <h1 className="mb-6 text-3xl font-black text-[#2d4a13] lg:text-5xl">{t('search.title', lang)}</h1>
 
       <Form method="get" className="mb-8 flex gap-3">
         <input
           type="search"
           name="q"
           defaultValue={q}
-          placeholder="Cerca semi e prodotti"
-          className="w-full rounded-xl border border-emerald-200 px-4 py-3"
+          placeholder={t('search.placeholder', lang)}
+          className="w-full rounded-xl border border-[#78c13b]/20 px-4 py-3"
         />
         <button
           type="submit"
-          className="rounded-xl bg-lime-600 px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-white"
+          className="rounded-xl bg-[#78c13b] px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-white"
         >
-          Cerca
+          {t('search.button', lang)}
         </button>
       </Form>
 
       {q ? (
-        <p className="mb-5 text-sm font-bold uppercase tracking-[0.12em] text-emerald-900/70">
-          Risultati per: {q}
+        <p className="mb-5 text-sm font-bold uppercase tracking-[0.12em] text-[#2d4a13]/70">
+          {t('search.results_for', lang)} {q}
         </p>
       ) : null}
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {products.map((product: any) => (
+        {products.map((product: ShopifyProduct) => (
           <Link
             key={product.id}
             to={`/products/${product.handle}`}
-            className="group overflow-hidden rounded-3xl border border-emerald-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+            className="group overflow-hidden rounded-3xl border border-[#78c13b]/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
           >
-            <div className="aspect-[4/5] bg-emerald-50">
-              {product.featuredImage ? (
+            <div className="aspect-[4/5] bg-[#78c13b]/5">
+                {product.featuredImage && product.priceRange ? (
                 <img
                   src={product.featuredImage.url}
                   alt={product.featuredImage.altText || product.title}
@@ -93,10 +87,12 @@ export default function SearchPage({loaderData}: Route.ComponentProps) {
               ) : null}
             </div>
             <div className="p-4">
-              <h2 className="line-clamp-1 text-base font-black text-emerald-900">{product.title}</h2>
-              <p className="mt-2 text-lg font-black text-lime-700">
-                {Number(product.priceRange.minVariantPrice.amount).toFixed(2)} {product.priceRange.minVariantPrice.currencyCode}
-              </p>
+              <h2 className="line-clamp-1 text-base font-black text-[#2d4a13]">{product.title}</h2>
+                {product.priceRange ? (
+                <p className="mt-2 text-lg font-black text-[#78c13b]">
+                  {Number(product.priceRange.minVariantPrice.amount).toFixed(2)} {product.priceRange.minVariantPrice.currencyCode}
+                </p>
+                ) : null}
             </div>
           </Link>
         ))}

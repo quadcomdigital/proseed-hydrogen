@@ -2,6 +2,8 @@ import {useEffect, useState, useCallback} from 'react';
 import {Link, useFetcher} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {X, ShoppingCart, Eye} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 interface QuickViewProduct {
   id: string;
@@ -24,6 +26,7 @@ export default function QuickViewModal() {
   const fetcher = useFetcher();
   const isAdding = fetcher.state !== 'idle';
   const canAdd = Boolean(product?.variantId && product?.availableForSale !== false);
+  const lang = useLocale();
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -128,7 +131,7 @@ export default function QuickViewModal() {
                   ) : (
                     <>
                       <ShoppingCart size={20} />
-                      <span>Aggiungi al carrello</span>
+                      <span>{t('quick_view.add_to_cart', lang)}</span>
                     </>
                   )}
                 </button>
@@ -139,7 +142,7 @@ export default function QuickViewModal() {
                 className="w-full py-4 bg-gray-200 text-gray-400 font-black rounded-xl text-sm uppercase tracking-widest flex items-center justify-center space-x-3 cursor-not-allowed"
               >
                 <ShoppingCart size={20} />
-                <span>Non disponibile</span>
+                <span>{t('quick_view.unavailable', lang)}</span>
               </button>
             )}
 
@@ -149,7 +152,7 @@ export default function QuickViewModal() {
                 onClick={handleClose}
                 className="text-sm font-bold text-[#2d4a13] hover:text-[#78c13b] transition-colors flex items-center justify-center"
               >
-                Visualizza tutti i dettagli
+                {t('quick_view.view_details', lang)}
               </Link>
             </div>
           </div>

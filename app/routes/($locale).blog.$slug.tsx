@@ -1,7 +1,9 @@
 import {Link, useLocation} from 'react-router';
 import {useEffect, useState} from 'react';
 import {ChevronRight, Clock, ArrowLeft} from 'lucide-react';
-import type {Route} from './+types/blog.$slug';
+import type {Route} from './+types/($locale).blog.$slug';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 const BLOG_DETAIL_QUERY = `#graphql
   query BlogDetail(
@@ -43,6 +45,7 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
   const {article} = loaderData;
   const location = useLocation();
   const [currentUrl, setCurrentUrl] = useState('');
+  const lang = useLocale();
   const featuredImage = article.image?.url || '/images/placeholder.svg';
   const category = article.tags?.[0] || 'Blog';
   const date = new Date(article.publishedAt).toLocaleDateString('it-IT', {day: 'numeric', month: 'long', year: 'numeric'});
@@ -77,7 +80,7 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
           <div className="flex flex-wrap items-center gap-4 lg:gap-6 text-sm text-gray-500 mb-0 lg:mb-8">
             <div className="flex items-center space-x-2">
               <Clock size={16} className="text-[#78c13b]" />
-              <span>5 min di lettura</span>
+              <span>{t('blog.read_time', lang)}</span>
             </div>
             <span>{date}</span>
           </div>
@@ -111,7 +114,7 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
 
           <aside className="space-y-8 lg:sticky lg:top-32 h-fit">
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Condividi</h4>
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">{t('blog.share', lang)}</h4>
               <div className="flex flex-col space-y-3">
                 {currentUrl ? [
                   {label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`, color: '#1877F2'},
@@ -138,7 +141,7 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
             className="inline-flex items-center space-x-2 text-[#78c13b] font-black text-sm uppercase tracking-widest hover:text-[#2d4a13] transition-colors"
           >
             <ArrowLeft size={16} />
-            <span>Torna al blog</span>
+            <span>{t('blog.back', lang)}</span>
           </Link>
         </div>
       </section>

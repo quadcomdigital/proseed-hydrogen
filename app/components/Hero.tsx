@@ -1,6 +1,8 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router';
 import {ChevronLeft, ChevronRight, ArrowRight} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 export interface HeroSlide {
   title: string;
@@ -9,13 +11,16 @@ export interface HeroSlide {
   tag: string;
 }
 
-const FALLBACK_SLIDES: HeroSlide[] = [
-  {title: 'Sementi Bio & Naturali', subtitle: 'Il piacere della natura direttamente a casa tua.', img: 'https://cdn.shopify.com/s/files/1/0993/8583/5904/files/photo-1523348837708-15d4a09cfac2.avif', tag: '100% ORGANICO'},
-  {title: 'Semi Per Orto, Giardino E Balcone', subtitle: 'Certificati ad alta germinabilit\u00e0 per i tuoi successi.', img: '/images/hero-stagione.jpg', tag: 'NUOVA STAGIONE'},
-];
+function getFallbackSlides(lang: 'it' | 'en'): HeroSlide[] {
+  return [
+    {title: t('hero.slide_1_title', lang), subtitle: t('hero.slide_1_desc', lang), img: 'https://cdn.shopify.com/s/files/1/0993/8583/5904/files/photo-1523348837708-15d4a09cfac2.avif', tag: t('hero.slide_1_tag', lang)},
+    {title: t('hero.slide_2_title', lang), subtitle: t('hero.slide_2_desc', lang), img: '/images/hero-stagione.jpg', tag: t('hero.slide_2_tag', lang)},
+  ];
+}
 
 export default function Hero({slides}: {slides?: HeroSlide[]}) {
-  const items = slides && slides.length > 0 ? slides : FALLBACK_SLIDES;
+  const lang = useLocale();
+  const items = slides && slides.length > 0 ? slides : getFallbackSlides(lang);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -60,14 +65,14 @@ export default function Hero({slides}: {slides?: HeroSlide[]}) {
                 to="/collections"
                 className="px-6 py-3 lg:px-8 lg:py-4 bg-[#78c13b] hover:bg-[#68a632] text-white font-bold rounded-2xl flex items-center space-x-2 transition-all hover:translate-x-1 group text-sm lg:text-base"
               >
-                <span>Vai al catalogo</span>
+                <span>{t('hero.cta_shop', lang)}</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <button
                 onClick={() => document.getElementById('features')?.scrollIntoView({behavior: 'smooth'})}
                 className="px-6 py-3 lg:px-8 lg:py-4 backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/40 text-white font-bold rounded-2xl transition-all text-sm lg:text-base"
               >
-                Scopri di pi&ugrave;
+                {t('hero.cta_discover', lang)}
               </button>
             </div>
           </div>

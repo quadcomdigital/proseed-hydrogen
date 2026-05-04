@@ -2,11 +2,15 @@ import {useEffect, useState} from 'react';
 import {Link, useFetcher, useLoaderData} from 'react-router';
 import {Heart, ShoppingCart, ArrowRight, LogIn, Trash2} from 'lucide-react';
 import {CartForm} from '@shopify/hydrogen';
-import type {Route} from './+types/preferiti';
+import type {Route} from './+types/($locale).preferiti';
 import {
   CUSTOMER_METAFIELD_QUERY,
   CUSTOMER_METAFIELDS_SET_MUTATION,
 } from '~/graphql/customer-account/wishlist';
+import type {ShopifyProduct} from '~/lib/types';
+import {t} from '~/lib/translations';
+import type {Lang} from '~/lib/translations';
+import {useLocale} from '~/lib/locale';
 
 const WISHLIST_KEY = 'proseed_wishlist';
 
@@ -65,7 +69,7 @@ export async function action({request, context}: Route.ActionArgs) {
     const data: any = await context.storefront.query(query);
 
     const products = handles.map((h, i) => {
-      const node = data?.[`p${i}`] as any;
+      const node: {id: string; handle: string; title: string; featuredImage?: {url: string; altText?: string}; priceRange?: {minVariantPrice: {amount: string; currencyCode: string}}; variants?: {nodes: {id: string}[]}} | null = data?.[`p${i}`] ?? null;
       if (!node) return null;
       return {
         id: node.id, handle: node.handle, title: node.title,
@@ -82,10 +86,16 @@ export async function action({request, context}: Route.ActionArgs) {
   return Response.json({}, {status: 400});
 }
 
+interface WishlistProduct {
+  id: string; handle: string; title: string; price: number;
+  currencyCode: string; image: string; variantId?: string;
+}
+
 export default function Preferiti() {
-  const {isLoggedIn, serverHandles} = useLoaderData() as any;
+  const lang = useLocale();
+  const {isLoggedIn, serverHandles} = useLoaderData() as {isLoggedIn: boolean; serverHandles: string[]};
   const [localHandles, setLocalHandles] = useState<string[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<WishlistProduct[]>([]);
   const fetcher = useFetcher();
   const productsData = fetcher.data?.products;
   const loading = fetcher.state !== 'idle';
@@ -126,10 +136,10 @@ export default function Preferiti() {
         <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
           <Heart size={40} className="text-gray-300" />
         </div>
-        <h1 className="text-3xl font-black text-[#2d4a13] mb-4">Accedi per usare la wishlist</h1>
-        <p className="text-gray-500 mb-8">Salva i tuoi prodotti preferiti e sincronizzali tra tutti i tuoi dispositivi.</p>
+        <h1 className="text-3xl font-black text-[#2d4a13] mb-4">{t('wishlist.login_title', lang)}</h1>
+        <p className="text-gray-500 mb-8">{t('wishlist.login_desc', lang)}</p>
         <Link to="/account/login" className="inline-flex items-center space-x-2 px-8 py-4 bg-[#78c13b] text-white font-bold rounded-2xl hover:bg-[#68a632] transition-all shadow-lg">
-          <LogIn size={18} /><span>Accedi</span>
+          <LogIn size={18} /><span>{t('wishlist.login_cta', lang)}</span>
         </Link>
       </div>
     );
@@ -138,7 +148,7 @@ export default function Preferiti() {
   if (loading && !products.length) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-10 lg:py-14">
-        <h1 className="text-3xl font-black text-[#2d4a13] mb-8">I miei preferiti</h1>
+        <h1 className="text-3xl font-black text-[#2d4a13] mb-8">{t('wishlist.title', lang)}</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1,2,3,4].map((i) => <div key={i} className="animate-pulse bg-gray-100 rounded-3xl aspect-[4/5]" />)}
         </div>
@@ -152,10 +162,10 @@ export default function Preferiti() {
         <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
           <Heart size={40} className="text-gray-300" />
         </div>
-        <h1 className="text-3xl font-black text-[#2d4a13] mb-2">Wishlist vuota</h1>
-        <p className="text-gray-500 mb-8">Non hai ancora aggiunto prodotti ai preferiti.</p>
+        <h1 className="text-3xl font-black text-[#2d4a13] mb-2">{t('wishlist.empty', lang)}</h1>
+        <p className="text-gray-500 mb-8">{t('wishlist.empty_desc', lang)}</p>
         <Link to="/collections" className="inline-flex items-center space-x-2 px-8 py-4 bg-[#78c13b] text-white font-bold rounded-2xl hover:bg-[#68a632] transition-all shadow-lg">
-          <span>Esplora il catalogo</span><ArrowRight size={18} />
+          <span>{t('wishlist.browse', lang)}</span><ArrowRight size={18} />
         </Link>
       </div>
     );
@@ -165,12 +175,12 @@ export default function Preferiti() {
     <div className="mx-auto max-w-7xl px-4 py-10 lg:py-14">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-black text-[#2d4a13]">I miei preferiti</h1>
-          <p className="text-gray-500">{products.length} prodotti salvati</p>
+          <h1 className="text-3xl font-black text-[#2d4a13]">{t('wishlist.title', lang)}</h1>
+          <p className="text-gray-500">{products.length} {t('wishlist.saved_count', lang)}</p>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product: any) => (
+        {products.map((product: WishlistProduct) => (
           <div key={product.handle} className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
             <Link to={`/products/${product.handle}`} className="block">
               <div className="aspect-[4/5] bg-gray-50 overflow-hidden relative">
@@ -187,7 +197,7 @@ export default function Preferiti() {
                   <div className="flex-1">
                     <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines: [{merchandiseId: product.variantId, quantity: 1}]}}>
                       <button type="submit" className="w-full py-3 bg-[#78c13b] text-white text-xs font-bold rounded-xl hover:bg-[#68a632] transition-all flex items-center justify-center space-x-2">
-                        <ShoppingCart size={16} /><span>Carrello</span>
+                        <ShoppingCart size={16} /><span>{t('wishlist.add_cart', lang)}</span>
                       </button>
                     </CartForm>
                   </div>

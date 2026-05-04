@@ -5,6 +5,8 @@ import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {ShoppingCart} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 export type CartLayout = 'page' | 'aside';
 
@@ -17,6 +19,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   const cart = useOptimisticCart(originalCart);
   const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const className = `cart-main ${layout === 'aside' ? '' : ''}`;
+  const lang = useLocale();
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
 
   return (
@@ -38,6 +41,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
 function CartEmpty({hidden = false, layout}: {hidden: boolean; layout?: CartLayout}) {
   const {close} = useAside();
+  const lang = useLocale();
   if (hidden) return null;
   return (
     <div className="flex flex-col items-center justify-center h-full text-center space-y-4 p-4">
@@ -45,11 +49,11 @@ function CartEmpty({hidden = false, layout}: {hidden: boolean; layout?: CartLayo
         <ShoppingCart size={32} className="text-gray-400" />
       </div>
       <div>
-        <p className="text-lg font-bold text-gray-900">Il carrello &egrave; vuoto</p>
-        <p className="text-sm text-gray-500 mt-1">Aggiungi dei prodotti per iniziare</p>
+        <p className="text-lg font-bold text-gray-900">{t('cart_main.empty', lang)}</p>
+        <p className="text-sm text-gray-500 mt-1">{t('cart_main.empty_hint', lang)}</p>
       </div>
       <Link to="/collections" onClick={close} className="text-[#78c13b] font-bold hover:underline">
-        Continua lo shopping
+        {t('cart_main.continue_shopping', lang)}
       </Link>
     </div>
   );

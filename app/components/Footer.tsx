@@ -2,6 +2,8 @@ import {Suspense, useState} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {MapPin, Phone, Mail, ChevronDown} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -27,6 +29,24 @@ function FooterSection({title, children}: {title: string; children: React.ReactN
 }
 
 export function Footer({footer: footerPromise, header, publicStoreDomain}: FooterProps) {
+  const lang = useLocale();
+
+  const exploreLinks = [
+    {label: t('footer.full_catalog', lang), href: '/collections'},
+    {label: t('footer.seed_box', lang), href: '/seed-box'},
+    {label: t('footer.smart_garden', lang), href: '/smart-garden'},
+    {label: t('footer.seed_club', lang), href: '/seed-club'},
+    {label: t('footer.blog_guides', lang), href: '/blog'},
+  ];
+
+  const supportLinks = [
+    {label: t('footer.faq', lang), href: '/faq'},
+    {label: t('footer.order_status', lang), href: '/stato-ordine'},
+    {label: t('footer.payments', lang), href: '/metodi-pagamento'},
+    {label: t('footer.terms', lang), href: '/termini-e-condizioni'},
+    {label: t('footer.privacy', lang), href: '/privacy-policy'},
+  ];
+
   return (
     <Suspense>
       <Await resolve={footerPromise}>
@@ -52,9 +72,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                   </NavLink>
                   <div className="space-y-4">
                     <p className="text-gray-500 text-sm leading-relaxed max-w-sm font-medium">
-                      Proseed &egrave; leader nella selezione e distribuzione di sementi professionali
-                      ad alta germinabilit&agrave;. Dal 1998, portiamo l&apos;eccellenza agricola
-                      direttamente nel vostro orto, giardino e balcone.
+                      {t('footer.brand_desc', lang)}
                     </p>
                     <div className="flex items-center space-x-4 pt-4">
                       <a href="https://www.instagram.com/proseed_it" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-400 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-xl transition-all" aria-label="Instagram">
@@ -70,16 +88,10 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                   </div>
                 </div>
 
-                <FooterSection title="Esplora">
+                <FooterSection title={t('footer.explore', lang)}>
                   <nav>
                     <ul>
-                      {[
-                        {label: 'Catalogo Completo', href: '/collections'},
-                        {label: 'Seed Box', href: '/seed-box'},
-                        {label: 'Smart Garden', href: '/smart-garden'},
-                        {label: 'Seed Club', href: '/seed-club'},
-                        {label: "Blog & Guide", href: '/blog'},
-                      ].map((item) => (
+                      {exploreLinks.map((item) => (
                         <li key={item.label} className="m-0">
                           <NavLink prefetch="intent" to={item.href} className="text-sm font-bold text-gray-400 hover:text-[#78c13b] transition-colors">
                             {item.label}
@@ -90,16 +102,10 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                   </nav>
                 </FooterSection>
 
-                <FooterSection title="Assistenza">
+                <FooterSection title={t('footer.support', lang)}>
                   <nav>
                     <ul>
-                      {[
-                        {label: "Centro Aiuto & FAQ", href: '/faq'},
-                        {label: "Stato dell'Ordine", href: '/stato-ordine'},
-                        {label: 'Metodi di Pagamento', href: '/metodi-pagamento'},
-                        {label: 'Termini e Condizioni', href: '/termini-e-condizioni'},
-                        {label: 'Privacy Policy', href: '/privacy-policy'},
-                      ].map((item) => (
+                      {supportLinks.map((item) => (
                         <li key={item.label} className="m-0">
                           <NavLink prefetch="intent" to={item.href} className="text-sm font-bold text-gray-400 hover:text-[#78c13b] transition-colors">
                             {item.label}
@@ -110,11 +116,11 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                   </nav>
                 </FooterSection>
 
-                <FooterSection title="Contatti">
+                <FooterSection title={t('footer.contacts', lang)}>
                   <div className="space-y-4">
                     <div className="flex items-start space-x-3 text-sm text-gray-400 font-bold leading-tight">
                       <MapPin size={18} className="text-[#78c13b] shrink-0" />
-                      <span>Via della Natura, 42<br />70123 Bari (BA) - Italy</span>
+                      <span>{t('footer.contact_address', lang)}</span>
                     </div>
                     <div className="flex items-center space-x-3 text-sm text-gray-400 font-bold">
                       <Phone size={18} className="text-[#78c13b] shrink-0" />
@@ -130,15 +136,15 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
 
               <div className="pt-12 grid grid-cols-1 lg:grid-cols-3 items-center gap-8">
                   <div className="flex flex-wrap items-center justify-center lg:justify-start">
-                    <img src="/images/payment-badges.png" alt="Metodi di pagamento" className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" />
+                    <img src="/images/payment-badges.png" alt={t('footer.payment_methods', lang)} className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" />
                   </div>
                 <div className="flex items-center justify-center">
-                  <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">PROSEED SRL</div>
+                  <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">{t('footer.company', lang)}</div>
                 </div>
                 <div className="flex items-center justify-center lg:justify-end space-x-4">
-                  <NavLink prefetch="intent" to="/privacy-policy" className="text-[10px] font-black text-gray-500 hover:text-[#78c13b] transition-colors uppercase tracking-widest">Privacy</NavLink>
-                  <NavLink prefetch="intent" to="/cookie-policy" className="text-[10px] font-black text-gray-500 hover:text-[#78c13b] transition-colors uppercase tracking-widest">Cookies</NavLink>
-                  <NavLink prefetch="intent" to="/termini-e-condizioni" className="text-[10px] font-black text-gray-500 hover:text-[#78c13b] transition-colors uppercase tracking-widest">Termini</NavLink>
+                  <NavLink prefetch="intent" to="/privacy-policy" className="text-[10px] font-black text-gray-500 hover:text-[#78c13b] transition-colors uppercase tracking-widest">{t('footer.privacy_short', lang)}</NavLink>
+                  <NavLink prefetch="intent" to="/cookie-policy" className="text-[10px] font-black text-gray-500 hover:text-[#78c13b] transition-colors uppercase tracking-widest">{t('footer.cookies', lang)}</NavLink>
+                  <NavLink prefetch="intent" to="/termini-e-condizioni" className="text-[10px] font-black text-gray-500 hover:text-[#78c13b] transition-colors uppercase tracking-widest">{t('footer.terms_short', lang)}</NavLink>
                 </div>
               </div>
             </div>

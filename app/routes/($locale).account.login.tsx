@@ -2,7 +2,9 @@ import {Form, redirect, useActionData} from 'react-router';
 import {AppSession} from '~/lib/session';
 import {Eye, EyeOff, Mail, Lock, AlertCircle} from 'lucide-react';
 import {useState} from 'react';
-import type {Route} from './+types/account.login';
+import type {Route} from './+types/($locale).account.login';
+import {useLocale} from '~/lib/locale';
+import {t, type Lang} from '~/lib/translations';
 
 const CUSTOMER_ACCESS_TOKEN_CREATE = `#graphql
   mutation CustomerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
@@ -18,6 +20,8 @@ export async function action({request, context}: Route.ActionArgs) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
   const actionType = formData.get('_action') as string;
+  const url = new URL(request.url);
+  const lang: Lang = url.pathname.startsWith('/en') ? 'en' : 'it';
 
   if (actionType === 'register') {
     const data = await context.storefront.mutate(CUSTOMER_CREATE_ACCOUNT, {
@@ -27,18 +31,18 @@ export async function action({request, context}: Route.ActionArgs) {
     const customer = data?.customerCreate?.customer;
     if (errors.length) return {errors, success: false};
     if (customer) return redirect('/account/login');
-    return {errors: [{message: 'Registrazione fallita'}], success: false};
+    return {errors: [{message: t('login.registration_failed', lang)}], success: false};
   }
 
   if (!email || !password) {
-    return {errors: [{message: 'Compila tutti i campi'}]};
+    return {errors: [{message: t('login.fill_all', lang)}]};
   }
 
-  const data: any = await context.storefront.mutate(CUSTOMER_ACCESS_TOKEN_CREATE, {
+  const data = await context.storefront.mutate(CUSTOMER_ACCESS_TOKEN_CREATE, {
     variables: {input: {email, password}},
   });
 
-  const result = data?.customerAccessTokenCreate || {};
+  const result = (data as {customerAccessTokenCreate?: {customerAccessToken?: {accessToken: string}; customerUserErrors?: {code: string; field: string; message: string}[]}})?.customerAccessTokenCreate || {};
   const errors = result.customerUserErrors || [];
 
   if (errors.length > 0) {
@@ -53,7 +57,7 @@ export async function action({request, context}: Route.ActionArgs) {
     return redirect('/account', {headers: {'Set-Cookie': cookie}});
   }
 
-  return {errors: [{message: 'Errore sconosciuto'}], success: false};
+  return {errors: [{message: t('error.unknown', lang)}], success: false};
 }
 
 const CUSTOMER_CREATE_ACCOUNT = `#graphql
@@ -66,21 +70,22 @@ const CUSTOMER_CREATE_ACCOUNT = `#graphql
 `;
 
 export default function AccountLogin() {
-  const actionData = useActionData() as any;
+  const actionData = useActionData() as {errors?: {message: string}[]} | undefined;
   const errors = actionData?.errors || [];
   const isRegister = false;
+  const lang = useLocale();
 
   return (
     <div className="mx-auto max-w-md px-4 py-16 lg:py-20">
       <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 lg:p-12">
-        <h1 className="text-3xl font-black text-[#2d4a13] mb-2 text-center">Accedi</h1>
+        <h1 className="text-3xl font-black text-[#2d4a13] mb-2 text-center">{t('login.title', lang)}</h1>
         <p className="text-gray-500 text-sm mb-8 text-center">
-          Inserisci le tue credenziali per accedere al tuo account
+          {t('login.subtitle', lang)}
         </p>
 
         {errors.length > 0 && (
           <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl">
-            {errors.map((err: any, i: number) => (
+            {errors.map((err: {message: string}, i: number) => (
               <p key={i} className="text-red-600 text-sm flex items-center space-x-2">
                 <AlertCircle size={14} />
                 <span>{err.message}</span>
@@ -91,7 +96,7 @@ export default function AccountLogin() {
 
         <Form method="post" className="space-y-4">
           <div>
-            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">Email</label>
+            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('login.email', lang)}</label>
             <input
               type="email"
               name="email"
@@ -101,7 +106,7 @@ export default function AccountLogin() {
             />
           </div>
           <div>
-            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">Password</label>
+            <label className="block text-xs font-black text-gray-600 uppercase tracking-widest mb-2">{t('login.password', lang)}</label>
             <input
               type="password"
               name="password"
@@ -114,17 +119,17 @@ export default function AccountLogin() {
             type="submit"
             className="w-full bg-[#78c13b] text-white font-black py-4 rounded-xl hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 text-sm uppercase tracking-widest"
           >
-            Accedi
+            {t('login.title', lang)}
           </button>
         </Form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-          <p className="text-gray-500 text-sm mb-4">Non hai un account?</p>
+          <p className="text-gray-500 text-sm mb-4">{t('login.no_account', lang)}</p>
           <a
             href="/account/register"
             className="text-[#78c13b] font-bold text-sm hover:underline"
           >
-            Crea un account
+            {t('login.create_account', lang)}
           </a>
         </div>
       </div>

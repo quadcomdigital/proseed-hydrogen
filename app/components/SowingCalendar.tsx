@@ -1,4 +1,6 @@
 import {Sprout, Calendar, Sun, ThermometerSun, Droplets, Info} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 interface SowingCalendarProps {
   semenzaio?: string | null;
@@ -14,6 +16,7 @@ function parseMonths(val?: string | null): number[] {
 const MONTHS = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D'];
 
 export default function SowingCalendar({semenzaio, aperto, raccolta}: SowingCalendarProps) {
+  const lang = useLocale();
   const semenzaioMonths = parseMonths(semenzaio);
   const apertoMonths = parseMonths(aperto);
   const raccoltaMonths = parseMonths(raccolta);
@@ -46,41 +49,42 @@ export default function SowingCalendar({semenzaio, aperto, raccolta}: SowingCale
   return (
     <div className="bg-white p-4 lg:p-8 rounded-2xl lg:rounded-[32px] border border-gray-100 shadow-sm space-y-4 lg:space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-base lg:text-xl font-black text-[#2d4a13]">Tabella di Semina</h3>
+        <h3 className="text-base lg:text-xl font-black text-[#2d4a13]">{t('sowing_calendar.title', lang)}</h3>
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full bg-[#78c13b]" />
-          <span className="text-[10px] font-bold uppercase text-gray-400">Ottimale</span>
+          <span className="text-[10px] font-bold uppercase text-gray-400">{t('sowing_calendar.optimal', lang)}</span>
         </div>
       </div>
       <div className="space-y-3 overflow-x-auto pb-2 scrollbar-hide">
         <div className="min-w-[280px] space-y-2">
-          <Row label="In Semenzaio" activeMonths={semenzaioMonths} color="bg-blue-400" />
-          <Row label="All'aperto" activeMonths={apertoMonths} color="bg-[#78c13b]" />
-          <Row label="Raccolta" activeMonths={raccoltaMonths} color="bg-orange-400" />
+          <Row label={t('sowing_calendar.indoors', lang)} activeMonths={semenzaioMonths} color="bg-blue-400" />
+          <Row label={t('sowing_calendar.outdoors', lang)} activeMonths={apertoMonths} color="bg-[#78c13b]" />
+          <Row label={t('sowing_calendar.harvest', lang)} activeMonths={raccoltaMonths} color="bg-orange-400" />
         </div>
       </div>
       <div className="flex flex-wrap gap-3 items-center">
-        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-blue-400" /><span className="text-[9px] font-black uppercase text-gray-400">Interno</span></div>
-        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-[#78c13b]" /><span className="text-[9px] font-black uppercase text-gray-400">Esterno</span></div>
-        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-orange-400" /><span className="text-[9px] font-black uppercase text-gray-400">Raccolta</span></div>
+        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-blue-400" /><span className="text-[9px] font-black uppercase text-gray-400">{t('sowing_calendar.legend_indoor', lang)}</span></div>
+        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-[#78c13b]" /><span className="text-[9px] font-black uppercase text-gray-400">{t('sowing_calendar.legend_outdoor', lang)}</span></div>
+        <div className="flex items-center space-x-2"><div className="w-2 h-2 rounded-full bg-orange-400" /><span className="text-[9px] font-black uppercase text-gray-400">{t('sowing_calendar.legend_harvest', lang)}</span></div>
       </div>
     </div>
   );
 }
 
 export function SpecsGrid({product}: {product: any}) {
-  const mf = (alias: string, fallback: string) => {
+  const lang = useLocale();
+  const mf = (alias: string, fallbackKey: string) => {
     const v = product[alias]?.value;
-    return v || fallback;
+    return v || t(`sowing_calendar.${fallbackKey}`, lang);
   };
 
   const specs = [
-    {label: 'Difficolt\u00e0', value: mf('difficolta', 'Media'), icon: <Droplets size={16} />},
-    {label: 'Raccolto', value: mf('tempo_raccolto', '60-90 giorni'), icon: <Calendar size={16} />},
-    {label: 'Germinazione', value: mf('germinazione', '90%'), icon: <Sun size={16} />},
-    {label: 'Esposizione', value: mf('esposizione', 'Pieno Sole'), icon: <ThermometerSun size={16} />},
-    {label: 'Tipologia', value: mf('tipologia', 'Erbacea Annuale'), icon: <Sprout size={16} />},
-    {label: 'Codice', value: mf('codice', product.id?.split('/')?.pop() || '-'), icon: <Info size={16} />},
+    {label: t('sowing_calendar.difficulty', lang), value: mf('difficolta', 'difficulty_medium'), icon: <Droplets size={16} />},
+    {label: t('sowing_calendar.harvest_time', lang), value: mf('tempo_raccolto', 'harvest_60_90'), icon: <Calendar size={16} />},
+    {label: t('sowing_calendar.germination', lang), value: mf('germinazione', 'germination_90'), icon: <Sun size={16} />},
+    {label: t('sowing_calendar.exposure', lang), value: mf('esposizione', 'full_sun'), icon: <ThermometerSun size={16} />},
+    {label: t('sowing_calendar.type', lang), value: mf('tipologia', 'annual_herbaceous'), icon: <Sprout size={16} />},
+    {label: t('sowing_calendar.code', lang), value: product.codice?.value || product.id?.split('/')?.pop() || '-', icon: <Info size={16} />},
   ];
 
   return (

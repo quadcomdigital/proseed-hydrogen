@@ -1,5 +1,8 @@
 import {Link} from 'react-router';
-import type {Route} from './+types/collections';
+import type {Route} from './+types/($locale).collections';
+import {t} from '~/lib/translations';
+import type {Lang} from '~/lib/translations';
+import {useLocale} from '~/lib/locale';
 
 const COLLECTIONS_QUERY = `#graphql
   query CollectionsIndex($country: CountryCode, $language: LanguageCode, $first: Int!)
@@ -28,9 +31,10 @@ export async function loader({context}: Route.LoaderArgs) {
 }
 
 export default function CollectionsPage({loaderData}: Route.ComponentProps) {
+  const lang = useLocale();
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 lg:py-10">
-      <h1 className="mb-6 text-2xl lg:text-4xl font-black text-[#2d4a13]">Collezioni</h1>
+      <h1 className="mb-6 text-2xl lg:text-4xl font-black text-[#2d4a13]">{t('collections.title', lang)}</h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {loaderData.collections.map((collection: any) => (
           <Link

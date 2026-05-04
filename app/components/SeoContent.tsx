@@ -1,4 +1,71 @@
+import {useLocale} from '~/lib/locale';
+
 export default function SeoContent() {
+  const lang = useLocale();
+
+  if (lang === 'en') {
+    return (
+      <section className="mx-auto max-w-7xl px-4 py-8 lg:py-16 border-t border-gray-100 bg-gray-50/50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-black text-[#2d4a13] mb-6 text-center">
+            Quality seeds for vegetable garden, balcony and garden at ProSeed.it
+          </h2>
+          <p className="text-gray-600 leading-relaxed mb-8 text-sm lg:text-base">
+            <strong className="text-[#78c13b]">ProSeed.it</strong> is your reference e-commerce
+            to buy <strong>seeds online</strong> of the highest quality, with a curated selection for
+            every need: certified organic vegetable seeds, aromatic herb seeds for kitchen and balcony,
+            ornamental and garden flower seeds, easy-to-grow succulent seeds, and fruit plant and
+            hot pepper seeds.
+          </p>
+          <div className="grid gap-8 md:grid-cols-2 mb-8">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-xl font-bold text-[#2d4a13] mb-3">Grow authenticity and freshness with our vegetable seeds</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Tomato, zucchini, eggplant, lettuce, peppers, carrots, cucumbers, spinach, cabbage, turnips,
+                onions, garlic, parsley, radishes, leeks, celery, green beans, peas, potatoes, pumpkins,
+                cauliflower, chicory, radicchio, chard, watercress, rocket, fennel and Jerusalem artichoke.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-xl font-bold text-[#2d4a13] mb-3">Add flavor and aroma to your recipes</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Discover our <strong>aromatic plant seeds</strong> to grow in pots or in the garden:
+                basil, sage, mint, chives, lavender, oregano, chamomile, thyme, rosemary,
+                marjoram, lemon balm, coriander and other hardy varieties.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-xl font-bold text-[#2d4a13] mb-3">Bring color and vitality to your space</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Choose <strong>balcony and garden flower seeds</strong>: helichrysum, mallow, violets,
+                primroses, lupins, gerberas, gazanias, border lavender, wildflowers and perennial varieties.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-xl font-bold text-[#2d4a13] mb-3">Fruit plants and Hot Peppers</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                We offer <strong>online fruit plant seeds</strong> such as strawberries, watermelons, sweet corn,
+                together with a rich collection of <strong>hot pepper seeds</strong>, from the most common
+                varieties like Jalapeno and Habanero to rare ones like Carolina Reaper.
+              </p>
+            </div>
+          </div>
+          <div className="bg-[#78c13b]/10 p-6 rounded-2xl mb-8">
+            <h3 className="text-xl font-bold text-[#2d4a13] mb-3">Easy-to-grow plants</h3>
+            <p className="text-gray-700 leading-relaxed text-sm lg:text-base">
+              If you love low-maintenance plants, choose our <strong>succulent and cactus seeds</strong>
+              for indoors and outdoors: Echinopsis, Rebutia, Opuntia, Echeveria, Euphorbia and Aloe.
+            </p>
+          </div>
+          <p className="text-center text-gray-500 italic text-sm">
+            At ProSeed.it you find selected seeds guaranteed for germination, with fast and secure shipping
+            throughout Italy and Europe.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 lg:py-16 border-t border-gray-100 bg-gray-50/50">
       <div className="max-w-4xl mx-auto">

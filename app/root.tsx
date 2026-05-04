@@ -14,6 +14,9 @@ import {
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {getLocaleFromRequest, DEFAULT_LOCALE} from '~/lib/locale';
+import {t} from '~/lib/translations';
+import type {Lang} from '~/lib/translations';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
@@ -75,10 +78,12 @@ export async function loader(args: Route.LoaderArgs) {
   const criticalData = await loadCriticalData(args);
 
   const {storefront, env} = args.context;
+  const locale = getLocaleFromRequest(args.request);
 
   return {
     ...deferredData,
     ...criticalData,
+    locale,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -88,8 +93,8 @@ export async function loader(args: Route.LoaderArgs) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       withPrivacyBanner: false,
-      country: args.context.storefront.i18n.country,
-      language: args.context.storefront.i18n.language,
+      country: locale.country,
+      language: locale.language,
     },
   };
 }
@@ -147,11 +152,18 @@ function loadDeferredData({context}: Route.LoaderArgs) {
   };
 }
 
+function getClientLang(): string {
+  if (typeof window !== 'undefined' && /^\/en($|\/)/.test(window.location.pathname)) return 'en';
+  return 'it';
+}
+
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
+  const data = useRouteLoaderData<typeof loader>('root');
+  const lang = data?.locale?.language?.toLowerCase() || getClientLang();
 
   return (
-    <html lang="it" className="font-geist">
+    <html lang={lang} className="font-geist">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -192,7 +204,8 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  let errorMessage = 'Errore sconosciuto';
+  const lang: Lang = getClientLang() as Lang;
+  let errorMessage = t('error.unknown', lang);
   let errorStatus = 500;
 
   if (isRouteErrorResponse(error)) {
@@ -205,16 +218,16 @@ export function ErrorBoundary() {
   if (errorStatus === 404) {
     return (
       <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center">
-        <h1 className="text-6xl font-black text-emerald-900 lg:text-8xl">404</h1>
-        <h2 className="mt-4 text-2xl font-black text-lime-700">Pagina non trovata</h2>
-        <p className="mt-3 text-base text-emerald-950/70">
-          La pagina che stai cercando non esiste o &egrave; stata spostata.
+        <h1 className="text-6xl font-black text-[#2d4a13] lg:text-8xl">404</h1>
+        <h2 className="mt-4 text-2xl font-black text-[#78c13b]">{t('error.page_not_found', lang)}</h2>
+        <p className="mt-3 text-base text-[#2d4a13]/70">
+          {t('error.not_found_desc', lang)}
         </p>
         <Link
           to="/"
-          className="mt-8 rounded-2xl bg-lime-600 px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-lime-700"
+          className="mt-8 rounded-2xl bg-[#78c13b] px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-[#68a632]"
         >
-          Torna alla home
+          {t('error.back_home', lang)}
         </Link>
       </div>
     );
@@ -222,16 +235,16 @@ export function ErrorBoundary() {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center">
-      <h1 className="text-6xl font-black text-emerald-900 lg:text-8xl">{errorStatus}</h1>
-      <h2 className="mt-4 text-2xl font-black text-red-600">Errore del server</h2>
-      <p className="mt-3 text-base text-emerald-950/70">
-        Si &egrave; verificato un errore imprevisto. Riprova pi&ugrave; tardi.
+      <h1 className="text-6xl font-black text-[#2d4a13] lg:text-8xl">{errorStatus}</h1>
+      <h2 className="mt-4 text-2xl font-black text-red-600">{t('error.server_error', lang)}</h2>
+      <p className="mt-3 text-base text-[#2d4a13]/70">
+        {t('error.server_error_desc', lang)}
       </p>
       <Link
         to="/"
-        className="mt-8 rounded-2xl bg-lime-600 px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-lime-700"
+        className="mt-8 rounded-2xl bg-[#78c13b] px-7 py-4 text-sm font-black uppercase tracking-[0.15em] text-white transition hover:bg-[#68a632]"
       >
-        Torna alla home
+        {t('error.back_home', lang)}
       </Link>
     </div>
   );

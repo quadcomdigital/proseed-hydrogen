@@ -1,4 +1,4 @@
-import type {Route} from './+types/pages.$pageHandle';
+import type {Route} from './+types/($locale).pages.$pageHandle';
 
 const PAGE_QUERY = `#graphql
   query PageByHandle(
@@ -34,8 +34,8 @@ export async function loader({context, params}: Route.LoaderArgs) {
 export default function CmsPage({loaderData}: Route.ComponentProps) {
   return (
     <article className="mx-auto max-w-4xl px-4 py-10 lg:py-14">
-      <h1 className="text-3xl font-black text-emerald-900 lg:text-5xl">{loaderData.page.title}</h1>
-      <div className="prose prose-emerald mt-6 max-w-none" dangerouslySetInnerHTML={{__html: loaderData.page.body}} />
+      <h1 className="text-3xl font-black text-[#2d4a13] lg:text-5xl">{loaderData.page.title}</h1>
+      <div className="prose prose-green mt-6 max-w-none" dangerouslySetInnerHTML={{__html: loaderData.page.body}} />
     </article>
   );
 }

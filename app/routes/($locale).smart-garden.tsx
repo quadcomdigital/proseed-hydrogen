@@ -2,30 +2,40 @@ import {useState, useEffect} from 'react';
 import {Link, useFetcher} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {ChevronLeft, ArrowRight, Calendar, ShoppingCart, Sprout, Sun, Wind, RotateCcw, Check} from 'lucide-react';
+import type {Route} from './+types/($locale).smart-garden';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
+import type {Lang} from '~/lib/translations';
 
-const MONTHS = [
-  {id: 1, name: 'Gennaio'}, {id: 2, name: 'Febbraio'}, {id: 3, name: 'Marzo'},
-  {id: 4, name: 'Aprile'}, {id: 5, name: 'Maggio'}, {id: 6, name: 'Giugno'},
-  {id: 7, name: 'Luglio'}, {id: 8, name: 'Agosto'}, {id: 9, name: 'Settembre'},
-  {id: 10, name: 'Ottobre'}, {id: 11, name: 'Novembre'}, {id: 12, name: 'Dicembre'},
-];
+function getMonths(lang: Lang) {
+  return [
+    {id: 1, name: t('smart_garden.months.1', lang)}, {id: 2, name: t('smart_garden.months.2', lang)}, {id: 3, name: t('smart_garden.months.3', lang)},
+    {id: 4, name: t('smart_garden.months.4', lang)}, {id: 5, name: t('smart_garden.months.5', lang)}, {id: 6, name: t('smart_garden.months.6', lang)},
+    {id: 7, name: t('smart_garden.months.7', lang)}, {id: 8, name: t('smart_garden.months.8', lang)}, {id: 9, name: t('smart_garden.months.9', lang)},
+    {id: 10, name: t('smart_garden.months.10', lang)}, {id: 11, name: t('smart_garden.months.11', lang)}, {id: 12, name: t('smart_garden.months.12', lang)},
+  ];
+}
 
-const LOCATIONS = [
-  {id: 'indoors', name: 'Semenzaio / Coltura Protetta', description: 'Ambiente controllato, ideale per anticipare le semine.', icon: <Wind size={32} />},
-  {id: 'outdoors', name: 'Pieno Campo / Vaso all\'aperto', description: 'Direttamente a dimora, seguendo i ritmi naturali.', icon: <Sun size={32} />},
-];
+function getLocations(lang: Lang) {
+  return [
+    {id: 'indoors', icon: <Wind size={32} />, name: t('smart_garden.locations.indoors_name', lang), description: t('smart_garden.locations.indoors_desc', lang)},
+    {id: 'outdoors', icon: <Sun size={32} />, name: t('smart_garden.locations.outdoors_name', lang), description: t('smart_garden.locations.outdoors_desc', lang)},
+  ];
+}
 
-const CROP_FAMILIES = [
-  {id: 'none', name: 'Nessuna / Primo Orto', avoid: []},
-  {id: 'solanacee', name: 'Pomodori, Melanzane, Peperoni', avoid: ['Pomodoro', 'Melanzana', 'Peperone']},
-  {id: 'cucurbitacee', name: 'Zucchine, Zucche, Cetrioli', avoid: ['Zucchina', 'Zucca', 'Cetriolo']},
-  {id: 'leguminose', name: 'Fagioli, Piselli, Fave', avoid: ['Fagiolo', 'Pisello', 'Fava']},
-  {id: 'brassicacee', name: 'Cavoli, Broccoli, Rucola', avoid: ['Cavolo', 'Broccolo', 'Rucola']},
-];
+function getCropFamilies(lang: Lang) {
+  return [
+    {id: 'none', name: t('smart_garden.crops.none', lang), avoid: []},
+    {id: 'solanacee', name: t('smart_garden.crops.solanacee', lang), avoid: ['Pomodoro', 'Melanzana', 'Peperone']},
+    {id: 'cucurbitacee', name: t('smart_garden.crops.cucurbitacee', lang), avoid: ['Zucchina', 'Zucca', 'Cetriolo']},
+    {id: 'leguminose', name: t('smart_garden.crops.leguminose', lang), avoid: ['Fagiolo', 'Pisello', 'Fava']},
+    {id: 'brassicacee', name: t('smart_garden.crops.brassicacee', lang), avoid: ['Cavolo', 'Broccolo', 'Rucola']},
+  ];
+}
 
 const SMART_GARDEN_QUERY = `#graphql
-  query SmartGardenProducts($query: String!, $first: Int!)
-  @inContext(country: IT, language: IT) {
+  query SmartGardenProducts($country: CountryCode, $language: LanguageCode, $query: String!, $first: Int!)
+  @inContext(country: $country, language: $language) {
     search(query: $query, first: $first, types: [PRODUCT]) {
       nodes {
         ... on Product {
@@ -64,7 +74,7 @@ interface SmartProduct {
   seminaRaccolta?: string;
 }
 
-export async function loader({context}: any) {
+export async function loader({context}: Route.LoaderArgs) {
   const data = await context.storefront.query(SMART_GARDEN_QUERY, {
     variables: {query: '*', first: 50},
   });
@@ -83,8 +93,12 @@ export async function loader({context}: any) {
   return {products};
 }
 
-export default function SmartGarden({loaderData}: any) {
+export default function SmartGarden({loaderData}: Route.ComponentProps) {
   const {products} = loaderData;
+  const lang = useLocale();
+  const months = getMonths(lang);
+  const locations = getLocations(lang);
+  const cropFamilies = getCropFamilies(lang);
   const [step, setStep] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -98,7 +112,7 @@ export default function SmartGarden({loaderData}: any) {
 
   const getRecommendedProducts = (): SmartProduct[] => {
     if (!selectedLocation || products.length === 0) return [];
-    const family = CROP_FAMILIES.find((f) => f.id === previousCrop);
+    const family = cropFamilies.find((f) => f.id === previousCrop);
     const avoidList = family ? family.avoid : [];
 
     return products
@@ -127,7 +141,7 @@ export default function SmartGarden({loaderData}: any) {
             </div>
             <button onClick={reset} className="text-xs font-bold text-gray-400 hover:text-[#78c13b] flex items-center space-x-1">
               <RotateCcw size={14} />
-              <span>Ricomincia</span>
+              <span>{t('smart_garden.restart', lang)}</span>
             </button>
           </div>
         )}
@@ -139,14 +153,14 @@ export default function SmartGarden({loaderData}: any) {
                 <Sprout size={40} className="text-[#78c13b]" />
               </div>
               <h1 className="text-4xl lg:text-5xl font-black text-[#2d4a13] mb-6 leading-tight">
-                Cosa piantare adesso nell&rsquo;orto: <span className="text-[#78c13b]">calcolatore di semina</span>
+                {(() => {const p = t('smart_garden.hero_title', lang).split(': '); return <>{p[0]}: <span className="text-[#78c13b]">{p[1]}</span></>;})()}
               </h1>
               <p className="text-lg text-gray-600 mb-10 leading-relaxed">
                 Vi presento il calcolatore della semina. Uno strumento semplice per aiutarvi a decidere
                 cosa seminare, utile anche a chi vuole fare un orto per la prima volta.
               </p>
               <button onClick={nextStep} className="px-12 py-5 bg-[#78c13b] hover:bg-[#68a632] text-white font-bold rounded-2xl text-lg shadow-xl shadow-[#78c13b33] hover:scale-105 transition-all flex items-center space-x-3">
-                <span>Inizia ora</span>
+                <span>{t('smart_garden.start', lang)}</span>
                 <ArrowRight size={20} />
               </button>
             </div>
@@ -155,11 +169,11 @@ export default function SmartGarden({loaderData}: any) {
           {step === 1 && (
             <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Quando vorresti seminare?</h2>
-                <p className="text-gray-500">Scegliere il mese giusto &egrave; la chiave di un orto sano</p>
+                <h2 className="text-3xl font-black text-[#2d4a13] mb-3">{t('smart_garden.step_question_month', lang)}</h2>
+                <p className="text-gray-500">{t('smart_garden.step_hint_month', lang)}</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-3xl mx-auto w-full">
-                {MONTHS.map((month) => (
+                {months.map((month) => (
                   <button
                     key={month.id}
                     onClick={() => { setSelectedMonth(month.id); nextStep(); }}
@@ -175,11 +189,11 @@ export default function SmartGarden({loaderData}: any) {
           {step === 2 && (
             <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Dove vorresti seminare?</h2>
-                <p className="text-gray-500">Ogni spazio ha le sue caratteristiche e le sue regole</p>
+                <h2 className="text-3xl font-black text-[#2d4a13] mb-3">{t('smart_garden.step_question_location', lang)}</h2>
+                <p className="text-gray-500">{t('smart_garden.step_hint_location', lang)}</p>
               </div>
               <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
-                {LOCATIONS.map((loc) => (
+                {locations.map((loc) => (
                   <button
                     key={loc.id}
                     onClick={() => { setSelectedLocation(loc.id); nextStep(); }}
@@ -199,11 +213,11 @@ export default function SmartGarden({loaderData}: any) {
           {step === 3 && (
             <div className="flex-1 flex flex-col">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-black text-[#2d4a13] mb-3">Coltivazione precedente</h2>
-                <p className="text-gray-500">Per rispettare la rotazione delle colture</p>
+                <h2 className="text-3xl font-black text-[#2d4a13] mb-3">{t('smart_garden.step_question_crop', lang)}</h2>
+                <p className="text-gray-500">{t('smart_garden.step_hint_crop', lang)}</p>
               </div>
               <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto w-full">
-                {CROP_FAMILIES.map((crop) => (
+                {cropFamilies.map((crop) => (
                   <button
                     key={crop.id}
                     onClick={() => { setPreviousCrop(crop.id); nextStep(); }}
@@ -221,11 +235,11 @@ export default function SmartGarden({loaderData}: any) {
             <div className="flex-1 flex flex-col ">
               <div className="text-center mb-8">
                 <span className="inline-block px-4 py-1 bg-[#78c13b]/10 text-[#78c13b] rounded-full text-xs font-bold tracking-widest uppercase mb-4">
-                  La tua semina
+                  {t('smart_garden.results_title', lang)}
                 </span>
-                <h2 className="text-3xl font-black text-[#2d4a13] mb-2">Ecco cosa puoi seminare</h2>
+                <h2 className="text-3xl font-black text-[#2d4a13] mb-2">{t('smart_garden.results_subtitle', lang)}</h2>
                 <p className="text-gray-500">
-                  A {MONTHS.find((m) => m.id === selectedMonth)?.name}, {selectedLocation === 'indoors' ? 'al coperto' : 'all\'aperto'}.
+                  A {months.find((m) => m.id === selectedMonth)?.name}, {t(selectedLocation === 'indoors' ? 'smart_garden.indoors' : 'smart_garden.outdoors', lang)}.
                 </p>
               </div>
 
@@ -260,7 +274,7 @@ export default function SmartGarden({loaderData}: any) {
                         className={`px-8 py-4 font-bold rounded-2xl flex items-center space-x-2 transition-all shadow-lg ${isAdding ? 'bg-[#78c13b] text-white scale-105' : 'bg-[#2d4a13] hover:bg-[#78c13b] text-white'}`}
                       >
                         {isAdding ? <Check size={20} className="animate-bounce" /> : <ShoppingCart size={20} />}
-                        <span>{isAdding ? 'Aggiunti al carrello!' : `Aggiungi tutti al carrello (${recommendedProducts.length})`}</span>
+                        <span>{isAdding ? t('smart_garden.added_to_cart', lang) : `${t('smart_garden.add_all', lang)} (${recommendedProducts.length})`}</span>
                       </button>
                     </fetcher.Form>
                   </div>
@@ -268,11 +282,11 @@ export default function SmartGarden({loaderData}: any) {
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                   <Calendar size={48} className="text-gray-300 mb-4" />
-                  <h3 className="text-xl font-bold text-gray-600 mb-2">Nessun prodotto trovato</h3>
+                  <h3 className="text-xl font-bold text-gray-600 mb-2">{t('smart_garden.no_products', lang)}</h3>
                   <p className="text-gray-400 max-w-md mx-auto">
-                    Sembra che non ci siano prodotti ideali per questa combinazione. Prova a cambiare i parametri.
+                    {t('smart_garden.no_products_desc', lang)}
                   </p>
-                  <button onClick={reset} className="mt-6 text-[#78c13b] font-bold hover:underline">Modifica ricerca</button>
+                  <button onClick={reset} className="mt-6 text-[#78c13b] font-bold hover:underline">{t('smart_garden.modify_search', lang)}</button>
                 </div>
               )}
             </div>

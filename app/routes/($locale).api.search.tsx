@@ -1,18 +1,16 @@
-import type {Route} from './+types/api.search';
+import type {Route} from './+types/($locale).api.search';
+import {SEARCH_PRODUCT_FRAGMENT} from '~/lib/fragments';
 
 const SEARCH_QUERY = `query SearchProducts($query: String!, $first: Int!) {
   search(query: $query, first: $first, types: [PRODUCT]) {
     nodes {
       ... on Product {
-        id
-        handle
-        title
-        featuredImage { url altText }
-        priceRange { minVariantPrice { amount currencyCode } }
+        ...SearchProduct
       }
     }
   }
-}`;
+}
+${SEARCH_PRODUCT_FRAGMENT}`;
 
 export async function action({request, context}: Route.ActionArgs) {
   const body: any = await request.json();

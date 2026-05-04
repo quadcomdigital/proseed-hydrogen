@@ -1,11 +1,15 @@
 import {Award, ShieldCheck, Sprout, Truck} from 'lucide-react';
 import {Link} from 'react-router';
-import type {Route} from './+types/_index';
+import type {Route} from './+types/($locale)._index';
 import Hero from '~/components/Hero';
 import Categories from '~/components/Categories';
 import ProductCard from '~/components/ProductCard';
 import SeoContent from '~/components/SeoContent';
 import {BlogSection} from '~/components/BlogCard';
+import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
+import type {ShopifyProduct} from '~/lib/types';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 const HOMEPAGE_QUERY = `#graphql
   query HomePage(
@@ -31,46 +35,23 @@ const HOMEPAGE_QUERY = `#graphql
     }
     products(first: $first, sortKey: BEST_SELLING) {
       nodes {
-        id
-        handle
-        title
-        featuredImage {
-          url
-          altText
-        }
-        images(first: 2) {
-          nodes {
-            url
-            altText
-          }
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        variants(first: 1) {
-          nodes {
-            id
-            availableForSale
-          }
-        }
+        ...ProductCard
       }
     }
   }
+  ${PRODUCT_CARD_FRAGMENT}
 `;
 
 export async function loader({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const data = await storefront.query(HOMEPAGE_QUERY, {
+  const data: {products: {nodes: ShopifyProduct[]}; blog?: {articles: {nodes: {handle: string; title: string; excerpt?: string; image?: {url: string}; publishedAt: string}[]}}; heroSlides?: {nodes: {image?: {reference?: {image?: {url: string}}}; title?: {value?: string}; subtitle?: {value?: string}; tag?: {value?: string}}[]}} = await storefront.query(HOMEPAGE_QUERY, {
     cache: storefront.CacheShort(),
     variables: {first: 8},
   });
 
   const articles = data?.blog?.articles?.nodes || [];
-  const heroSlides = (data?.heroSlides?.nodes || []).map((node: any) => ({
+  const heroSlides = (data?.heroSlides?.nodes || []).map((node) => ({
     title: node.title?.value || '',
     subtitle: node.subtitle?.value || '',
     img: node.image?.reference?.image?.url || '',
@@ -81,6 +62,7 @@ export async function loader({context}: Route.LoaderArgs) {
 
 export default function Home({loaderData}: Route.ComponentProps) {
   const {products, articles, heroSlides} = loaderData;
+  const lang = useLocale();
 
   return (
     <div>
@@ -89,14 +71,14 @@ export default function Home({loaderData}: Route.ComponentProps) {
       <section id="features" className="px-4 py-6 lg:py-10">
         <div className="mx-auto max-w-7xl">
           <p className="mb-6 lg:mb-8 text-center text-xs lg:text-sm font-bold uppercase tracking-[0.2em] text-[#78c13b]">
-            Spedizione gratuita per ordini superiori a 39 euro
+            {t('home.free_shipping', lang)}
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
             {[
-              {icon: <Award size={22} />, title: '1# per vendita semi online', desc: 'Semi selezionati e di qualit\u00e0 direttamente a casa tua.'},
-              {icon: <Sprout size={22} />, title: 'Germinabilit\u00e0 top', desc: 'Variet\u00e0 testate con alte percentuali di successo.'},
-              {icon: <Truck size={22} />, title: 'Spedizione veloce', desc: 'Consegna rapida in pochi giorni lavorativi.'},
-              {icon: <ShieldCheck size={22} />, title: 'Semi certificati', desc: 'Qualit\u00e0 controllata e variet\u00e0 garantite.'},
+              {icon: <Award size={22} />, title: t('home.feature_1_title', lang), desc: t('home.feature_1_desc', lang)},
+              {icon: <Sprout size={22} />, title: t('home.feature_2_title', lang), desc: t('home.feature_2_desc', lang)},
+              {icon: <Truck size={22} />, title: t('home.feature_3_title', lang), desc: t('home.feature_3_desc', lang)},
+              {icon: <ShieldCheck size={22} />, title: t('home.feature_4_title', lang), desc: t('home.feature_4_desc', lang)},
             ].map((feature) => (
               <article
                 key={feature.title}
@@ -120,26 +102,26 @@ export default function Home({loaderData}: Route.ComponentProps) {
           <div className="relative">
             <div className="absolute -left-4 top-0 w-1 h-full bg-[#78c13b]" />
             <div className="pl-6">
-              <p className="text-[10px] lg:text-[11px] font-black text-[#78c13b] uppercase tracking-[0.3em] mb-1">Collezione 2026</p>
+              <p className="text-[10px] lg:text-[11px] font-black text-[#78c13b] uppercase tracking-[0.3em] mb-1">{t('home.collection_year', lang)}</p>
               <h2 className="text-xl lg:text-4xl font-black text-[#2d4a13] italic">
-                I Nostri <span className="text-[#78c13b] not-italic">Bestsellers</span>
+                {(() => {const p = t('home.bestsellers', lang).split(' '); return <>{p.slice(0, -1).join(' ')} <span className="text-[#78c13b] not-italic">{p[p.length-1]}</span></>;})()}
               </h2>
             </div>
           </div>
           <Link to="/collections" className="text-[10px] lg:text-sm font-black uppercase tracking-[0.18em] text-white py-2 px-4 lg:py-3 lg:px-6 rounded-xl bg-[#78c13b] hover:bg-[#68a632] transition-all shadow-lg shadow-[#78c13b]/20 whitespace-nowrap">
-            Vedi tutto
+            {t('home.see_all', lang)}
           </Link>
         </div>
         <div className="flex lg:hidden overflow-x-auto space-x-3 pb-4 snap-x">
-          {products.map((product: any) => (
+          {products.map((product: ShopifyProduct) => (
             <div key={product.id} className="min-w-[50vw] snap-start">
               <ProductCard
                 product={{
                   id: product.id,
                   handle: product.handle,
                   title: product.title,
-                  price: Number(product.priceRange.minVariantPrice.amount),
-                  currencyCode: product.priceRange.minVariantPrice.currencyCode,
+                  price: Number(product.priceRange!.minVariantPrice.amount),
+                  currencyCode: product.priceRange!.minVariantPrice.currencyCode,
                   image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
                   variantId: product.variants?.nodes?.[0]?.id,
                   availableForSale: product.variants?.nodes?.[0]?.availableForSale,
@@ -150,15 +132,15 @@ export default function Home({loaderData}: Route.ComponentProps) {
           ))}
         </div>
         <div className="hidden lg:grid grid-cols-4 gap-6">
-          {products.map((product: any) => (
+          {products.map((product: ShopifyProduct) => (
             <ProductCard
               key={product.id}
               product={{
                 id: product.id,
                 handle: product.handle,
                 title: product.title,
-                price: Number(product.priceRange.minVariantPrice.amount),
-                currencyCode: product.priceRange.minVariantPrice.currencyCode,
+                price: Number(product.priceRange!.minVariantPrice.amount),
+                currencyCode: product.priceRange!.minVariantPrice.currencyCode,
                 image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
                 variantId: product.variants?.nodes?.[0]?.id,
                 availableForSale: product.variants?.nodes?.[0]?.availableForSale,
@@ -174,21 +156,21 @@ export default function Home({loaderData}: Route.ComponentProps) {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#78c13b] opacity-20 blur-[150px] rounded-full animate-pulse" />
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#78c13b] opacity-20 blur-[150px] rounded-full" />
           <span className="inline-block rounded-full bg-[#78c13b] px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.3em] text-white mb-6 lg:mb-8">
-            Innovation Hub
+            {t('home.innovation_tag', lang)}
           </span>
           <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <h2 className="text-4xl lg:text-7xl font-black leading-[1.1] tracking-tighter italic text-white">
-                Calcolatore <span className="text-[#78c13b]">semina</span>
+                {(() => {const p = t('home.innovation_title', lang).split(' '); return <>{p.slice(0, -1).join(' ')} <span className="text-[#78c13b]">{p[p.length-1]}</span></>;})()}
               </h2>
               <p className="mt-5 text-base lg:text-lg font-medium leading-relaxed text-white/60">
-                Pianifica il tuo orto con dati reali e consigli personalizzati per stagione.
+                {t('home.innovation_subtitle', lang)}
               </p>
               <Link
                 to="/smart-garden"
                 className="mt-8 inline-flex rounded-2xl bg-[#78c13b] px-10 py-5 text-xs font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-white hover:text-[#78c13b] hover:scale-105 active:scale-95 shadow-2xl shadow-[#78c13b44]"
               >
-                Inizia ora gratis
+                {t('home.innovation_cta', lang)}
               </Link>
             </div>
             <div className="mt-8 lg:mt-0 relative">
@@ -202,7 +184,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
         </div>
       </section>
 
-      <BlogSection posts={articles.map((a: any) => ({
+      <BlogSection posts={articles.map((a: {handle: string; title: string; excerpt?: string; image?: {url: string}; publishedAt: string}) => ({
         slug: a.handle,
         title: a.title,
         excerpt: a.excerpt || '',

@@ -1,7 +1,9 @@
 import {Link} from 'react-router';
 import {ChevronRight, BookOpen, Search, Mail, ArrowRight} from 'lucide-react';
-import type {Route} from './+types/blog._index';
+import type {Route} from './+types/($locale).blog._index';
 import BlogCard from '~/components/BlogCard';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 const BLOG_INDEX_QUERY = `#graphql
   query BlogIndex(
@@ -37,7 +39,12 @@ export async function loader({context}: Route.LoaderArgs) {
 
 export default function BlogPage({loaderData}: Route.ComponentProps) {
   const {articles} = loaderData;
-  const posts = articles.map((post: any) => ({
+  const lang = useLocale();
+  const heroTitle = t('blog.hero_title', lang);
+  const heroParts = heroTitle.split(' ');
+  const heroLast = heroParts.pop();
+  interface Article {id: string; handle: string; title: string; excerpt?: string; image?: {url: string}; publishedAt: string; tags?: string[]}
+  const posts = (articles as Article[]).map((post) => ({
     id: post.id,
     slug: post.handle,
     title: post.title,
@@ -48,7 +55,7 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
     readTime: '5 min',
   }));
 
-  const categories = ['Tutti', ...Array.from(new Set(posts.map((p: any) => p.category)))];
+  const categories = [t('blog.all', lang), ...Array.from(new Set(posts.map((p) => p.category)))];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -62,15 +69,15 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
         <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/80 text-xs font-bold mb-6 lg:mb-8">
             <span className="w-2 h-2 rounded-full bg-[#78c13b] animate-pulse" />
-            <span>NUOVI ARTICOLI OGNI SETTIMANA</span>
+            <span>{t('blog.new_articles', lang)}</span>
           </div>
 
           <h1 className="text-3xl lg:text-7xl font-black text-white mb-4 lg:mb-6 tracking-tight">
-            Coltiviamo <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#78c13b] to-[#a3e635]">Conoscenza</span>
+            {heroParts.join(' ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#78c13b] to-[#a3e635]">{heroLast}</span>
           </h1>
 
           <p className="text-gray-300 text-base lg:text-xl max-w-2xl mx-auto mb-8 lg:mb-10 leading-relaxed">
-            Guide pratiche, consigli stagionali e segreti per un orto rigoglioso, direttamente dai nostri esperti agronomi.
+            {t('blog.hero_desc', lang)}
           </p>
 
           <div className="max-w-xl mx-auto relative group">
@@ -81,11 +88,11 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
               </div>
               <input
                 type="text"
-                placeholder="Cerca un argomento (es. pomodori, semina...)"
+                placeholder={t('blog.search_placeholder', lang)}
                 className="w-full px-4 py-3 bg-transparent outline-none text-gray-800 placeholder-gray-400"
               />
               <button className="bg-[#2d4a13] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#78c13b] transition-colors">
-                Cerca
+                {t('blog.search_button', lang)}
               </button>
             </div>
           </div>
@@ -95,7 +102,7 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
       <div className="sticky top-[60px] lg:top-20 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 overflow-x-auto scrollbar-hide">
           <div className="flex items-center space-x-2 py-3 lg:py-4 min-w-max">
-            {categories.map((cat: any, i: number) => (
+            {categories.map((cat: string, i: number) => (
               <button
                 key={cat}
                 className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
@@ -129,7 +136,7 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
                   <div className="lg:col-span-5 lg:pl-8">
                     <div className="flex items-center space-x-3 mb-4 lg:mb-6">
                       <span className="px-3 py-1 bg-[#78c13b] text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg shadow-[#78c13b]/20">
-                        In Evidenza
+                        {t('blog.featured', lang)}
                       </span>
                       <span className="text-gray-400 text-sm font-medium">{posts[0].date}</span>
                     </div>
@@ -140,7 +147,7 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
                       {posts[0].excerpt}
                     </p>
                     <div className="flex items-center space-x-3 text-[#2d4a13] font-black text-sm uppercase tracking-widest group/btn">
-                      <span className="border-b-2 border-[#78c13b] pb-1">Leggi l&apos;articolo</span>
+                      <span className="border-b-2 border-[#78c13b] pb-1">{t('blog.read_article', lang)}</span>
                       <div className="w-8 h-8 rounded-full bg-[#78c13b]/10 flex items-center justify-center group-hover/btn:bg-[#78c13b] group-hover/btn:text-white transition-all">
                         <ArrowRight size={14} />
                       </div>
@@ -156,39 +163,39 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
                 <div>
                   <div className="inline-flex items-center space-x-2 text-[#78c13b] font-bold mb-4">
                     <Mail size={20} />
-                    <span className="uppercase tracking-widest text-xs">Newsletter</span>
+                    <span className="uppercase tracking-widest text-xs">{t('blog.newsletter', lang)}</span>
                   </div>
                   <h3 className="text-2xl lg:text-4xl font-black text-white mb-4">
-                    Il pollice verde si coltiva insieme.
+                    {t('blog.newsletter_desc', lang)}
                   </h3>
                   <p className="text-gray-300 text-base lg:text-lg">
-                    Iscriviti per ricevere consigli mensili sulla semina e sconti esclusivi.
+                    {t('blog.newsletter_subtitle', lang)}
                   </p>
                 </div>
                 <div className="bg-white/5 p-2 rounded-2xl backdrop-blur-sm border border-white/10">
                   <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="email"
-                      placeholder="La tua email"
+                      placeholder={t('blog.newsletter_email', lang)}
                       className="flex-1 bg-white/10 border border-white/10 rounded-xl px-6 py-4 text-white placeholder-gray-400 outline-none focus:bg-white/20 transition-colors"
                     />
                     <button className="bg-[#78c13b] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#65a332] transition-colors shadow-lg shadow-[#78c13b]/20">
-                      Iscriviti
+                      {t('blog.newsletter_cta', lang)}
                     </button>
                   </div>
                   <p className="text-white/40 text-xs mt-3 text-center sm:text-left pl-2">
-                    Non facciamo spam, promesso. Solo natura.
+                    {t('blog.newsletter_nospam', lang)}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center justify-between mb-6 lg:mb-10">
-              <h3 className="text-xl lg:text-2xl font-black text-[#2d4a13]">Ultimi Articoli</h3>
+              <h3 className="text-xl lg:text-2xl font-black text-[#2d4a13]">{t('blog.latest', lang)}</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8 lg:gap-y-12">
-              {posts.slice(1).map((post: any) => (
+              {posts.slice(1).map((post) => (
                 <BlogCard key={post.id} post={post} />
               ))}
             </div>
@@ -197,7 +204,7 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
               <div className="text-center mt-20">
                 <button className="group px-8 py-4 bg-white border-2 border-[#2d4a13] text-[#2d4a13] rounded-full font-black text-sm uppercase tracking-widest hover:bg-[#2d4a13] hover:text-white transition-all shadow-lg hover:shadow-xl">
                   <span className="flex items-center space-x-2">
-                    <span>Carica altri articoli</span>
+                    <span>{t('blog.load_more', lang)}</span>
                     <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </span>
                 </button>
@@ -209,8 +216,8 @@ export default function BlogPage({loaderData}: Route.ComponentProps) {
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <BookOpen size={40} className="text-gray-300" />
             </div>
-            <h2 className="text-2xl font-black text-gray-400 mb-2">Nessun articolo trovato</h2>
-            <p className="text-gray-400 max-w-md mx-auto">Sembra che non ci siano ancora articoli in questa sezione. Torna presto!</p>
+            <h2 className="text-2xl font-black text-gray-400 mb-2">{t('blog.no_articles', lang)}</h2>
+            <p className="text-gray-400 max-w-md mx-auto">{t('blog.no_articles_desc', lang)}</p>
           </div>
         )}
       </section>

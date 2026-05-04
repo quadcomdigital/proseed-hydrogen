@@ -1,6 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import {Image} from '@shopify/hydrogen';
-
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 interface ProductGalleryProps {
   images: Array<{url: string; altText?: string; width?: number; height?: number}>;
@@ -10,6 +11,7 @@ interface ProductGalleryProps {
 
 export default function ProductGallery({images, title, hasDiscount}: ProductGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const lang = useLocale();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function ProductGallery({images, title, hasDiscount}: ProductGall
             <div key={i} className="w-[85vw] aspect-[4/5] shrink-0 snap-start rounded-[32px] overflow-hidden relative mr-3">
               {hasDiscount && i === 0 && (
                 <span className="absolute top-4 left-4 z-10 bg-[#ff5a24] text-white px-3 py-1 text-[10px] font-black rounded-full">
-                  Promo
+                  {t('gallery.promo', lang)}
                 </span>
               )}
               <Image
@@ -54,7 +56,7 @@ export default function ProductGallery({images, title, hasDiscount}: ProductGall
         <div className="aspect-[4/5] rounded-[32px] overflow-hidden relative bg-gray-50">
           {hasDiscount && (
             <span className="absolute top-4 left-4 z-10 bg-[#ff5a24] text-white px-3 py-1 text-[10px] font-black rounded-full">
-              Promo
+              {t('gallery.promo', lang)}
             </span>
           )}
           <Image

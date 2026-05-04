@@ -8,10 +8,13 @@ import {
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {SearchBar} from '~/components/SearchBar';
+import {LanguageSwitcher} from '~/components/LanguageSwitcher';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 import {
   Sprout, Leaf, Flower2, Sun, Hammer, Package, BookOpen,
   Crown, User, Heart, ShoppingCart, ChevronDown, Menu, Truck,
-  Percent,
+  Percent, Globe,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -38,6 +41,7 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {menu} = header;
+  const lang = useLocale();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showPromoA, setShowPromoA] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -89,17 +93,17 @@ export function Header({
         }`}
       >
         <div className="relative h-[22px] flex items-center justify-center">
-          <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showPromoA ? 'opacity-100' : 'opacity-0'}`}>
-            <Truck size={14} className="inline animate-pulse mr-1" /> {header.shop?.promoA?.value || 'Spedizione GRATUITA sopra i 39€'}
-          </span>
-          <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showPromoA ? 'opacity-0' : 'opacity-100'}`}>
-            {(() => {
-              const txt = header.shop?.promoB?.value || 'Entra nel SEED CLUB, ricevi i tuoi semi in abbonamento';
-              const idx = txt.indexOf('SEED CLUB');
-              if (idx >= 0) return <>{txt.slice(0, idx)}<span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>{txt.slice(idx + 9)}</>;
-              return txt;
-            })()}
-          </span>
+            <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showPromoA ? 'opacity-100' : 'opacity-0'}`}>
+              <Truck size={14} className="inline animate-pulse mr-1" /> {header.shop?.promoA?.value || t('header.promo_a', lang)}
+            </span>
+            <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showPromoA ? 'opacity-0' : 'opacity-100'}`}>
+              {(() => {
+                const txt = header.shop?.promoB?.value || t('header.promo_b', lang);
+                const idx = txt.indexOf('SEED CLUB');
+                if (idx >= 0) return <>{txt.slice(0, idx)}<span className="bg-gradient-to-r from-slate-600 via-slate-200 to-slate-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-shimmer font-black">SEED CLUB</span>{txt.slice(idx + 9)}</>;
+                return txt;
+              })()}
+            </span>
         </div>
       </div>
 
@@ -131,7 +135,7 @@ export function Header({
             <NavLink
               to="/preferiti"
               className="hidden sm:block p-2.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
-              title="Preferiti"
+              title={t('header.favorites', lang)}
             >
               <Heart size={22} />
             </NavLink>
@@ -139,10 +143,14 @@ export function Header({
             <NavLink
               to="/account"
               className="hidden lg:block p-2.5 text-gray-500 hover:text-[#78c13b] hover:bg-[#78c13b0a] rounded-full transition-all"
-              title="Account"
+              title={t('header.account', lang)}
             >
               <User size={22} />
             </NavLink>
+
+            <div className="h-8 w-px bg-gray-200 hidden lg:block" />
+
+            <LanguageSwitcher />
 
             <div className="h-8 w-px bg-gray-200 hidden lg:block" />
 
@@ -155,7 +163,7 @@ export function Header({
             <button
               onClick={() => openAside('mobile')}
               className="lg:hidden p-2 text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Apri menu"
+              aria-label={t('header.open_menu', lang)}
             >
               <Menu size={28} strokeWidth={1.5} />
             </button>
@@ -164,7 +172,7 @@ export function Header({
               onClick={() => openAside('mobile')}
               className="hidden lg:flex items-center justify-center px-4 py-2 border-2 border-gray-900 text-gray-900 rounded-xl hover:bg-gray-900 hover:text-white transition-all font-bold text-sm"
             >
-              <span className="mr-2">Menu</span>
+              <span className="mr-2">{t('header.menu', lang)}</span>
               <Menu size={20} />
             </button>
           </div>
@@ -228,13 +236,13 @@ export function Header({
               className="bg-[#78c13b] !text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#68a632] transition-colors shadow-lg shadow-[#78c13b]/20 flex items-center space-x-2"
             >
               <Sprout size={14} />
-              <span>Calcolatore Semina</span>
+              <span>{t('header.calculator', lang)}</span>
             </NavLink>
             <NavLink
               to="/collections"
               className="bg-orange-500 !text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
             >
-              Sementi di Stagione
+              {t('header.seasonal', lang)}
             </NavLink>
           </div>
         </div>
@@ -256,6 +264,7 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
+  const lang = useLocale();
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
   const items = normalizeMenu(menu, primaryDomainUrl, publicStoreDomain);
@@ -265,10 +274,10 @@ export function HeaderMenu({
       {viewport === 'mobile' && (
         <>
           <NavLink end onClick={close} prefetch="intent" style={activeLinkStyle} to="/">
-            Home
+            {t('header.home', lang)}
           </NavLink>
            <NavLink end onClick={close} prefetch="intent" style={activeLinkStyle} to="/collections">
-            Catalogo
+            {t('header.catalog', lang)}
           </NavLink>
         </>
       )}
@@ -289,26 +298,32 @@ export function HeaderMenu({
   );
 }
 
-function CartBadge({count}: {count: number | null}) {
+function CartBadgeInner({count}: {count: number | null}) {
+  const lang = useLocale();
   const {open} = useAside();
   const {publish, shop, cart, prevCart} = useAnalytics();
 
   return (
     <a
       href="/cart"
-      className="rounded-xl bg-lime-600 px-3 py-2 text-sm font-black text-white"
+      className="rounded-xl bg-[#78c13b] px-3 py-2 text-sm font-black text-white"
       onClick={(e) => {
         e.preventDefault();
         open('cart');
         publish('cart_viewed', {cart, prevCart, shop, url: window.location.href || ''} as CartViewPayload);
       }}
     >
-      Carrello {count === null ? <span>&nbsp;</span> : count}
+      {t('header.cart', lang)} {count === null ? <span>&nbsp;</span> : count}
     </a>
   );
 }
 
+function CartBadge({count}: {count: number | null}) {
+  return <CartBadgeInner count={count} />;
+}
+
 function CartDesktop({cart}: {cart: CartApiQueryFragment | null}) {
+  const lang = useLocale();
   const optCart = useOptimisticCart(cart);
   const {open} = useAside();
   const {publish, shop, prevCart} = useAnalytics();
@@ -324,7 +339,7 @@ function CartDesktop({cart}: {cart: CartApiQueryFragment | null}) {
       className="hidden lg:flex items-center space-x-3 p-1.5 lg:p-2 hover:bg-gray-50 rounded-full transition-all"
     >
       <div className="flex flex-col items-end leading-none mr-1">
-        <span className="text-[10px] text-gray-400 font-bold uppercase">Carrello</span>
+        <span className="text-[10px] text-gray-400 font-bold uppercase">{t('header.cart', lang)}</span>
         <span className="text-sm font-black text-[#2d4a13]">
           &euro;{total ? Number(total).toFixed(2) : '0.00'}
         </span>
@@ -391,7 +406,7 @@ function getIcon(label: string) {
 }
 
 function activeLinkStyle({isActive, isPending}: {isActive: boolean; isPending: boolean}) {
-  return {fontWeight: isActive ? 'bold' : undefined, color: isPending ? '#6b7280' : '#14532d'};
+  return {fontWeight: isActive ? 'bold' : undefined, color: isPending ? '#6b7280' : '#2d4a13'};
 }
 
 function normalizeMenu(

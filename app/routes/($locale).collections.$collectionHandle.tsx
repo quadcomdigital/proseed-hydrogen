@@ -1,6 +1,8 @@
 import {Link} from 'react-router';
-import type {Route} from './+types/collections.$collectionHandle';
+import type {Route} from './+types/($locale).collections.$collectionHandle';
 import ProductCard from '~/components/ProductCard';
+import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
+import type {ShopifyProduct} from '~/lib/types';
 
 const COLLECTION_QUERY = `#graphql
   query CollectionByHandle(
@@ -15,35 +17,12 @@ const COLLECTION_QUERY = `#graphql
       description
       products(first: $first) {
         nodes {
-          id
-          handle
-          title
-          featuredImage {
-            url
-            altText
-          }
-          images(first: 2) {
-            nodes {
-              url
-              altText
-            }
-          }
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
-          variants(first: 1) {
-            nodes {
-              id
-              availableForSale
-            }
-          }
+          ...ProductCard
         }
       }
     }
   }
+  ${PRODUCT_CARD_FRAGMENT}
 `;
 
 export async function loader({context, params}: Route.LoaderArgs) {
@@ -74,15 +53,15 @@ export default function CollectionPage({loaderData}: Route.ComponentProps) {
       ) : null}
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {collection.products.nodes.map((product: any) => (
+        {collection.products.nodes.map((product: ShopifyProduct) => (
           <ProductCard
             key={product.id}
             product={{
               id: product.id,
               handle: product.handle,
               title: product.title,
-              price: Number(product.priceRange.minVariantPrice.amount),
-              currencyCode: product.priceRange.minVariantPrice.currencyCode,
+              price: Number(product.priceRange!.minVariantPrice.amount),
+              currencyCode: product.priceRange!.minVariantPrice.currencyCode,
               image: product.featuredImage ? {url: product.featuredImage.url, altText: product.featuredImage.altText} : undefined,
               variantId: product.variants?.nodes?.[0]?.id,
               availableForSale: product.variants?.nodes?.[0]?.availableForSale,

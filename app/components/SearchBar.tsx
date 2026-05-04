@@ -1,6 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-router';
 import {Search, X, ChevronDown} from 'lucide-react';
+import {SEARCH_PRODUCT_FRAGMENT} from '~/lib/fragments';
 
 interface ShopifyProduct {
   id: string;
@@ -19,15 +20,12 @@ const SEARCH_QUERY = `query SearchProducts($query: String!, $first: Int!) {
   search(query: $query, first: $first, types: [PRODUCT]) {
     nodes {
       ... on Product {
-        id
-        handle
-        title
-        featuredImage { url altText }
-        priceRange { minVariantPrice { amount currencyCode } }
+        ...SearchProduct
       }
     }
   }
-}`;
+}
+${SEARCH_PRODUCT_FRAGMENT}`;
 
 const PREDEFINED_CATEGORIES: CategoryOption[] = [
   {name: 'Tutti', handle: ''},

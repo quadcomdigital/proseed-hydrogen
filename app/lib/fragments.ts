@@ -222,6 +222,28 @@ export const HEADER_QUERY = `#graphql
   ${MENU_FRAGMENT}
 ` as const;
 
+export const PRODUCT_CARD_FRAGMENT = `#graphql
+  fragment ProductCard on Product {
+    id
+    handle
+    title
+    featuredImage { url altText }
+    images(first: 2) { nodes { url altText } }
+    priceRange { minVariantPrice { amount currencyCode } }
+    variants(first: 1) { nodes { id availableForSale } }
+  }
+` as const;
+
+export const SEARCH_PRODUCT_FRAGMENT = `#graphql
+  fragment SearchProduct on Product {
+    id
+    handle
+    title
+    featuredImage { url altText }
+    priceRange { minVariantPrice { amount currencyCode } }
+  }
+` as const;
+
 export const FOOTER_QUERY = `#graphql
   query Footer(
     $country: CountryCode

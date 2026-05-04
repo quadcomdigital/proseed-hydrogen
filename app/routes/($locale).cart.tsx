@@ -1,6 +1,9 @@
 import {CartForm} from '@shopify/hydrogen';
-import type {Route} from './+types/cart';
+import type {Route} from './+types/($locale).cart';
 import {CartMain} from '~/components/CartMain';
+import {t} from '~/lib/translations';
+import type {Lang} from '~/lib/translations';
+import {useLocale} from '~/lib/locale';
 
 export async function loader({context}: Route.LoaderArgs) {
   const cart = await context.cart.get();
@@ -51,9 +54,10 @@ export async function action({request, context}: Route.ActionArgs) {
 }
 
 export default function CartPage({loaderData}: Route.ComponentProps) {
+  const lang = useLocale();
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 lg:py-14">
-      <h1 className="mb-6 text-2xl lg:text-4xl font-black text-[#2d4a13]">Carrello</h1>
+      <h1 className="mb-6 text-2xl lg:text-4xl font-black text-[#2d4a13]">{t('cart_page.title', lang)}</h1>
       <CartMain cart={loaderData.cart} layout="page" />
     </div>
   );

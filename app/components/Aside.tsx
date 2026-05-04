@@ -5,6 +5,8 @@ import {
   useEffect,
   useState,
 } from 'react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
 type AsideContextValue = {
@@ -24,6 +26,7 @@ export function Aside({
 }) {
   const {type: activeType, close} = useAside();
   const expanded = type === activeType;
+  const lang = useLocale();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -45,7 +48,7 @@ export function Aside({
       <aside>
         <header>
           <h3>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Chiudi">&times;</button>
+          <button className="close reset" onClick={close} aria-label={t('aside.close', lang)}>&times;</button>
         </header>
         <main>{children}</main>
       </aside>

@@ -1,6 +1,8 @@
 import {useState} from 'react';
 import {CartForm} from '@shopify/hydrogen';
 import {Check, ShoppingCart} from 'lucide-react';
+import {useLocale} from '~/lib/locale';
+import {t} from '~/lib/translations';
 
 interface MobileStickyProps {
   variantId: string;
@@ -11,6 +13,7 @@ interface MobileStickyProps {
 
 export default function MobileStickyAddToCart({variantId, price, currencyCode, enabled}: MobileStickyProps) {
   const [cartState, setCartState] = useState<'idle' | 'added'>('idle');
+  const lang = useLocale();
 
   const handleClick = () => {
     setCartState('added');
@@ -23,7 +26,7 @@ export default function MobileStickyAddToCart({variantId, price, currencyCode, e
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 lg:hidden z-40 pb-safe">
       <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
         <div>
-          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Totale</p>
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('mobile_sticky.total', lang)}</p>
           <p className="text-lg font-black text-[#2d4a13]">
             {price.toFixed(2)} {currencyCode}
           </p>
@@ -48,7 +51,7 @@ export default function MobileStickyAddToCart({variantId, price, currencyCode, e
               ) : (
                 <ShoppingCart size={18} />
               )}
-              <span>{cartState === 'added' ? 'Aggiunto!' : 'Aggiungi'}</span>
+              <span>{cartState === 'added' ? t('mobile_sticky.added', lang) : t('mobile_sticky.add', lang)}</span>
             </button>
           </CartForm>
         </div>

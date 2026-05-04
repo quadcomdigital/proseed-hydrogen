@@ -74,7 +74,7 @@ interface SmartProduct {
   seminaRaccolta?: string;
 }
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const data = await context.storefront.query(SMART_GARDEN_QUERY, {
     variables: {query: '*', first: 50},
   });
@@ -90,7 +90,14 @@ export async function loader({context}: Route.LoaderArgs) {
     seminaAperto: node.semina_aperto?.value,
     seminaRaccolta: node.semina_raccolta?.value,
   }));
-  return {products};
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    products,
+    seo: {
+      title: t('smart_garden.hero_title', lang),
+      description: t('smart_garden.step_hint_month', lang),
+    },
+  };
 }
 
 export default function SmartGarden({loaderData}: Route.ComponentProps) {

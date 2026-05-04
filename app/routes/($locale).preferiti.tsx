@@ -19,7 +19,7 @@ function getLocalWishlistIds(): string[] {
   catch { return []; }
 }
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const isLoggedIn = await context.customerAccount.isLoggedIn();
   let serverHandles: string[] = [];
   if (isLoggedIn) {
@@ -29,7 +29,15 @@ export async function loader({context}: Route.LoaderArgs) {
       if (raw) serverHandles = JSON.parse(raw) as string[];
     } catch {}
   }
-  return {isLoggedIn, serverHandles};
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    isLoggedIn,
+    serverHandles,
+    seo: {
+      title: t('wishlist.title', lang),
+      description: t('wishlist.empty_desc', lang),
+    },
+  };
 }
 
 export async function action({request, context}: Route.ActionArgs) {

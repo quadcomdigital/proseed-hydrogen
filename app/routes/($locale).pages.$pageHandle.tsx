@@ -1,3 +1,4 @@
+import {getSeoMeta} from '@shopify/hydrogen';
 import type {Route} from './+types/($locale).pages.$pageHandle';
 
 const PAGE_QUERY = `#graphql
@@ -10,6 +11,7 @@ const PAGE_QUERY = `#graphql
       id
       title
       body
+      seo { title description }
     }
   }
 `;
@@ -28,8 +30,21 @@ export async function loader({context, params}: Route.LoaderArgs) {
     throw new Response('Not found', {status: 404});
   }
 
-  return {page: data.page};
+  const page = data.page;
+
+  return {
+    page,
+    seo: {
+      title: page.seo?.title || page.title,
+      description: page.seo?.description || page.body?.replace(/<[^>]*>/g, '').slice(0, 160) || '',
+    },
+  };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function CmsPage({loaderData}: Route.ComponentProps) {
   return (

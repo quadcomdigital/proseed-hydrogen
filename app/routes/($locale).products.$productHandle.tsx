@@ -1,6 +1,6 @@
 import {Suspense, useMemo, useState} from 'react';
 import {Await, Link, useNavigation} from 'react-router';
-import {CartForm, Image, Money} from '@shopify/hydrogen';
+import {CartForm, Image, Money, getSeoMeta} from '@shopify/hydrogen';
 import {Check, Leaf, ShoppingCart} from 'lucide-react';
 import type {Route} from './+types/($locale).products.$productHandle';
 import ProductGallery from '~/components/ProductGallery';
@@ -24,6 +24,7 @@ const PRODUCT_QUERY = `#graphql
       description
       descriptionHtml
       productType
+      seo { title description }
       featuredImage { url altText width height }
       images(first: 6) { nodes { url altText width height } }
       options { name values }
@@ -114,8 +115,21 @@ export async function loader({context, params}: Route.LoaderArgs) {
     .query(RECOMMENDATIONS_QUERY, {cache: context.storefront.CacheShort(), variables: {handle}})
     .catch(() => ({productRecommendations: []}));
 
-  return {product, recommendations};
+  return {
+    product,
+    recommendations,
+    seo: {
+      title: product.seo?.title || product.title,
+      description: product.seo?.description || product.description?.slice(0, 160) || '',
+      image: product.featuredImage?.url,
+    },
+  };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string; image?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export async function action({request, context}: Route.ActionArgs) {
   const formData = await request.formData();
@@ -181,8 +195,25 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
 
   if (isLoading) return <PdpSkeleton />;
 
+  const schemaData = currentVariant ? {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description?.slice(0, 200),
+    image: product.featuredImage?.url,
+    offers: {
+      '@type': 'Offer',
+      price: currentVariant.price?.amount,
+      priceCurrency: currentVariant.price?.currencyCode,
+      availability: currentVariant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    },
+  } : null;
+
   return (
     <>
+      {schemaData && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(schemaData)}} />
+      )}
       <div className="mx-auto max-w-7xl px-4 pt-6 pb-4">
         <Link to="/collections" className="text-xs font-bold text-[#78c13b] uppercase tracking-widest hover:underline">
           &larr; {t('pdp.back_to_catalog', lang)}

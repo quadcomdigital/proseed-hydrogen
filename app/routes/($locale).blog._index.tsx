@@ -27,14 +27,21 @@ const BLOG_INDEX_QUERY = `#graphql
   }
 `;
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const {storefront} = context;
   const data = await storefront.query(BLOG_INDEX_QUERY, {
     cache: storefront.CacheShort(),
   });
 
   const articles = data?.blog?.articles?.nodes || [];
-  return {articles};
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    articles,
+    seo: {
+      title: t('blog.hero_title', lang),
+      description: t('blog.hero_desc', lang),
+    },
+  };
 }
 
 export default function BlogPage({loaderData}: Route.ComponentProps) {

@@ -1,4 +1,5 @@
 import {Link, useLocation} from 'react-router';
+import {getSeoMeta} from '@shopify/hydrogen';
 import {useEffect, useState} from 'react';
 import {ChevronRight, Clock, ArrowLeft} from 'lucide-react';
 import type {Route} from './+types/($locale).blog.$slug';
@@ -19,6 +20,7 @@ const BLOG_DETAIL_QUERY = `#graphql
         excerpt
         contentHtml
         publishedAt
+        seo { title description }
         image { url altText }
         tags
       }
@@ -38,8 +40,20 @@ export async function loader({context, params}: Route.LoaderArgs) {
   const article = data?.blog?.articleByHandle;
   if (!article) throw new Response('Not found', {status: 404});
 
-  return {article};
+  return {
+    article,
+    seo: {
+      title: article.seo?.title || article.title,
+      description: article.seo?.description || article.excerpt?.slice(0, 160) || '',
+      image: article.image?.url,
+    },
+  };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function PostPage({loaderData}: Route.ComponentProps) {
   const {article} = loaderData;

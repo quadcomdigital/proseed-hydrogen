@@ -5,9 +5,16 @@ import {t} from '~/lib/translations';
 import type {Lang} from '~/lib/translations';
 import {useLocale} from '~/lib/locale';
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const cart = await context.cart.get();
-  return {cart};
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    cart,
+    seo: {
+      title: t('cart_page.title', lang),
+      description: t('cart_main.empty', lang),
+    },
+  };
 }
 
 export async function action({request, context}: Route.ActionArgs) {

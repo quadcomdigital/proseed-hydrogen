@@ -4,6 +4,16 @@ import {t} from '~/lib/translations';
 import type {Lang} from '~/lib/translations';
 import {useLocale} from '~/lib/locale';
 
+export async function loader({request}: {request: Request}) {
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    seo: {
+      title: 'Seed Club - Proseed',
+      description: t('seed_club.title', lang),
+    },
+  };
+}
+
 export default function SeedClub() {
   const lang = useLocale();
   return (

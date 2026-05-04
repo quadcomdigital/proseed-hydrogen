@@ -1,4 +1,5 @@
 import {Link} from 'react-router';
+import {getSeoMeta} from '@shopify/hydrogen';
 import type {Route} from './+types/($locale).collections.$collectionHandle';
 import ProductCard from '~/components/ProductCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
@@ -15,6 +16,8 @@ const COLLECTION_QUERY = `#graphql
       id
       title
       description
+      seo { title description }
+      image { url }
       products(first: $first) {
         nodes {
           ...ProductCard
@@ -39,8 +42,22 @@ export async function loader({context, params}: Route.LoaderArgs) {
     throw new Response('Not found', {status: 404});
   }
 
-  return {collection: data.collection};
+  const collection = data.collection;
+
+  return {
+    collection,
+    seo: {
+      title: collection.seo?.title || collection.title,
+      description: collection.seo?.description || collection.description?.slice(0, 160) || '',
+      image: collection.image?.url,
+    },
+  };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function CollectionPage({loaderData}: Route.ComponentProps) {
   const {collection} = loaderData;

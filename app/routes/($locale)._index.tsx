@@ -8,7 +8,7 @@ import SeoContent from '~/components/SeoContent';
 import {BlogSection} from '~/components/BlogCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import type {ShopifyProduct} from '~/lib/types';
-import {useLocale, localeDateString, getLocaleFromRequest} from '~/lib/locale';
+import {useLocale, localeDateString} from '~/lib/locale';
 import {t} from '~/lib/translations';
 
 const HOMEPAGE_QUERY = `#graphql
@@ -42,22 +42,31 @@ const HOMEPAGE_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const data: {products: {nodes: ShopifyProduct[]}; blog?: {articles: {nodes: {handle: string; title: string; excerpt?: string; image?: {url: string}; publishedAt: string}[]}}; heroSlides?: {nodes: {image?: {reference?: {image?: {url: string}}}; title?: {value?: string}; subtitle?: {value?: string}; tag?: {value?: string}}[]}} = await storefront.query(HOMEPAGE_QUERY, {
+  const data = await storefront.query(HOMEPAGE_QUERY, {
     cache: storefront.CacheShort(),
     variables: {first: 8},
   });
 
   const articles = data?.blog?.articles?.nodes || [];
-  const heroSlides = (data?.heroSlides?.nodes || []).map((node) => ({
+  const heroSlides = (data?.heroSlides?.nodes || []).map((node: any) => ({
     title: node.title?.value || '',
     subtitle: node.subtitle?.value || '',
     img: node.image?.reference?.image?.url || '',
     tag: node.tag?.value || '',
   }));
-  return {products: data.products.nodes, articles, heroSlides};
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    products: data.products.nodes,
+    articles,
+    heroSlides,
+    seo: {
+      title: `Proseed - ${t('home.bestsellers', lang)}`,
+      description: t('footer.brand_desc', lang).replace(/<[^>]*>/g, '').slice(0, 160),
+    },
+  };
 }
 
 export default function Home({loaderData}: Route.ComponentProps) {

@@ -21,13 +21,20 @@ const COLLECTIONS_QUERY = `#graphql
   }
 `;
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
   const data = await context.storefront.query(COLLECTIONS_QUERY, {
     cache: context.storefront.CacheShort(),
     variables: {first: 24},
   });
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
 
-  return {collections: data.collections.nodes};
+  return {
+    collections: data.collections.nodes,
+    seo: {
+      title: t('collections.title', lang),
+      description: t('footer.explore', lang),
+    },
+  };
 }
 
 export default function CollectionsPage({loaderData}: Route.ComponentProps) {

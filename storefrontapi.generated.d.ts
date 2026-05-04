@@ -644,6 +644,9 @@ export type BlogDetailQuery = {
         | 'publishedAt'
         | 'tags'
       > & {
+        seo?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Seo, 'title' | 'description'>
+        >;
         image?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Image, 'url' | 'altText'>
         >;
@@ -691,6 +694,8 @@ export type CollectionByHandleQueryVariables = StorefrontAPI.Exact<{
 export type CollectionByHandleQuery = {
   collection?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Collection, 'id' | 'title' | 'description'> & {
+      seo: Pick<StorefrontAPI.Seo, 'title' | 'description'>;
+      image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
       products: {
         nodes: Array<
           Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
@@ -743,7 +748,13 @@ export type PageByHandleQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type PageByHandleQuery = {
-  page?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>>;
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      seo?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Seo, 'title' | 'description'>
+      >;
+    }
+  >;
 };
 
 export type PoliciesIndexQueryVariables = StorefrontAPI.Exact<{
@@ -783,6 +794,7 @@ export type ProductByHandleQuery = {
       StorefrontAPI.Product,
       'id' | 'title' | 'description' | 'descriptionHtml' | 'productType'
     > & {
+      seo: Pick<StorefrontAPI.Seo, 'title' | 'description'>;
       featuredImage?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
       >;
@@ -965,7 +977,7 @@ interface GeneratedQueryTypes {
     return: CustomerQuery;
     variables: CustomerQueryVariables;
   };
-  '#graphql\n  query BlogDetail(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      articleByHandle(handle: $handle) {\n        id\n        title\n        handle\n        excerpt\n        contentHtml\n        publishedAt\n        image { url altText }\n        tags\n      }\n    }\n  }\n': {
+  '#graphql\n  query BlogDetail(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: "journal") {\n      articleByHandle(handle: $handle) {\n        id\n        title\n        handle\n        excerpt\n        contentHtml\n        publishedAt\n        seo { title description }\n        image { url altText }\n        tags\n      }\n    }\n  }\n': {
     return: BlogDetailQuery;
     variables: BlogDetailQueryVariables;
   };
@@ -973,7 +985,7 @@ interface GeneratedQueryTypes {
     return: BlogIndexQuery;
     variables: BlogIndexQueryVariables;
   };
-  '#graphql\n  query CollectionByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      title\n      description\n      products(first: $first) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    handle\n    title\n    featuredImage { url altText }\n    images(first: 2) { nodes { url altText } }\n    priceRange { minVariantPrice { amount currencyCode } }\n    variants(first: 1) { nodes { id availableForSale } }\n  }\n\n': {
+  '#graphql\n  query CollectionByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $first: Int!\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      title\n      description\n      seo { title description }\n      image { url }\n      products(first: $first) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    handle\n    title\n    featuredImage { url altText }\n    images(first: 2) { nodes { url altText } }\n    priceRange { minVariantPrice { amount currencyCode } }\n    variants(first: 1) { nodes { id availableForSale } }\n  }\n\n': {
     return: CollectionByHandleQuery;
     variables: CollectionByHandleQueryVariables;
   };
@@ -981,7 +993,7 @@ interface GeneratedQueryTypes {
     return: CollectionsIndexQuery;
     variables: CollectionsIndexQueryVariables;
   };
-  '#graphql\n  query PageByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    page(handle: $handle) {\n      id\n      title\n      body\n    }\n  }\n': {
+  '#graphql\n  query PageByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      seo { title description }\n    }\n  }\n': {
     return: PageByHandleQuery;
     variables: PageByHandleQueryVariables;
   };
@@ -989,7 +1001,7 @@ interface GeneratedQueryTypes {
     return: PoliciesIndexQuery;
     variables: PoliciesIndexQueryVariables;
   };
-  '#graphql\n  query ProductByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      id\n      title\n      description\n      descriptionHtml\n      productType\n      featuredImage { url altText width height }\n      images(first: 6) { nodes { url altText width height } }\n      options { name values }\n      semina_semenzaio: metafield(namespace: "custom", key: "semina_semenzaio") { value }\n      semina_aperto: metafield(namespace: "custom", key: "semina_aperto") { value }\n      semina_raccolta: metafield(namespace: "custom", key: "semina_raccolta") { value }\n      difficolta: metafield(namespace: "custom", key: "difficolta") { value }\n      tempo_raccolto: metafield(namespace: "custom", key: "tempo_raccolto") { value }\n      germinazione: metafield(namespace: "custom", key: "germinazione") { value }\n      esposizione: metafield(namespace: "custom", key: "esposizione") { value }\n      tipologia: metafield(namespace: "custom", key: "tipologia") { value }\n      consiglio_esperto: metafield(namespace: "custom", key: "consiglio_esperto") { value }\n      codice: metafield(namespace: "custom", key: "codice") { value }\n      variants(first: 100) {\n        nodes {\n          id\n          availableForSale\n          quantityAvailable\n          selectedOptions { name value }\n          price { amount currencyCode }\n          compareAtPrice { amount currencyCode }\n          image { url altText width height }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query ProductByHandle(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      id\n      title\n      description\n      descriptionHtml\n      productType\n      seo { title description }\n      featuredImage { url altText width height }\n      images(first: 6) { nodes { url altText width height } }\n      options { name values }\n      semina_semenzaio: metafield(namespace: "custom", key: "semina_semenzaio") { value }\n      semina_aperto: metafield(namespace: "custom", key: "semina_aperto") { value }\n      semina_raccolta: metafield(namespace: "custom", key: "semina_raccolta") { value }\n      difficolta: metafield(namespace: "custom", key: "difficolta") { value }\n      tempo_raccolto: metafield(namespace: "custom", key: "tempo_raccolto") { value }\n      germinazione: metafield(namespace: "custom", key: "germinazione") { value }\n      esposizione: metafield(namespace: "custom", key: "esposizione") { value }\n      tipologia: metafield(namespace: "custom", key: "tipologia") { value }\n      consiglio_esperto: metafield(namespace: "custom", key: "consiglio_esperto") { value }\n      codice: metafield(namespace: "custom", key: "codice") { value }\n      variants(first: 100) {\n        nodes {\n          id\n          availableForSale\n          quantityAvailable\n          selectedOptions { name value }\n          price { amount currencyCode }\n          compareAtPrice { amount currencyCode }\n          image { url altText width height }\n        }\n      }\n    }\n  }\n': {
     return: ProductByHandleQuery;
     variables: ProductByHandleQueryVariables;
   };

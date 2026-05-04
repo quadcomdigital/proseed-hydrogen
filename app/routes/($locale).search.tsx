@@ -27,8 +27,10 @@ export async function loader({request, context}: Route.LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get('q')?.trim() || '';
 
+  const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+
   if (!q) {
-    return {q: '', products: []};
+    return {q: '', products: [], seo: {title: t('search.title', lang), description: ''}};
   }
 
   const data = await context.storefront.query(SEARCH_QUERY, {
@@ -36,7 +38,14 @@ export async function loader({request, context}: Route.LoaderArgs) {
     variables: {query: q, first: 24},
   });
 
-  return {q, products: data.search.nodes};
+  return {
+    q,
+    products: data.search.nodes,
+    seo: {
+      title: `${t('search.results_for', lang)} ${q} - Proseed`,
+      description: '',
+    },
+  };
 }
 
 export default function SearchPage({loaderData}: Route.ComponentProps) {

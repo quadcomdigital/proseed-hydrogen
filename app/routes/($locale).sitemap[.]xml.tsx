@@ -15,23 +15,36 @@ const SITEMAP_QUERY = `#graphql
 `;
 
 export async function loader({request, context}: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const base = `${url.protocol}//${url.host}`;
+  const requestUrl = new URL(request.url);
+  const base = `${requestUrl.protocol}//${requestUrl.host}`;
 
   const data = await context.storefront.query(SITEMAP_QUERY, {
     cache: context.storefront.CacheLong(),
   });
 
-  const staticUrls = ['/', '/collections', '/search'];  
-  const productUrls = data.products.nodes.map((node: any) => `/products/${node.handle}`);
-  const collectionUrls = data.collections.nodes.map((node: any) => `/collections/${node.handle}`);
-  const pageUrls = data.pages.nodes.map((node: any) => `/pages/${node.handle}`);
+  const staticPaths = ['/', '/collections', '/search'];
+  const productPaths = data.products.nodes.map((node: any) => `/products/${node.handle}`);
+  const collectionPaths = data.collections.nodes.map((node: any) => `/collections/${node.handle}`);
+  const pagePaths = data.pages.nodes.map((node: any) => `/pages/${node.handle}`);
 
-  const all = [...staticUrls, ...productUrls, ...collectionUrls, ...pageUrls];
+  const allPaths = [...staticPaths, ...productPaths, ...collectionPaths, ...pagePaths];
 
-  const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${all
-    .map((path) => `  <url><loc>${base}${path}</loc></url>`)
-    .join('\n')}\n</urlset>`;
+  const urlTag = (path: string) => {
+    const itUrl = `${base}${path}`;
+    const enUrl = `${base}/en${path}`;
+    return `<url>
+  <loc>${itUrl}</loc>
+  <xhtml:link rel="alternate" hreflang="it" href="${itUrl}" />
+  <xhtml:link rel="alternate" hreflang="en" href="${enUrl}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${itUrl}" />
+</url>`;
+  };
+
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${allPaths.map((p) => urlTag(p)).join('\n')}
+</urlset>`;
 
   return new Response(body, {
     headers: {

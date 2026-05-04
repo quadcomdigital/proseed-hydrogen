@@ -1,4 +1,4 @@
-import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
+import {Analytics, getShopAnalytics, getSeoMeta, useNonce} from '@shopify/hydrogen';
 import {
   Link,
   Outlet,
@@ -57,6 +57,23 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
  * It's a temporary fix until the issue is resolved.
  * https://github.com/remix-run/remix/issues/9242
  */
+export const meta = ({data, location, matches}: {data?: unknown; location: {pathname: string}; matches: {data?: unknown}[]}) => {
+  if (!data) return [];
+  const rootData = data as {publicStoreDomain?: string; seo?: {title?: string; description?: string}};
+  const path = location.pathname.replace(/^\/en/, '') || '/';
+  const baseUrl = `https://${rootData.publicStoreDomain || 'proseed-1785.myshopify.com'}`;
+  const itUrl = `${baseUrl}${path}`;
+  const enUrl = `${baseUrl}/en${path}`;
+
+  return [
+    ...(getSeoMeta(...matches.map((m) => ((m as {data?: unknown}).data as {seo?: {title?: string; description?: string}} | undefined)?.seo)) || []),
+    {tagName: 'link', rel: 'alternate', hrefLang: 'it', href: itUrl},
+    {tagName: 'link', rel: 'alternate', hrefLang: 'en', href: enUrl},
+    {tagName: 'link', rel: 'alternate', hrefLang: 'x-default', href: itUrl},
+    {rel: 'canonical', href: path.startsWith('/en') ? enUrl : itUrl},
+  ];
+};
+
 export function links() {
   return [
     {
@@ -81,6 +98,8 @@ export async function loader(args: Route.LoaderArgs) {
   const {storefront, env} = args.context;
   const locale = getLocaleFromRequest(args.request);
 
+  const shopName = criticalData?.header?.shop?.name || 'Proseed';
+
   return {
     ...deferredData,
     ...criticalData,
@@ -96,6 +115,10 @@ export async function loader(args: Route.LoaderArgs) {
       withPrivacyBanner: false,
       country: locale.country,
       language: locale.language,
+    },
+    seo: {
+      title: shopName,
+      description: t('footer.brand_desc', locale.language.toLowerCase() as Lang).replace(/<[^>]*>/g, ''),
     },
   };
 }

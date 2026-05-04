@@ -1,4 +1,4 @@
-import {CartForm} from '@shopify/hydrogen';
+import {CartForm, getSeoMeta} from '@shopify/hydrogen';
 import type {Route} from './+types/($locale).cart';
 import {CartMain} from '~/components/CartMain';
 import {t} from '~/lib/translations';
@@ -59,6 +59,11 @@ export async function action({request, context}: Route.ActionArgs) {
   const headers = cartId ? context.cart.setCartId(cartId) : new Headers();
   return Response.json(result, {headers});
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function CartPage({loaderData}: Route.ComponentProps) {
   const lang = useLocale();

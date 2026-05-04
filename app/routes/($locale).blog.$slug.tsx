@@ -68,8 +68,19 @@ export default function PostPage({loaderData}: Route.ComponentProps) {
     setCurrentUrl(window.location.href);
   }, [location]);
 
+  const blogSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: article.title,
+    description: article.excerpt?.slice(0, 200) || '',
+    image: article.image?.url,
+    datePublished: article.publishedAt,
+    author: { '@type': 'Organization', name: 'Proseed' },
+  };
+
   return (
     <article className="min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(blogSchema)}} />
       <section className="relative pt-6 pb-8 lg:pt-8 lg:pb-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="hidden lg:flex items-center space-x-2 text-xs font-bold text-gray-400 mb-8">

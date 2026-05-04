@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link, useFetcher} from 'react-router';
-import {CartForm} from '@shopify/hydrogen';
+import {CartForm, getSeoMeta} from '@shopify/hydrogen';
 import {ChevronLeft, ArrowRight, Calendar, ShoppingCart, Sprout, Sun, Wind, RotateCcw, Check} from 'lucide-react';
 import type {Route} from './+types/($locale).smart-garden';
 import {useLocale} from '~/lib/locale';
@@ -95,10 +95,15 @@ export async function loader({context, request}: Route.LoaderArgs) {
     products,
     seo: {
       title: t('smart_garden.hero_title', lang),
-      description: t('smart_garden.step_hint_month', lang),
+      description: t('smart_garden.hero_title', lang),
     },
   };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function SmartGarden({loaderData}: Route.ComponentProps) {
   const {products} = loaderData;

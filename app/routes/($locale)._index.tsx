@@ -10,6 +10,7 @@ import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import type {ShopifyProduct} from '~/lib/types';
 import {useLocale, localeDateString} from '~/lib/locale';
 import {t} from '~/lib/translations';
+import {getSeoMeta} from '@shopify/hydrogen';
 
 const HOMEPAGE_QUERY = `#graphql
   query HomePage(
@@ -69,12 +70,31 @@ export async function loader({context, request}: Route.LoaderArgs) {
   };
 }
 
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
+
 export default function Home({loaderData}: Route.ComponentProps) {
   const {products, articles, heroSlides} = loaderData;
   const lang = useLocale();
 
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Proseed',
+    url: 'https://proseed.it',
+    description: t('footer.brand_desc', lang).replace(/<[^>]*>/g, '').slice(0, 200),
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://proseed.it/search?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(websiteSchema)}} />
       <Hero slides={heroSlides} />
 
       <section id="features" className="px-4 py-6 lg:py-10">

@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {Link, useFetcher, useLoaderData} from 'react-router';
 import {Heart, ShoppingCart, ArrowRight, LogIn, Trash2} from 'lucide-react';
-import {CartForm} from '@shopify/hydrogen';
+import {CartForm, getSeoMeta} from '@shopify/hydrogen';
 import type {Route} from './+types/($locale).preferiti';
 import {
   CUSTOMER_METAFIELD_QUERY,
@@ -98,6 +98,11 @@ interface WishlistProduct {
   id: string; handle: string; title: string; price: number;
   currencyCode: string; image: string; variantId?: string;
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function Preferiti() {
   const lang = useLocale();

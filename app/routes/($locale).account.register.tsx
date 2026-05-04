@@ -1,9 +1,25 @@
 import {Form, redirect, useActionData, Link} from 'react-router';
+import {getSeoMeta} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session';
 import {AlertCircle, ArrowLeft} from 'lucide-react';
 import type {Route} from './+types/($locale).account.register';
 import {useLocale} from '~/lib/locale';
 import {t, type Lang} from '~/lib/translations';
+
+export async function loader({request}: Route.LoaderArgs) {
+  const lang: Lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    seo: {
+      title: t('register.title', lang),
+      description: t('register.subtitle', lang),
+    },
+  };
+}
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 const CUSTOMER_CREATE = `#graphql
   mutation CustomerCreate($input: CustomerCreateInput!) {

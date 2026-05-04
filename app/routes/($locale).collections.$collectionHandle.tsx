@@ -62,8 +62,24 @@ export const meta = ({data}: {data?: {seo?: {title?: string; description?: strin
 export default function CollectionPage({loaderData}: Route.ComponentProps) {
   const {collection} = loaderData;
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: collection.title,
+    description: collection.description?.slice(0, 200) || '',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: collection.products?.nodes?.slice(0, 10).map((p: any, i: number) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: { '@type': 'Product', name: p.title, url: `https://proseed.it/products/${p.handle}` },
+      })) || [],
+    },
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 lg:py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(collectionSchema)}} />
       <h1 className="text-2xl lg:text-4xl font-black text-[#2d4a13]">{collection.title}</h1>
       {collection.description ? (
         <p className="mt-3 max-w-3xl text-sm text-gray-500">{collection.description}</p>

@@ -4,6 +4,7 @@ import type {Route} from './+types/($locale).blog._index';
 import BlogCard from '~/components/BlogCard';
 import {useLocale} from '~/lib/locale';
 import {t} from '~/lib/translations';
+import {getSeoMeta} from '@shopify/hydrogen';
 
 const BLOG_INDEX_QUERY = `#graphql
   query BlogIndex(
@@ -43,6 +44,11 @@ export async function loader({context, request}: Route.LoaderArgs) {
     },
   };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function BlogPage({loaderData}: Route.ComponentProps) {
   const {articles} = loaderData;

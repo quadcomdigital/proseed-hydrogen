@@ -1,7 +1,22 @@
 import {Link, useParams} from 'react-router';
+import {getSeoMeta} from '@shopify/hydrogen';
 import {t} from '~/lib/translations';
 import type {Lang} from '~/lib/translations';
-import {DEFAULT_LOCALE} from '~/lib/locale';
+
+export async function loader({request}: {request: Request}) {
+  const lang: Lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
+  return {
+    seo: {
+      title: `404 - ${t('error.page_not_found', lang)}`,
+      description: t('error.not_found_desc', lang),
+    },
+  };
+}
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function NotFound() {
   const params = useParams();

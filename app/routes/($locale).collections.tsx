@@ -3,6 +3,7 @@ import type {Route} from './+types/($locale).collections';
 import {t} from '~/lib/translations';
 import type {Lang} from '~/lib/translations';
 import {useLocale} from '~/lib/locale';
+import {getSeoMeta} from '@shopify/hydrogen';
 
 const COLLECTIONS_QUERY = `#graphql
   query CollectionsIndex($country: CountryCode, $language: LanguageCode, $first: Int!)
@@ -36,6 +37,11 @@ export async function loader({context, request}: Route.LoaderArgs) {
     },
   };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function CollectionsPage({loaderData}: Route.ComponentProps) {
   const lang = useLocale();

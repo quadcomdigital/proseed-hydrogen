@@ -1,3 +1,4 @@
+import {getSeoMeta} from '@shopify/hydrogen';
 import type {Route} from './+types/($locale).policies.$policyHandle';
 
 const POLICIES_QUERY = `#graphql
@@ -56,8 +57,19 @@ export async function loader({context, params}: Route.LoaderArgs) {
     throw new Response('Not found', {status: 404});
   }
 
-  return {policy};
+  return {
+    policy,
+    seo: {
+      title: policy.title,
+      description: policy.body?.replace(/<[^>]*>/g, '').slice(0, 160) || '',
+    },
+  };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function PolicyPage({loaderData}: Route.ComponentProps) {
   const {policy} = loaderData;

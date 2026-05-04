@@ -4,6 +4,7 @@ import {SEARCH_PRODUCT_FRAGMENT} from '~/lib/fragments';
 import type {ShopifyProduct} from '~/lib/types';
 import {useLocale} from '~/lib/locale';
 import {t} from '~/lib/translations';
+import {getSeoMeta} from '@shopify/hydrogen';
 
 const SEARCH_QUERY = `#graphql
   query SearchResults(
@@ -30,7 +31,7 @@ export async function loader({request, context}: Route.LoaderArgs) {
   const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
 
   if (!q) {
-    return {q: '', products: [], seo: {title: t('search.title', lang), description: ''}};
+    return {q: '', products: [], seo: {title: t('search.title', lang), description: t('search.placeholder', lang)}};
   }
 
   const data = await context.storefront.query(SEARCH_QUERY, {
@@ -43,10 +44,15 @@ export async function loader({request, context}: Route.LoaderArgs) {
     products: data.search.nodes,
     seo: {
       title: `${t('search.results_for', lang)} ${q} - Proseed`,
-      description: '',
+      description: `${t('search.results_for', lang)} ${q}`,
     },
   };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function SearchPage({loaderData}: Route.ComponentProps) {
   const {q, products} = loaderData;

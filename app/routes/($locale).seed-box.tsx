@@ -3,6 +3,7 @@ import {Package, Sparkles} from 'lucide-react';
 import {t} from '~/lib/translations';
 import type {Lang} from '~/lib/translations';
 import {useLocale} from '~/lib/locale';
+import {getSeoMeta} from '@shopify/hydrogen';
 
 export async function loader({request}: {request: Request}) {
   const lang = new URL(request.url).pathname.startsWith('/en') ? 'en' : 'it';
@@ -13,6 +14,11 @@ export async function loader({request}: {request: Request}) {
     },
   };
 }
+
+export const meta = ({data}: {data?: {seo?: {title?: string; description?: string}}}) => {
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo);
+};
 
 export default function SeedBox() {
   const lang = useLocale();

@@ -115,12 +115,26 @@ export async function loader({context, params}: Route.LoaderArgs) {
     .query(RECOMMENDATIONS_QUERY, {cache: context.storefront.CacheShort(), variables: {handle}})
     .catch(() => ({productRecommendations: []}));
 
+  const metaParts: string[] = [];
+  if (product.productType) metaParts.push(product.productType);
+  if (product.tipologia?.value) metaParts.push(product.tipologia.value);
+  if (product.esposizione?.value) metaParts.push(product.esposizione?.value);
+  const keywordSuffix = metaParts.length ? ` | ${metaParts.join(', ')}` : '';
+
+  const enrichedDesc = product.seo?.description
+    || [
+      product.description?.slice(0, 120),
+      product.productType,
+      product.difficolta?.value ? `Difficoltà: ${product.difficolta.value}` : '',
+      'Acquista online su Proseed. Spedizione gratuita sopra 39€.',
+    ].filter(Boolean).join('. ') || '';
+
   return {
     product,
     recommendations,
     seo: {
-      title: product.seo?.title || product.title,
-      description: product.seo?.description || product.description?.slice(0, 160) || '',
+      title: product.seo?.title || `${product.title}${keywordSuffix} | Proseed`,
+      description: enrichedDesc.slice(0, 200),
       image: product.featuredImage?.url,
     },
   };
@@ -209,11 +223,22 @@ export default function ProductPage({loaderData}: Route.ComponentProps) {
     },
   } : null;
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `https://proseed.it${lang === 'en' ? '/en' : ''}/` },
+      { '@type': 'ListItem', position: 2, name: product.productType || 'Prodotti', item: `https://proseed.it${lang === 'en' ? '/en' : ''}/collections` },
+      { '@type': 'ListItem', position: 3, name: product.title },
+    ],
+  };
+
   return (
     <>
       {schemaData && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(schemaData)}} />
       )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(breadcrumbSchema)}} />
       <div className="mx-auto max-w-7xl px-4 pt-6 pb-4">
         <Link to="/collections" className="text-xs font-bold text-[#78c13b] uppercase tracking-widest hover:underline">
           &larr; {t('pdp.back_to_catalog', lang)}

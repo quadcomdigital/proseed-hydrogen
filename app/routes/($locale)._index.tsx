@@ -64,7 +64,9 @@ export async function loader({context, request}: Route.LoaderArgs) {
     articles,
     heroSlides,
     seo: {
-      title: `Proseed - ${t('home.bestsellers', lang)}`,
+      title: lang === 'en'
+        ? 'Proseed - Buy Quality Seeds Online for Garden & Balcony'
+        : 'Proseed - Semi Online per Orto, Giardino e Balcone',
       description: t('footer.brand_desc', lang).replace(/<[^>]*>/g, '').slice(0, 160),
     },
   };
@@ -79,15 +81,21 @@ export default function Home({loaderData}: Route.ComponentProps) {
   const {products, articles, heroSlides} = loaderData;
   const lang = useLocale();
 
+  const siteUrl = 'https://proseed.it';
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Proseed',
-    url: 'https://proseed.it',
+    alternateName: lang === 'en' ? 'Proseed - Buy Seeds Online' : 'Proseed - Semi Online',
+    url: siteUrl,
     description: t('footer.brand_desc', lang).replace(/<[^>]*>/g, '').slice(0, 200),
+    inLanguage: lang === 'en' ? 'en-GB' : 'it-IT',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://proseed.it/search?q={search_term_string}',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteUrl}${lang === 'en' ? '/en' : ''}/search?q={search_term_string}`,
+      },
       'query-input': 'required name=search_term_string',
     },
   };

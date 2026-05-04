@@ -40,11 +40,17 @@ export async function loader({context, params}: Route.LoaderArgs) {
   const article = data?.blog?.articleByHandle;
   if (!article) throw new Response('Not found', {status: 404});
 
+  const tags = article.tags?.length ? ` - ${article.tags.slice(0, 3).join(', ')}` : '';
+
   return {
     article,
     seo: {
-      title: article.seo?.title || article.title,
-      description: article.seo?.description || article.excerpt?.slice(0, 160) || '',
+      title: article.seo?.title || (article.title + tags + ' | Proseed Blog'),
+      description: article.seo?.description || [
+        article.excerpt?.slice(0, 120),
+        article.tags?.slice(0, 3).join(', '),
+        'Leggi l\'articolo su Proseed.',
+      ].filter(Boolean).join('. ') || '',
       image: article.image?.url,
     },
   };

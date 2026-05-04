@@ -4,6 +4,7 @@ import type {Route} from './+types/($locale).collections.$collectionHandle';
 import ProductCard from '~/components/ProductCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import type {ShopifyProduct} from '~/lib/types';
+import {useLocale} from '~/lib/locale';
 
 const COLLECTION_QUERY = `#graphql
   query CollectionByHandle(
@@ -61,6 +62,17 @@ export const meta = ({data}: {data?: {seo?: {title?: string; description?: strin
 
 export default function CollectionPage({loaderData}: Route.ComponentProps) {
   const {collection} = loaderData;
+  const lang = useLocale();
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `https://proseed.it${lang === 'en' ? '/en' : ''}/` },
+      { '@type': 'ListItem', position: 2, name: 'Collezioni', item: `https://proseed.it${lang === 'en' ? '/en' : ''}/collections` },
+      { '@type': 'ListItem', position: 3, name: collection.title },
+    ],
+  };
 
   const collectionSchema = {
     '@context': 'https://schema.org',
@@ -79,6 +91,7 @@ export default function CollectionPage({loaderData}: Route.ComponentProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 lg:py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(breadcrumbSchema)}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(collectionSchema)}} />
       <h1 className="text-2xl lg:text-4xl font-black text-[#2d4a13]">{collection.title}</h1>
       {collection.description ? (

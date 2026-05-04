@@ -94,8 +94,12 @@ export async function loader({context, request}: Route.LoaderArgs) {
   return {
     products,
     seo: {
-      title: t('smart_garden.hero_title', lang),
-      description: t('smart_garden.hero_title', lang),
+      title: lang === 'en'
+        ? 'Smart Garden - What to Plant Now: Sowing Calculator | Proseed'
+        : 'Smart Garden - Cosa Piantare Ora: Calcolatore di Semina | Proseed',
+      description: lang === 'en'
+        ? 'Plan your vegetable garden with our smart sowing calculator. Discover what to plant each month based on your location and previous crops. Free tool by Proseed.'
+        : 'Pianifica il tuo orto con il calcolatore di semina Smart Garden. Scopri cosa piantare ogni mese in base alla tua zona e alla coltivazione precedente. Strumento gratuito di Proseed.',
     },
   };
 }
